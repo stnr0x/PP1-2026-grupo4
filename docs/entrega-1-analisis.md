@@ -10,27 +10,9 @@
 
 | Actor | Rol / Función en el sistema | Tipo (usuario final, sistema externo, etc.) |
 |-------|-----------------------------|---------------------------------------------|
-|Empleado|Realizar y editar pedidos   |     -usuario final| 
-|Administrador|Publicar menu, enviar mails y resolver problemas|  - Administrador   |           
-
-|administrador|-podrán registrarse e           
-                iniciar sesión 
-               -podrán consultar las
-               opciones de menú disponibles
-               para cada día
-               -el usuario poda confirmar
-               su pedido
-
-|servicio de 
-correo externo|-recibe solicitudes de envio         
-                desde el sistema de pdido dw
-                almuerzo 
-                -ejcuta envios de correos
-                de confirmacion a los 
-                destinatarios
-                -retornador de estados al 
-                sistema principal 
-
+|Empleado|Realizar y editar pedidos   |     -Usuario final| 
+|Administrador|Publicar menu, enviar recordatorios y resolver problemas|  - Administrador   |           
+|Servicio correo externo|Recibe y envia mails de estado|   -Sistema externo |
 ## 2. Requisitos Funcionales
 
 | ID    | Descripción | Actor | HU relacionada |
