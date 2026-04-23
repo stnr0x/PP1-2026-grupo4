@@ -10,7 +10,7 @@
 
 | Actor | Rol / Función en el sistema | Tipo (usuario final, sistema externo, etc.) |
 |-------|-----------------------------|---------------------------------------------|
-|empleado|-podrán registrarse e iniciar|     -usue¿ario final| 
+|empleado|-podrán registrarse e iniciar|     -usuario final| 
           sesión para acceder al
           sistema       
           -podrán editar y mantener
