@@ -3,7 +3,7 @@
 **Grupo**: [Nombre del grupo]  
 **Proyecto**: [Nombre del proyecto elegido]  
 **Integrantes**:
-- [Nombre y Apellido 1]
+- [santinogazzano]
 - [Nombre y Apellido 2]
 - [Nombre y Apellido 3]
 - [Nombre y Apellido 4]
