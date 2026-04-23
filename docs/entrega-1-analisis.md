@@ -10,7 +10,44 @@
 
 | Actor | Rol / Función en el sistema | Tipo (usuario final, sistema externo, etc.) |
 |-------|-----------------------------|---------------------------------------------|
-|       |                             |                                             |
+|empleado|-podrán registrarse e iniciar
+          sesión para acceder al
+          sistema       
+          -podrán editar y mantener
+          actualizados sus datos
+          personales
+          -podrán configurar los días 
+          de la semana en que van a 
+          asistir a la empresa
+          -podrán consultar las opciones 
+          de menú disponibles para
+          cada día
+          -podrán seleccionar, modificar 
+          o cancelar sus pedidos
+          de almuerzo
+          -el usuario poda confirmar
+          su pedido     
+
+|administrador|-podrán registrarse e
+               iniciar sesión 
+               -podrán consultar las
+               opciones de menú disponibles
+               para cada día
+               -el usuario poda confirmar
+               su pedido
+
+
+
+
+
+
+
+
+
+
+
+          
+
 
 ## 2. Requisitos Funcionales
 
