@@ -36,19 +36,6 @@
                -el usuario poda confirmar
                su pedido
 
-
-
-
-
-
-
-
-
-
-
-          
-
-
 ## 2. Requisitos Funcionales
 
 | ID    | Descripción | Actor | HU relacionada |
