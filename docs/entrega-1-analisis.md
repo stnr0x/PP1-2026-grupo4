@@ -10,7 +10,7 @@
 
 | Actor | Rol / Función en el sistema | Tipo (usuario final, sistema externo, etc.) |
 |-------|-----------------------------|---------------------------------------------|
-|empleado|-podrán registrarse e iniciar
+|empleado|-podrán registrarse e iniciar      -usue¿ario final 
           sesión para acceder al
           sistema       
           -podrán editar y mantener
@@ -28,13 +28,23 @@
           -el usuario poda confirmar
           su pedido     
 
-|administrador|-podrán registrarse e
-               iniciar sesión 
+|administrador|-podrán registrarse e            -administrador 
+                iniciar sesión 
                -podrán consultar las
                opciones de menú disponibles
                para cada día
                -el usuario poda confirmar
                su pedido
+
+|servicio de 
+correo externo|-recibe solicitudes de envio         
+                desde el sistema de pdido dw
+                almuerzo 
+                -ejcuta envios de correos
+                de confirmacion a los 
+                destinatarios
+                -retornador de estados al 
+                sistema principal 
 
 ## 2. Requisitos Funcionales
 
