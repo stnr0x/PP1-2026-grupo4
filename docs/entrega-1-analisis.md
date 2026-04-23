@@ -10,25 +10,10 @@
 
 | Actor | Rol / Función en el sistema | Tipo (usuario final, sistema externo, etc.) |
 |-------|-----------------------------|---------------------------------------------|
-|empleado|-podrán registrarse e iniciar|     -usuario final| 
-          sesión para acceder al
-          sistema       
-          -podrán editar y mantener
-          actualizados sus datos
-          personales
-          -podrán configurar los días 
-          de la semana en que van a 
-          asistir a la empresa
-          -podrán consultar las opciones 
-          de menú disponibles para
-          cada día
-          -podrán seleccionar, modificar 
-          o cancelar sus pedidos
-          de almuerzo
-          -el usuario poda confirmar
-          su pedido     
+|Empleado|Realizar y editar pedidos   |     -usuario final| 
+|Administrador|Publicar menu, enviar mails y resolver problemas|  - Administrador   |           
 
-|administrador|-podrán registrarse e            -administrador 
+|administrador|-podrán registrarse e           
                 iniciar sesión 
                -podrán consultar las
                opciones de menú disponibles
