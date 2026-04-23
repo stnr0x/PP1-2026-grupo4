@@ -9,7 +9,7 @@
 ## 1. Identificación de Actores
 
 | Actor | Rol / Función en el sistema | Tipo (usuario final, sistema externo, etc.) |
-|-------|-----------------------------|---------------------------------------------|
+|empleado|-----------------------------|---------------------------------------------|
 |empleado|-podrán registrarse e iniciar      -usue¿ario final 
           sesión para acceder al
           sistema       
