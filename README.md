@@ -1,12 +1,12 @@
 # PP1 2026 — Proyecto Integrador
 
-**Grupo**: [Nombre del grupo]  
-**Proyecto**: [Nombre del proyecto elegido]  
+**Grupo**: [Grupo 4]  
+**Proyecto**: [Sistema de pedidos de almuerzo]  
 **Integrantes**:
-- [Nombre y Apellido 1]
-- [Nombre y Apellido 2]
-- [Nombre y Apellido 3]
-- [Nombre y Apellido 4]
+- [Zanutigh Federico]
+- [Nuñez Giancarlo]
+- [Gazzano Santino]
+- [Villareal Matias]
 
 ---
 
