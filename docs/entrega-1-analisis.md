@@ -1,7 +1,7 @@
 # Entrega 1 — Análisis del Sistema
 
-**Grupo**: [Nombre del grupo]  
-**Proyecto**: [Nombre del proyecto elegido]  
+**Grupo**: [Grupo4]  
+**Proyecto**: [Sistema de pedidos de almuerzo]  
 **Fecha de entrega**: 30/04/2026
 
 ---
