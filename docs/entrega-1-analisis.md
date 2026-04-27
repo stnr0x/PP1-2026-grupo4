@@ -33,7 +33,6 @@
 | RNF-05 | Seguridad                                            | Credenciales cifradas  HTTPS.                                                                                            |
 | RNF-06 | Compatibilidad                                       | La pagina debe funcionar correctamente en los navegadores modernos mas utilizados.                                       |
 
-
 ## 4. Historias de Usuario
 
 | ID    | Como...       | Quiero...                  | Para...                            |
