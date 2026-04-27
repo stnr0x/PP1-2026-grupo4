@@ -31,6 +31,8 @@
 | RNF-04 | Seguridad                                            | El sistema debe tener autenticacion y autorizacion segun rol del usuario (administrador / empleado).                     |
 | RNF-05 | Seguridad                                            | Credenciales cifradas  HTTPS.                                                                                            |
 | RNF-06 | Compatibilidad                                       | La pagina debe funcionar correctamente en los navegadores modernos mas utilizados.                                       |
+| RNF-07 | Integracion Externa                                  | El sistema debe  integrarse correctamente con un servicio de correos externo.                                            |
+| RNF-08 | fiabilidad integracion externa                       | Los envios de correo deben ser confiables, en caso de fallo temporal el sistema debe reintentar el envio.                |
 
 ## 4. Historias de Usuario
 
