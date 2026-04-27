@@ -24,10 +24,15 @@
 
 ## 3. Requisitos No Funcionales
 
-| ID     | Categoría (rendimiento, seguridad, usabilidad, etc.) | Descripción |
-|--------|------------------------------------------------------|-------------|
-| RNF-01 |                                                      |             |
-| RNF-02 |                                                      |             |
+| ID     | Categoría (rendimiento, seguridad, usabilidad, etc.) | Descripción                                                                                                              |
+|--------|------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| RNF-01 | Usabilidad                                           | El sistema debe tener una interfaz clara, intuitiva y facil de usar tanto como para empleados como para administradores. |
+| RNF-02 | Usabilidad                                           | La interfaz  debe adaptarse a diferentes tamaños de pantalla, pc de escritorio, celulares, tablets, etc.                 |
+| RNF-03 | Rendimiento                                          | El tiempo de respuesta de las principales funciones no debe superar los 3 segundos en condiciones normales.              |
+| RNF-04 | Seguridad                                            | El sistema debe tener autenticacion y autorizacion segun rol del usuario (administrador / empleado).                     |
+| RNF-05 | Seguridad                                            | Credenciales cifradas  HTTPS.                                                                                            |
+| RNF-06 | Compatibilidad                                       | La pagina debe funcionar correctamente en los navegadores modernos mas utilizados.                                       |
+
 
 ## 4. Historias de Usuario
 
