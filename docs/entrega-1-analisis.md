@@ -22,7 +22,7 @@
 | RF-03 | El sistema debe permitir que un usuario pueda editar su perfil| Empleado |                |
 | RF-04 | El sistema debe permitir que el administrador asigne roles a los usuarios | Administrador |          |
 | RF-05 | El sistema debe permitir que los empleados puedan configurar su asistencia laboral semanal | Empleado| 
-| RF-06 | El sistema debe mostrar las opciones de menú semanal disponibles, filtrando únicamente los días configurados como días de asistencia del empleado | Empleado |
+| RF-06 | El sistema debe permitir mostrar las opciones de menú semanal disponibles, filtrando únicamente los días configurados como días de asistencia del empleado | Empleado |
 | RF-07 | El sistema debe permitir al usuario seleccionar, modificar o cancelar su pedido | Empleado |
 | RF-08 | El sistema debe permitir que el usuario pueda confirmar su pedido de almuerzo | Empleado |          |
 | RF-09 | El sistema debe permitir que al confirmar un pedido se envie una notificación al administrador | Sistema correo externo |          |
@@ -30,7 +30,6 @@
 | RF-11 | El sistema debe permitir enviar recordatorios automáticos por correo a los empleados que no hayan completado su selección antes del límite | Sistema correo externo |
 | RF-12 | El sistema debe permitir al administrador definir una fecha y hora límite para confirmar pedidos | Administrador |
 | RF-13 | El sistema debe permitir al administrador marcar días feriados para bloquear pedidos en esas fechas | Administrador |
-| RF-14 | El sistema debe generar automáticamente la lista del día con el conteo de cada menú solicitado | Sistema correo externo |  
 > Cada requisito debe describir una acción concreta: "El sistema debe permitir que [actor] [acción]..."
 
 ## 3. Requisitos No Funcionales
@@ -50,8 +49,15 @@
 
 | ID    | Como...       | Quiero...                  | Para...                            |
 |-------|---------------|----------------------------|------------------------------------|
-| HU-01 | [rol/actor]   | [acción o funcionalidad]   | [beneficio o resultado esperado]   |
-| HU-02 |               |                            |                                    |
+| HU-01 | [Empleado]   | [Editar mi perfil]   | [Mantener mi informacion actualizada]   
+| HU-02 |  [Administrador] |  [Crear y publicar el menú semanal con las opciones disponibles] | [Asi los clientes pueden ver que almuerzo pueden pedir cada dia de la semana] 
+| HU-03 |[Administrador]|[ Eliminar o deshabilitar un ítem del menu semanal ] | [Retirar opciones que ya no estan disponibles sin afectar los pedidos existentes]
+| HU-04 | [Empleado] | [Recibir confirmacion por correo] | [Para asegurar que mi pedido ha sido realizado con exito]
+| HU-05 | [Empleado] | [Quiero consultar mi historial de pedidos realizados]     | [Para facilitar la repetición de pedidos ]
+| HU-06 | [Empleado] | [Recibir un aviso cuando mi vianda esta en camino o lista para retirar ] | [Estar preparado y no perder tiempo esperando]
+| HU-07 | [Administrador] | [Registrar clientes activos o inactivos] | [Actualizar quienes reciben viandas]
+
+
 
 ## 5. Diagrama de Casos de Uso
 
