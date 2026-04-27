@@ -17,9 +17,20 @@
 
 | ID    | Descripción | Actor | HU relacionada |
 |-------|-------------|-------|----------------|
-| RF-01 |             |       |                |
-| RF-02 |             |       |                |
-
+| RF-01 |  El sistema debe permitir que un usuario pueda registrarse  | Empleado |
+| RF-02 |  El sistema debe permitir que un usuario pueda iniciar sesion | Empleado/Administrador | 
+| RF-03 | El sistema debe permitir que un usuario pueda editar su perfil| Empleado |                |
+| RF-04 | El sistema debe permitir que el administrador asigne roles a los usuarios | Administrador |          |
+| RF-05 | El sistema debe permitir que los empleados puedan configurar su asistencia laboral semanal | Empleado| 
+| RF-06 | El sistema debe mostrar las opciones de menú semanal disponibles, filtrando únicamente los días configurados como días de asistencia del empleado | Empleado |
+| RF-07 | El sistema debe permitir al usuario seleccionar, modificar o cancelar su pedido | Empleado |
+| RF-08 | El sistema debe permitir que el usuario pueda confirmar su pedido de almuerzo | Empleado |          |
+| RF-09 | El sistema debe permitir que al confirmar un pedido se envie una notificación al administrador | Sistema correo externo |          |
+| RF-10 | El sistema debe permitir que el administrador cree, modifique o elimine los menús semanales | Administrador |         |
+| RF-11 | El sistema debe permitir enviar recordatorios automáticos por correo a los empleados que no hayan completado su selección antes del límite | Sistema correo externo |
+| RF-12 | El sistema debe permitir al administrador definir una fecha y hora límite para confirmar pedidos | Administrador |
+| RF-13 | El sistema debe permitir al administrador marcar días feriados para bloquear pedidos en esas fechas | Administrador |
+| RF-14 | El sistema debe generar automáticamente la lista del día con el conteo de cada menú solicitado | Sistema correo externo |  
 > Cada requisito debe describir una acción concreta: "El sistema debe permitir que [actor] [acción]..."
 
 ## 3. Requisitos No Funcionales
