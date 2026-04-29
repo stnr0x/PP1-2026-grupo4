@@ -34,7 +34,7 @@
 | RF-15 | El sistema debe permitir al administrador marcar días feriados para bloquear pedidos en esas fechas|Administrador|HU-14|
 | RF-16 |El sistema debe permitir que el empleado consulte su historial de pedidos realizados | Empleado | HU-13
 | RF-17 | El sistema debe generar automaticamente un consolidado diario con todos los pedidos confirmados, agrupados por menu y cantidad|Administrador|HU-16|
-| RF-18 | El sistema debe generar automaticamente un consolidado diario con todos los pedidos confirmados, agrupados por menu y cantidad|Administrador|HU-16|
+| RF-18 |El sistema debe permitir al administrador consultar y descargar el consolidado diario para enviarlo al proveedor de viandas|Administrador|HU-16|
 > Cada requisito debe describir una acción concreta: "El sistema debe permitir que [actor] [acción]..."
 
 ## 3. Requisitos No Funcionales
