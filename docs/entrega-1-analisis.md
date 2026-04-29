@@ -273,9 +273,19 @@
 | Campo | Detalle |
 |---|---------|
 | **Actor principal** | Administrador |
-| **Descripción** | Permite gestionar usuarios (visualizar, editar, cambiar rol y estado). |
-| **Precondiciones** | Sesión como Administrador. |
-| **Postcondiciones** | La información de usuarios queda actualizada. |
+| **Descripción** | Permite al administrador visualizar, editar información, cambiar el rol y el estado de los usuarios del sistema. |
+| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador. |
+| **Postcondiciones (criterios de aceptación)** | La información de los usuarios y sus roles quedan actualizados correctamente en el sistema. |
+
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El administrador accede a la sección "Gestión de Usuarios". | |
+| 2. El sistema muestra la lista completa de usuarios registrados. | |
+| 3. El administrador selecciona un usuario de la lista. | |
+| 4. Puede realizar las siguientes acciones: ver detalles, editar información personal, cambiar rol (Empleado/Administrador) o cambiar estado (activo/inactivo). | 4.1 Si el administrador intenta cambiar su propio rol a Empleado, el sistema lo impide.<br>4.2 Si intenta desactivarse a sí mismo, el sistema lo impide. |
+| 5. El administrador guarda los cambios realizados. | 5.1 Si se intenta registrar un email ya existente, se muestra mensaje de error. |
+| 6. El sistema actualiza la información del usuario y muestra mensaje de confirmación. | |
+
 ### CU-14 — Definir Límite de Pedidos
 
 | Campo | Detalle |
