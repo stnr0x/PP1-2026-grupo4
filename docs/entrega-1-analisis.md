@@ -75,153 +75,192 @@
 
 ## 6. Especificación de Casos de Uso
 
-### CU-01 — [Iniciar Sesion]
+### CU-01 — Iniciar Sesión
 
 | Campo | Detalle                                                              |
 |---|----------------------------------------------------------------------|
 | **Actor principal** | Empleado/Administrador                                               |
-| **Descripción** | Permite al usuario acceder al sistema mediandte sus credenciales.    |
+| **Descripción** | Permite al usuario acceder al sistema mediante sus credenciales.     |
 | **Precondiciones** | El usuario debe estar registrado en el sistema.                      |
-| **Postcondiciones (criterios de aceptación)** | El usuario ingresa al sistema y se dirige al dashboard segun su rol. |
+| **Postcondiciones (criterios de aceptación)** | El usuario ingresa al sistema y se dirige al dashboard según su rol. |
 
 | Secuencia Normal (Camino feliz)                                            | Excepciones / Alternativas                                                               |
 |----------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| 1.El usuario ingresa su mail y contraseña en la pantalla de login.         |                                                                                          |
-| 2.El sistema valida las credenciales.                                      | 2.1 si las credenciales son incorrectas, muestra mensaje "Email o contraseña invalidos". |
-| 3.El sistema autentica al usuario y redirige al dashboard correspondiente. |                                                                                          |
+| 1. El usuario ingresa su email y contraseña en la pantalla de login.       |                                                                                          |
+| 2. El sistema valida las credenciales.                                     | 2.1 Si las credenciales son incorrectas, muestra mensaje "Email o contraseña inválidos". |
+| 3. El sistema autentica al usuario y redirige al dashboard correspondiente. |                                                                                          |
 
-### CU-02 — [Registrarse]
+### CU-02 — Registrarse
+
 | Campo | Detalle                                                    |
 |---|------------------------------------------------------------|
 | **Actor principal** | Empleado                                                   |
-| **Descripción** | permite a un nuevo empleado crear una cuenta en el sistema. |
+| **Descripción** | Permite a un nuevo empleado crear una cuenta en el sistema. |
 | **Precondiciones** | Ninguna.                                                   |
 | **Postcondiciones (criterios de aceptación)** | Se crea una nueva cuenta con rol de Empleado por defecto.  |
 
 | Secuencia Normal (Camino feliz)                                            | Excepciones / Alternativas                                   |
 |----------------------------------------------------------------------------|--------------------------------------------------------------|
-| 1.El usuario accede a la opcion de "Registrarse".                          |                                                              |
-| 2.Completa los datos requeridos:nombre, apellido, email, contraseña y DNI. | 2.1 Si el mail ya esta registrado, muestra mensaje de error. |
-| 3.El sistema valida la informacion y crea la cuenta.                       |                                                              |
-| 4.Muestra mensaje de exito y redirige a la pantalla de inicio de sesión.   |                                                              |
+| 1. El usuario accede a la opción de "Registrarse".                         |                                                              |
+| 2. Completa los datos requeridos: nombre, apellido, email, contraseña y DNI. | 2.1 Si el email ya está registrado, muestra mensaje de error. |
+| 3. El sistema valida la información y crea la cuenta.                      |                                                              |
+| 4. Muestra mensaje de éxito y redirige a la pantalla de inicio de sesión.  |                                                              |
 
-### CU-03 — [Configurar Dias de Asistencia]
+### CU-03 — Configurar Días de Asistencia
+
 | Campo | Detalle                                                                                             |
 |---|-----------------------------------------------------------------------------------------------------|
 | **Actor principal** | Empleado                                                                                            |
-| **Descripción** | Permite al empleado definir los dias de la semana en los que asistira presencialmente a la oficina. |
-| **Precondiciones** | El usuario ha iniciado sesion.                                                                      |
-| **Postcondiciones (criterios de aceptación)** | El sistema filtra los menus segun los dias configurados por el empleado.                            |
+| **Descripción** | Permite al empleado definir los días de la semana en los que asistirá presencialmente a la oficina. |
+| **Precondiciones** | El usuario ha iniciado sesión.                                                                      |
+| **Postcondiciones (criterios de aceptación)** | El sistema filtra los menús según los días configurados por el empleado.                            |
 
 | Secuencia Normal (Camino feliz)                                   | Excepciones / Alternativas                               |
 |-------------------------------------------------------------------|----------------------------------------------------------|
-| 1.El empleado accede a la seccion de configuracion de asistencia. |                                                          |
-| 2.Selecciona los dias de la semana que asistirá.                  |                                                          |
-| 3.Guarda la configuración.                                        | 3.1 Si no se selecciona ningún dia, muestra advertencia. |
+| 1. El empleado accede a la sección de configuración de asistencia.|                                                          |
+| 2. Selecciona los días de la semana que asistirá.                 |                                                          |
+| 3. Guarda la configuración.                                       | 3.1 Si no se selecciona ningún día, muestra advertencia.|
 
-### CU-04 — [Visualizar Menu Semanal]
+### CU-04 — Visualizar Menú Semanal
+
 | Campo | Detalle                                                                         |
 |---|---------------------------------------------------------------------------------|
 | **Actor principal** | Empleado/Administrador                                                          |
-| **Descripción** | Muestra las opciones de menu disponibles para cada dia de la semana.            |
-| **Precondiciones** | El usuario ha iniciado sesion                                                   |
-| **Postcondiciones (criterios de aceptación)** | Se visualiza el menú semanal (filtrado por dias de asistencia para el empleado) |
+| **Descripción** | Muestra las opciones de menú disponibles para cada día de la semana.            |
+| **Precondiciones** | El usuario ha iniciado sesión y el menú está publicado.                        |
+| **Postcondiciones (criterios de aceptación)** | Se visualiza el menú semanal (filtrado por días de asistencia para el empleado).|
 
 | Secuencia Normal (Camino feliz)                    | Excepciones / Alternativas |
-|----------------------------------------------------|---|
-| 1.El usuario selecciona la semana deseada.         |  |
-| 2.El sistema muestra las opciones de menú por dia. |  |
+|----------------------------------------------------|----------------------------|
+| 1. El usuario selecciona la semana deseada.        |                            |
+| 2. El sistema muestra las opciones de menú por día.|                            |
 
-### CU-05 — [Realizar Pedido]
-| Campo | Detalle                                                                                  |
-|---|------------------------------------------------------------------------------------------|
-| **Actor principal** | Empleado                                                                                 |
-| **Descripción** | Permite al empleado seleccionar, modificar, cancelar y confirmar su pedido de almuerzo.  |
-| **Precondiciones** | El usuario ha iniciado sesión y esta dentro del plazo establacido para realizar pedidos. |
-| **Postcondiciones (criterios de aceptación)** | El pedido queda registrado y se notifica al administrador.                               |
+### CU-05 — Registrar Pedido
 
-| Secuencia Normal (Camino feliz)                            | Excepciones / Alternativas                                                      |
-|------------------------------------------------------------|---------------------------------------------------------------------------------|
-| 1.El empleado accede a la sección "Realizar pedido".       |                                                                                 |
-| 2.El sistema muestra el menú según sus dias de asistencia. | 2.1 Si el dia es feriado, no permite seleccionar menú para ese dia.             |
-| 3.El empleado selecciona una opción de menú por cada dia.  |                                                                                 |
-| 4.Revisa el resumen de su pedido y lo confirma.            | 4.1 El empleado puede elegir modificar o cancelar el pedido antes de confirmar. |
-| 5.El sistema registra el pedido.                           |                                                                                 |
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Empleado |
+| **Descripción** | Permite al empleado seleccionar las opciones del menú semanal y guardar su pedido en estado borrador. |
+| **Precondiciones** | El usuario ha iniciado sesión, el menú semanal está publicado y se encuentra dentro del plazo para realizar pedidos. |
+| **Postcondiciones (criterios de aceptación)** | El pedido queda guardado en estado "borrador". |
 
-### CU-06 — [Consultar Historial de Pedidos]
-| Campo | Detalle                                                                     |
-|---|-----------------------------------------------------------------------------|
-| **Actor principal** | Empleado                                                                    |
-| **Descripción** | Permite al empkeado consultar sus pedidos realizados en semanas anteriores. |
-| **Precondiciones** | El usuario ha iniciado sesión.                                              |
-| **Postcondiciones (criterios de aceptación)** | Se muestra el historial de pedidos con sus detalles.                        |
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El empleado accede a la sección "Mis Pedidos". | |
+| 2. El sistema incluye el caso de uso **Visualizar Menú Semanal** (filtrado según sus días de asistencia). | 2.1 Si el día es feriado, no permite seleccionar opciones para ese día. |
+| 3. El empleado selecciona una opción de menú por cada día que asiste. | |
+| 4. El empleado guarda el pedido como borrador. | 4.1 Si no selecciona una opción en algún día obligatorio, el sistema muestra advertencia. |
 
-| Secuencia Normal (Camino feliz)                           | Excepciones / Alternativas |
-|-----------------------------------------------------------|---|
-| 1.El empleado accede a la sección "Historial de Pedidos". |  |
-| 2.El sistema muestra la lista de pedidos por semana.      |  |
-| 3.El empleado puede ver los detalles de cada pedido.      |  |
+### CU-06 — Confirmar Pedido
 
-### CU-07 — [Administrar Menú Semanal]
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Empleado |
+| **Descripción** | Permite al empleado confirmar definitivamente su pedido una vez revisado. |
+| **Precondiciones** | El usuario tiene un pedido en estado "borrador" y se encuentra dentro del plazo establecido. |
+| **Postcondiciones (criterios de aceptación)** | El pedido pasa a estado "confirmado" y se envía notificación por correo tanto al empleado como al administrador. |
 
-| Campo | Detalle                                                                                               |
-|---|-------------------------------------------------------------------------------------------------------|
-| **Actor principal** | Administrador                                                                                         |
-| **Descripción** | Permite al administrador crear, modificar o eliminar las opciones de menú para cada dia de la semana. |
-| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador.                                               |
-| **Postcondiciones (criterios de aceptación)** | Los cambios en el menú quedan guardados y visibles para los empleados.                                |
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El empleado accede a la lista de sus pedidos en borrador. | |
+| 2. El sistema muestra el resumen completo del pedido. | |
+| 3. El empleado revisa y confirma el pedido. | 3.1 Si el plazo para confirmar ya venció, el sistema impide la confirmación y muestra mensaje de error. |
+| 4. El sistema registra la confirmación y envía las notificaciones correspondientes. | |
 
-| Secuencia Normal (Camino feliz)                              | Excepciones / Alternativas |
-|--------------------------------------------------------------|---|
-| 1.El administrador selecciona la semana a gestionar.         |  |
-| 2.Agrega, modifica o elimina platos para los diferentes dias |  |
-| 3.Guarda y publica los cambios en el menú.                   |  |
+### CU-07 — Administrar Menús
 
-### CU-08 — [Gestionar Usuarios]
-| Campo | Detalle                                                                                                 |
-|---|---------------------------------------------------------------------------------------------------------|
-| **Actor principal** | Administrador                                                                                           |
-| **Descripción** | Permite al administrador gestionar los usuarios del sistema (visualizar, editar, cambiar rol y estado)/ |
-| **Precondiciones** | El usuario ha iniciado sesión con el rol de Administrador.                                              |
-| **Postcondiciones (criterios de aceptación)** | La informacion de los usuarios y sus roles quedan actualizados correctamente.                           |
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Administrador |
+| **Descripción** | Permite al administrador crear, modificar o eliminar las opciones del menú semanal trabajando en estado borrador. |
+| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador. |
+| **Postcondiciones (criterios de aceptación)** | Los cambios en el menú quedan guardados como borrador (aún no visibles para los empleados). |
 
-| Secuencia Normal (Camino feliz)                                                                                                   | Excepciones / Alternativas                                                              |
-|-----------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| 1.El administrador accede a "Gestion de Usuarios".                                                                                |                                                                                         |
-| 2.Visualiza la lista completa de usuarios.                                                                                        |                                                                                         |
-| 3.El Administrador selecciona un usuario de la lista.                                                                             |                                                                                         |
-| 4.El Aministrador puede realizar las siguientes acciones: ver detalles, editar información o cambiar rol (Empleado/Administrador) | 4.1 Si el administrador intenta cambiar su propio rol a Empleado, el sistema lo impide. |
-| 5.El administrador guarda los cambios realizados.                                                                                 | 5.1 Si se intenta registrar un mail ya existente, se muestra un mensaje de error.       |
-| 6.El sistema actualiza la información del usuario.                                                                                |                                                                                         |
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El administrador selecciona la semana a gestionar. | |
+| 2. Agrega, modifica o elimina platos para los diferentes días. | |
+| 3. Guarda los cambios como borrador. | |
 
-### CU-09 — [Definir Limite de Pedidos]
-| Campo | Detalle                                                                                                        |
-|---|----------------------------------------------------------------------------------------------------------------|
-| **Actor principal** | Administrador                                                                                                  |
-| **Descripción** | Permite al administrador establecer la fecha y hora limite para que los empleados puedan confirmar sus pedidos |
-| **Precondiciones** | El usuario ha iniciado sesión con el rol de Administrador.                                                     |
-| **Postcondiciones (criterios de aceptación)** | Se define el plazo de pedidos y el sistema bloquea nuevas confirmaciones una vez vencido.                      |
+### CU-08 — Publicar Menú
 
-| Secuencia Normal (Camino feliz)                          | Excepciones / Alternativas                                                              |
-|----------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| 1.El administrador accede a la seccion de configuración. |                                                                                         |
-| 2.Define fecha y hora limite para realizar pedidos.      |                                                                                         |
-| 3.Guarda los cambios.                                    |                                                                                         |
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Administrador |
+| **Descripción** | Permite al administrador publicar el menú semanal para que sea visible por los empleados. |
+| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador y existe un menú en estado borrador. |
+| **Postcondiciones (criterios de aceptación)** | El menú pasa a estado "publicado" y queda disponible para que los empleados lo visualicen y realicen pedidos. |
 
-### CU-10 — [Marcar Dias Feriados]
-| Campo | Detalle                                                                                                         |
-|---|-----------------------------------------------------------------------------------------------------------------|
-| **Actor principal** | Administrador                                                                                                   |
-| **Descripción** | Permite al administrador marcar dias feriados para bloquear automaticamente la seccion de pedidos en esa fecha. |
-| **Precondiciones** | El usuario ha iniciado sesión con el rol de Administrador.                                                      |
-| **Postcondiciones (criterios de aceptación)** | No se permiten pedidos en los dias marcados como feriados.                                                      |
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El administrador accede a la sección de gestión de menús. | |
+| 2. Selecciona el menú semanal que desea publicar. | |
+| 3. Publica el menú. | 3.1 Si el menú no tiene opciones suficientes, el sistema muestra una advertencia antes de publicar. |
+| 4. El sistema notifica a los empleados que el nuevo menú está disponible. | |
 
-| Secuencia Normal (Camino feliz)                          | Excepciones / Alternativas                                                              |
-|----------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| 1.El administrador accede a la seccion de configuración. |                                                                                         |
-| 2.Selecciona la fecha y la marca como dia feriado.       |                                                                                         |
-| 3.Guarda los cambios.                                    |                                                                                         |
+### CU-09 — Generar Consolidado Diario
 
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Administrador |
+| **Descripción** | Permite al administrador generar un consolidado con todos los pedidos confirmados de un día específico para enviarlo al proveedor de viandas. |
+| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador. |
+| **Postcondiciones (criterios de aceptación)** | Se genera un reporte consolidado listo para ser enviado al proveedor. |
+
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El administrador accede a la sección "Consolidados Diarios". | |
+| 2. Selecciona la fecha deseada. | 2.1 Si no hay pedidos confirmados para esa fecha, el sistema muestra un mensaje informativo. |
+| 3. El sistema muestra el resumen de pedidos (cantidad por plato, totales y detalle por empleado). | |
+| 4. El administrador genera o exporta el consolidado (en formato PDF o vista en pantalla). | |
+| 5. (Opcional) El administrador marca el consolidado como "enviado al proveedor". | |
+
+### CU-10 — Gestionar Usuarios
+
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Administrador |
+| **Descripción** | Permite al administrador gestionar los usuarios del sistema (visualizar, editar información, cambiar rol y estado). |
+| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador. |
+| **Postcondiciones (criterios de aceptación)** | La información de los usuarios y sus roles quedan actualizados correctamente. |
+
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El administrador accede a "Gestión de Usuarios". | |
+| 2. Visualiza la lista completa de usuarios. | |
+| 3. Selecciona un usuario de la lista. | |
+| 4. Puede ver detalles, editar información o cambiar rol (Empleado/Administrador). | 4.1 Si el administrador intenta cambiar su propio rol a Empleado, el sistema lo impide.<br>4.2 Si intenta desactivarse a sí mismo, el sistema lo impide. |
+| 5. Guarda los cambios realizados. | 5.1 Si se intenta usar un email ya registrado, se muestra mensaje de error. |
+
+### CU-11 — Definir Límite de Pedidos
+
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Administrador |
+| **Descripción** | Permite al administrador establecer la fecha y hora límite para que los empleados puedan confirmar sus pedidos. |
+| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador. |
+| **Postcondiciones (criterios de aceptación)** | Se define el plazo y el sistema bloquea nuevas confirmaciones una vez vencido el límite. |
+
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El administrador accede a la sección de configuración. | |
+| 2. Define la fecha y hora límite para la confirmación de pedidos. | |
+| 3. Guarda los cambios. | |
+
+### CU-12 — Marcar Días Feriados
+
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Administrador |
+| **Descripción** | Permite al administrador marcar días feriados para bloquear automáticamente los pedidos en esas fechas. |
+| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador. |
+| **Postcondiciones (criterios de aceptación)** | No se permiten pedidos en los días marcados como feriados. |
+
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El administrador accede a la sección de configuración. | |
+| 2. Selecciona la fecha y la marca como día feriado. | |
+| 3. Guarda los cambios. | |
 
 ---
 
