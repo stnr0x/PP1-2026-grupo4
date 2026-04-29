@@ -39,16 +39,17 @@
 
 ## 3. Requisitos No Funcionales
 
-| ID     | Categoría (rendimiento, seguridad, usabilidad, etc.) | Descripción                                                                                                              |
-|--------|-----------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-| RNF-01 | Usabilidad                                          | El sistema debe tener una interfaz clara, intuitiva y facil de usar tanto como para empleados como para administradores. |
-| RNF-02 | Usabilidad                                          | La interfaz  debe adaptarse a diferentes tamaños de pantalla, pc de escritorio, celulares, tablets, etc.                 |
-| RNF-03 | Rendimiento                                         | El tiempo de respuesta de las principales funciones no debe superar los 3 segundos en condiciones normales.              |
-| RNF-04 | Seguridad                                           | El sistema debe tener autenticacion y autorizacion segun rol del usuario (administrador / empleado).                     |
-| RNF-05 | Seguridad                                           | Credenciales cifradas  HTTPS.                                                                                            |
-| RNF-06 | Compatibilidad                                      | La pagina debe funcionar correctamente en los navegadores modernos mas utilizados.                                       |
-| RNF-07 | Integracion Externa                                 | El sistema debe  integrarse correctamente con un servicio de correos externo.                                            |
-| RNF-08 | fiabilidad integracion externa                      | Los envios de correo deben ser confiables, en caso de fallo temporal el sistema debe reintentar el envio.                |
+| ID     | Categoría              | Descripción                                                                                                              |
+|--------|------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| RNF-01 | Usabilidad             | El sistema debe tener una interfaz clara, intuitiva y fácil de usar tanto para empleados como para administradores, permitiendo que un usuario sin experiencia pueda completar un pedido en menos de 2 minutos. |
+| RNF-02 | Usabilidad             | La interfaz debe ser responsive y adaptarse correctamente a diferentes tamaños de pantalla (escritorio, tablet y dispositivos móviles), utilizando Bootstrap 5 como se indica en la consigna. |
+| RNF-03 | Rendimiento            | El tiempo de respuesta de las operaciones principales (login, visualización del menú, registro y confirmación de pedido) no debe superar los 2 segundos en condiciones normales de uso (95% de las peticiones). |
+| RNF-04 | Seguridad              | El sistema debe implementar autenticación y control de acceso basado en roles (Empleado y Administrador). Los usuarios solo podrán acceder a las funcionalidades correspondientes a su rol. |
+| RNF-05 | Seguridad              | Las contraseñas deben almacenarse utilizando hash bcrypt. Todas las comunicaciones entre el cliente y el servidor deben realizarse mediante HTTPS. Las sesiones de usuario deben cerrarse automáticamente después de 30 minutos de inactividad. |
+| RNF-06 | Compatibilidad         | El sistema debe funcionar correctamente en las versiones actuales y las inmediatamente anteriores de los navegadores más utilizados: Google Chrome, Mozilla Firefox, Microsoft Edge y Safari. |
+| RNF-07 | Integración Externa    | El sistema debe integrarse con un servicio de correo electrónico externo (mediante SMTP o API) para el envío confiable de notificaciones y recordatorios automáticos. |
+| RNF-08 | Fiabilidad             | En caso de fallo temporal en el servicio de correo, el sistema debe reintentar el envío de forma automática hasta 3 veces utilizando un algoritmo de backoff exponencial. Los errores deben ser registrados para su posterior análisis. |
+| RNF-09 | Mantenibilidad         | El código fuente debe estar bien estructurado, con separación clara de responsabilidades (siguiendo el stack propuesto: Spring Boot + JPA/Hibernate en backend), para facilitar su mantenimiento y futuras extensiones. |
 
 ## 4. Historias de Usuario
 
