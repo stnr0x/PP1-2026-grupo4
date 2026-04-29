@@ -71,7 +71,7 @@
 > Insertar imagen del diagrama exportado desde Draw.io, Lucidchart, StarUML o similar.  
 > Guardar la imagen en esta misma carpeta (`docs/`) y referenciarla abajo.
 
-![Diagrama de Casos de Uso](docs/diagrama-casos-de-uso.png.)
+![Diagrama de Casos de Uso](docs/diagrama-casos-de-uso.png)
 
 ## 6. Especificación de Casos de Uso
 
@@ -177,22 +177,7 @@
 | 2.Agrega, modifica o elimina platos para los diferentes dias |  |
 | 3.Guarda y publica los cambios en el menú.                   |  |
 
-### CU-08 — [Gestionar Configuración del Sistema]
-| Campo | Detalle                                                                       |
-|---|-------------------------------------------------------------------------------|
-| **Actor principal** | Administrador                                                                 |
-| **Descripción** | Permite al administrador definir el limite de pedidos y marcar dias feriados. |
-| **Precondiciones** | El usuario ha iniciado sesión con rol de Administrador.                       |
-| **Postcondiciones (criterios de aceptación)** | Se aplican restricciones de fecha límite y dias feriados en el sistema.       |
-
-| Secuencia Normal (Camino feliz)                          | Excepciones / Alternativas |
-|----------------------------------------------------------|---|
-| 1.El administrador accede a la sección de configuración. |  |
-| 2.Define la fecha y hora límite oara realizar pedidos.   |  |
-| 3.marca los dias feriados corresponfientes.              |  |
-| 4.Guardar los cambios.                                   |  |
-
-### CU-09 — [Gestionar Usuarios]
+### CU-08 — [Gestionar Usuarios]
 | Campo | Detalle                                                                                                 |
 |---|---------------------------------------------------------------------------------------------------------|
 | **Actor principal** | Administrador                                                                                           |
@@ -209,6 +194,33 @@
 | 5.El administrador guarda los cambios realizados.                                                                                 | 5.1 Si se intenta registrar un mail ya existente, se muestra un mensaje de error.       |
 | 6.El sistema actualiza la información del usuario.                                                                                |                                                                                         |
 
+### CU-09 — [Definir Limite de Pedidos]
+| Campo | Detalle                                                                                                        |
+|---|----------------------------------------------------------------------------------------------------------------|
+| **Actor principal** | Administrador                                                                                                  |
+| **Descripción** | Permite al administrador establecer la fecha y hora limite para que los empleados puedan confirmar sus pedidos |
+| **Precondiciones** | El usuario ha iniciado sesión con el rol de Administrador.                                                     |
+| **Postcondiciones (criterios de aceptación)** | Se define el plazo de pedidos y el sistema bloquea nuevas confirmaciones una vez vencido.                      |
+
+| Secuencia Normal (Camino feliz)                          | Excepciones / Alternativas                                                              |
+|----------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| 1.El administrador accede a la seccion de configuración. |                                                                                         |
+| 2.Define fecha y hora limite para realizar pedidos.      |                                                                                         |
+| 3.Guarda los cambios.                                    |                                                                                         |
+
+### CU-10 — [Marcar Dias Feriados]
+| Campo | Detalle                                                                                                         |
+|---|-----------------------------------------------------------------------------------------------------------------|
+| **Actor principal** | Administrador                                                                                                   |
+| **Descripción** | Permite al administrador marcar dias feriados para bloquear automaticamente la seccion de pedidos en esa fecha. |
+| **Precondiciones** | El usuario ha iniciado sesión con el rol de Administrador.                                                      |
+| **Postcondiciones (criterios de aceptación)** | No se permiten pedidos en los dias marcados como feriados.                                                      |
+
+| Secuencia Normal (Camino feliz)                          | Excepciones / Alternativas                                                              |
+|----------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| 1.El administrador accede a la seccion de configuración. |                                                                                         |
+| 2.Selecciona la fecha y la marca como dia feriado.       |                                                                                         |
+| 3.Guarda los cambios.                                    |                                                                                         |
 
 
 ---
