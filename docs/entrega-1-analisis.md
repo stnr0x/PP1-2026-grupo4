@@ -12,7 +12,7 @@
 |-------|-----------------------------|---------------------------------------------|
 |Empleado|Realizar y editar pedidos   |     -Usuario final| 
 |Administrador|Publicar menu, enviar recordatorios y resolver problemas|  - Administrador   |           
-|Sistema |Recibe y envia mails de estado|   -Sistema externo |
+|Sistema de Correos |Recibe y envia mails de estado|   -Sistema externo |
 ## 2. Requisitos Funcionales
 
 | ID    | Descripción | Actor | HU relacionada |
