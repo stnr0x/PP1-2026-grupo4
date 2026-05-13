@@ -174,24 +174,41 @@
 | 3. El empleado selecciona una opción de menú por cada día que asiste. | |
 | 4. El empleado guarda el pedido como borrador. | 4.1 Si no selecciona alguna opción obligatoria, muestra advertencia. |
 
-### CU-07 — Modificar o Cancelar Pedido
+### CU-07 — Modificar Pedido
 
 | Campo | Detalle |
 |---|---------|
 | **Actor principal** | Empleado |
 | **Descripción** | Permite al empleado modificar o cancelar un pedido que aún está en estado borrador. |
 | **Precondiciones** | El usuario tiene un pedido en estado "borrador" y está dentro del plazo. |
-| **Postcondiciones (criterios de aceptación)** | El pedido queda modificado o cancelado según la acción del empleado. |
+| **Postcondiciones (criterios de aceptación)** | El pedido queda actializado con las nuevas selecciones. |
 
 | Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
 |---------------------------------|----------------------------|
 | 1. El empleado accede a sus pedidos en estado borrador. | |
-| 2. Selecciona el pedido que desea modificar o cancelar. | |
-| 3. Elige entre modificar las opciones o cancelar el pedido completo. | 3.1 Si el pedido ya está confirmado, el sistema lo impide. |
-| 4. Confirma la acción. | |
-| 5. El sistema guarda los cambios. | |
+| 2. Selecciona el pedido a modificar. | |
+| 3. El sistema incluye el caso de uso Visualizar Menú Semanal | |
+| 4. El sistema incluye el caso de uso Validar Pedido. | 4.1 Si la validación falla, muestra los errores correspondientes. |
+| 5. El empleado modifica las opciones deseadas. | |
+| 6. Guarda los cambios. | |
 
-### CU-08 — Confirmar Pedido
+### CU-08 — Cancelar Pedido
+
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Empleado |
+| **Descripción** | Permite al empleado cancelar completamente un pedido que aún está en estado borrador. |
+| **Precondiciones** | El usuario tiene un pedido en estado "borrador" y está dentro del plazo. |
+| **Postcondiciones (criterios de aceptación)** | El pedido es eliminado / marcado como cancelado. |
+
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El empleado accede a sus pedidos en estado borrador. | |
+| 2. Selecciona el pedido a cancelar. | |
+| 3. Confirma la cancelación. | 3.1 Si el pedido ya está confirmado, el sistema lo impide. |
+| 4. El sistema elimina o marca el pedido como cancelado. | |
+
+### CU-09 — Confirmar Pedido
 
 | Campo | Detalle |
 |---|---------|
@@ -203,11 +220,28 @@
 | Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
 |---------------------------------|----------------------------|
 | 1. El empleado accede a sus pedidos en borrador. | |
-| 2. El sistema muestra el resumen completo del pedido. | |
-| 3. El empleado confirma el pedido. | 3.1 Si el plazo ya venció, el sistema impide la confirmación. |
-| 4. El sistema registra la confirmación y envía notificaciones al empleado y administrador. | |
+| 2. El sistema incluye el caso de uso Visualizar Menú Semanal. | |
+| 3. El sistema incluye el caso de uso Validar Pedido. | 3.1 Si la validación falla, muestra los errores y no permite confirmar. |
+| 4. El empleado confirma el pedido. | 4.1 Si el plazo ya venció, el sistema lo impide. |
+| 4. El sistema registra la confirmación y envía notificación por correo. | |
 
-### CU-09 — Consultar Historial de Pedidos
+### CU-10 — Validar Pedido
+
+| Campo | Detalle |
+|---|---------|
+| **Actor principal** | Sistema |
+| **Descripción** | Verifica que el pedido cumpla todas las reglas de negocio antes de permitir su modificación o confirmación. |
+| **Precondiciones** | Existe un pedido en estado borrador. |
+| **Postcondiciones (criterios de aceptación)** | Se determina si el pedido es válido o se informan los errores. |
+
+| Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
+|---------------------------------|----------------------------|
+| 1. El sistema verifica que esté dentro del plazo de confirmación. | 1.1 Si el plazo venció → rechazar operación. |
+| 2. Verifica que el día no sea feriado. | 2.1 Si es feriado → rechazar. |
+| 3. Verifica que todas las opciones obligatorias estén seleccionadas. | 3.1 Si faltan opciones obligatorias muestra errores. |
+| 4. Retorna que el pedido es válido. | |
+
+### CU-11 — Consultar Historial de Pedidos
 
 | Campo | Detalle |
 |---|---------|
@@ -222,7 +256,7 @@
 | 2. El sistema muestra la lista de pedidos por semana. | |
 | 3. El empleado selecciona una semana para ver los detalles. | |
 
-### CU-10 — Administrar Menús
+### CU-12 — Administrar Menús
 
 | Campo | Detalle |
 |---|---------|
@@ -237,7 +271,7 @@
 | 2. Agrega, modifica o elimina platos. | |
 | 3. Guarda los cambios como borrador. | |
 
-### CU-11 — Publicar Menú
+### CU-13 — Publicar Menú
 
 | Campo | Detalle |
 |---|---------|
@@ -252,23 +286,24 @@
 | 2. Selecciona el menú preparado. | |
 | 3. Publica el menú. | 3.1 Si no tiene suficientes opciones, muestra advertencia. |
 
-### CU-12 — Generar Consolidado Diario
+### CU-14 — Generar Consolidado Diario
 
 | Campo | Detalle |
 |---|---------|
 | **Actor principal** | Administrador |
-| **Descripción** | Permite generar un consolidado diario de todos los pedidos confirmados para enviarlo al proveedor. |
+| **Descripción** | Permite generar un consolidado diario de todos los pedidos confirmados. |
 | **Precondiciones** | Sesión como Administrador. |
-| **Postcondiciones** | Se genera el reporte consolidado listo para exportar. |
+| **Postcondiciones** | Se genera el reporte y se envía por correo al proveedor.. |
 
 | Secuencia Normal (Camino feliz) | Excepciones / Alternativas |
 |---------------------------------|----------------------------|
 | 1. El administrador accede a "Consolidados Diarios". | |
 | 2. Selecciona la fecha. | 2.1 Si no hay pedidos, muestra mensaje informativo. |
 | 3. El sistema muestra el resumen por plato y cantidades. | |
-| 4. Genera o exporta el consolidado. | |
+| 4. El administrador genera/exporta el consolidado. | |
+| 5. El sistema envía el consolidado por correo al proveedor. | |
 
-### CU-13 — Gestionar Usuarios
+### CU-15 — Gestionar Usuarios
 
 | Campo | Detalle |
 |---|---------|
@@ -286,7 +321,7 @@
 | 5. El administrador guarda los cambios realizados. | 5.1 Si se intenta registrar un email ya existente, se muestra mensaje de error. |
 | 6. El sistema actualiza la información del usuario y muestra mensaje de confirmación. | |
 
-### CU-14 — Definir Límite de Pedidos
+### CU-16 — Definir Límite de Pedidos
 
 | Campo | Detalle |
 |---|---------|
@@ -301,7 +336,7 @@
 | 2. Define la fecha y hora límite para la confirmación de pedidos. | |
 | 3. Guarda los cambios. | |
 
-### CU-15 — Marcar Días Feriados
+### CU-17 — Marcar Días Feriados
 
 | Campo | Detalle |
 |---|---------|
