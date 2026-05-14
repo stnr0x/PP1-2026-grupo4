@@ -28,7 +28,7 @@
 | RF-09 | El sistema debe permitir al empleado registrar su pedido de almuerzo seleccionando opciones del menu publicado| Empleado| HU-09|
 | RF-10 | El sistema debe permitir al empleado modificar o cancelar su pedido antes del limite establecido | Empleado| HU-11
 | RF-11 | El sistema debe permitir al empleado confirmar su pedido de almuerzo definitivamente| Empleado| HU-10
-| RF-12 | El sistema debe enviar una notificacion de confirmaciom al empleado cuando su pedido sea confirmado existosamente | Empleado| HU-04
+| RF-12 | El sistema debe enviar una notificacion de confirmacion al empleado cuando su pedido sea confirmado existosamente | Empleado| HU-09
 | RF-13 | El sistema debe enviar recordatorios automaticos por correo a los empleados que no hayan confirmado su pedido antes del limite| Empleado| HU-12
 | RF-14 |El sistema debe permitir al administrador definir una fecha y hora limite para la confirmacion de pedidos|Administrador|HU-13
 | RF-15 | El sistema debe permitir al administrador marcar días feriados para bloquear pedidos en esas fechas|Administrador|HU-14|
@@ -58,19 +58,18 @@
 | HU-01 | [Empleado]   | [Editar mi perfil]   | [Mantener mi informacion actualizada]  | 
 | HU-02 |  [Administrador] |  [Crear y administrar el menu semanal ] | [Gestionar las opciones disponibles antes de publicarlas] |
 | HU-03 |[Administrador]|[ Publicar el menu semanal  ] | [Que los empleados puedan verlo y realizar sus pedidos] |
-| HU-04 | [Empleado] | [Recibir confirmacion por correo al confirmar mi pedido] | [Para asegurar que mi pedido fue registrado con exito] |
-| HU-05 | [Empleado] | [Quiero consultar mi historial de pedidos realizados]     | [Para facilitar la repetición de pedidos ] |
-| HU-06 | [Empleado] | [Registrarme en el sistema ] | [Acceder a las funcionalidades de la plataforma] |
-| HU-07 | [Administrador/Empleado] | [Iniciar sesion con mis credenciales] | [Acceder a mi cuenta de forma segura] |
-| HU-08 | [Empleado] |  [Configurar mis dias de asistencia semanal] |  [Que el sistema me muestre solo los menus de los dias que voy a la oficina] |
-| HU-09 | [Empleado] | [Registrar mi pedido de almuerzo seleccionando opciones del menu] | [Elegir mis preferencias antes del cierre de pedidos]|
-| HU-10 | [Empleado] | [Confirmar mi pedido de almuerzo] | [Enviar definitivamente mi seleccion y que quede registrada en el sistema]|
-| HU-11 | [Empleado] | [Modificar o cancelar mi pedido antes del limite] | [Corregir mi seleccion si cambio de planes]|
-| HU-12 | [Empleado] | 	[Recibir un recordatorio automático si aún no confirmé mi pedido] |	[No olvidarme de confirmar a tiempo]
-| HU-13 | [Administrador] |[Definir una fecha y hora limite para la confirmacion de pedidos] | [Cerrar la recepcion a tiempo y organizar la produccion]|
-| HU-14 | [Administrador] | [Marcar dias feriados en el sistema] | [Bloquear pedidos automaticamente en esas fechas]|
-| HU-15 | [Administrador] | [Asignar o modificar el rol de un usuario] | [Controlar los permisos y accesos según la funcion de cada persona]
-| HU-16 | [Administrador] | [Generar y consultar el consolidado diario de pedidos confirmados] | [Enviarlo al proveedor de viandas para que prepare las cantidades correctas]
+| HU-04 | [Empleado] | [Quiero consultar mi historial de pedidos realizados]     | [Para facilitar la repetición de pedidos ] |
+| HU-05 | [Empleado] | [Registrarme en el sistema ] | [Acceder a las funcionalidades de la plataforma] |
+| HU-06 | [Administrador/Empleado] | [Iniciar sesion con mis credenciales] | [Acceder a mi cuenta de forma segura] |
+| HU-07 | [Empleado] |  [Configurar mis dias de asistencia semanal] |  [Que el sistema me muestre solo los menus de los dias que voy a la oficina] |
+| HU-08 | [Empleado] | [Registrar mi pedido de almuerzo seleccionando opciones del menu] | [Elegir mis preferencias antes del cierre de pedidos]|
+| HU-09 | [Empleado] | [Confirmar mi pedido de almuerzo] | [Enviar definitivamente mi seleccion y que quede registrada en el sistema]|
+| HU-10 | [Empleado] | [Modificar o cancelar mi pedido antes del limite] | [Corregir mi seleccion si cambio de planes]|
+| HU-11 | [Empleado] | 	[Recibir un recordatorio automático si aún no confirmé mi pedido] |	[No olvidarme de confirmar a tiempo]
+| HU-12 | [Administrador] |[Definir una fecha y hora limite para la confirmacion de pedidos] | [Cerrar la recepcion a tiempo y organizar la produccion]|
+| HU-13 | [Administrador] | [Marcar dias feriados en el sistema] | [Bloquear pedidos automaticamente en esas fechas]|
+| HU-14 | [Administrador] | [Asignar o modificar el rol de un usuario] | [Controlar los permisos y accesos según la funcion de cada persona]
+| HU-15 | [Administrador] | [Generar y consultar el consolidado diario de pedidos confirmados] | [Enviarlo al proveedor de viandas para que prepare las cantidades correctas]
 
 ## 5. Diagrama de Casos de Uso
 
