@@ -12,8 +12,6 @@
 | 04 | | | | |
 | 05 | | | | |
 ---
-pantalla-01.md 2026-05-14
-4 / 11
 ## 2. Trazabilidad pantalla ↔ E1
 | Pantalla | CU(s) | HU(s) | Actor |
 |----------|-------|-------|-------|
