@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Menu semanal</title>
+    <link rel="stylesheet" href="style2.css"> 
 </head>
 <body>
   <header>
@@ -12,16 +13,14 @@
   </header>
   <nav>
     <a href="#">Lunes</a>
-    <a href="#">Martes (no asiste)</a>
+    <a href="#" aria-disabled="true">Martes (no asiste)</a>
     <a href="#">Miércoles</a>
-    <a href="#">Jueves (feriado)</a>
+    <a href="#" aria-disabled="true">Jueves (feriado)</a>
     <a href="#">Viernes</a>
   </nav>
   <p>
-    <input type="radio" name="asistencia" id="asiste" value="asiste" checked>
-    <label for="asiste">Asiste</label>
-    <input type="radio" name="asistencia" id="no-asiste" value="no-asiste">
-    <label for="no-asiste">No asiste</label>
+    <span>■ Asiste</span>
+    <span>□ No asiste</span>
   </p>
   <main>
     <section>
