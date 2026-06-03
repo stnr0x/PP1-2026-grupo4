@@ -80,7 +80,7 @@ select {
     background: rgba(0,0,0,0.5);
     z-index: 998;
 }
-ain {
+main {
     padding-top: 80px;
 }
 body {
@@ -129,3 +129,45 @@ label{
     cursor: pointer;
     margin: 0;
 }
+.filtros {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.btn{
+    padding: 6px 16px;
+    border: 1.5px solid #333;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 14px;
+    cursor: pointer;
+}
+.btn.active{
+    background: #333;
+    color: white;
+}
+.btn-detalle {
+    background: transparent;
+    border: 1.5px solid #333;
+    border-radius: 999px;
+    color: #cccccc;
+    cursor: pointer;
+    padding: 4px 12px;
+    margin-top: 8px;
+}
+.pedido{
+    position: relative;
+}
+.pedido-select{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #333;
+    border-radius: 4px;
+    background:  transparent;
+    cursor: pointer;
+}
+
+

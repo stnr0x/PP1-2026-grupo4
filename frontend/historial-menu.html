@@ -30,20 +30,54 @@
     <h1>Historial de Pedidos</h1>
     <label for="semana">Semana:</label>
     <select id="semana">
-        <option>Semana del 25/05 al 29/05</option>
-        <option>Semana del 18/05 al 22/05</option>
+        <option value="25-29">Semana del 25/05 al 29/05</option>
+        <option value="18-22">Semana del 18/05 al 22/05</option>
     </select>
 
-    <div class="pedido">
-        <h3>Lunes 25/05</h3>
-        <p>Plato: Milanesa con puré</p>
-        <p>Estado: Confirmado</p>
+    <p>Filtrar por estado</p>
+    <div class="filtros">
+        <button class="btn active">Todos</button>
+        <button class="btn">Confirmado</button>
+        <button class="btn">Borrador</button>
+        <button class="btn">Cancelado</button>
     </div>
 
-    <div class="pedido">
+    <div class="pedido" data-estado="confirmado" data-semana="25-29">
+        <input type="checkbox" class="pedido-select">
+        <h3>Lunes 25/05</h3>
+        <p>Plato: Milanesa con pure y Papas fritas</p>
+        <p>Estado: Confirmado</p>
+        <button class="btn-detalle">Ver detalle</button>
+    </div>
+
+    <div class="pedido" data-estado="confirmado" data-semana="25-29">
+        <input type="checkbox" class="pedido-select">
         <h3>Martes 26/05</h3>
         <p>Plato: Ensalada Caesar</p>
         <p>Estado: Confirmado</p>
+        <button class="btn-detalle">Ver detalle</button>
+    </div>
+    <div class="pedido" data-estado="borrador" data-semana="25-29">
+
+        <h3>Miercoles 27/05</h3>
+        <p>Plato:Tallarines con salsa bolognesa</p>
+        <p>Estado: Borrador</p>
+        <button class="btn-detalle">Modificar</button>
+        <button class="btn-detalle">Ver detalle</button>
+    </div>
+    <div class="pedido" data-estado="cancelado" data-semana="25-29">
+
+        <h3>Jueves 28/05</h3>
+        <p>Plato: Bondiola de cerdo con verduras</p>
+        <p>Estado: Cancelado</p>
+        <button class="btn-detalle">Ver detalle</button>
+    </div>
+    <div class="pedido" data-estado="confirmado" data-semana="18-22">
+        <input type="checkbox" class="pedido-select">
+        <h3>Viernes 22/05</h3>
+        <p>Plato: Pastel de papa</p>
+        <p>Estado: Confirmado</p>
+        <button class="btn-detalle">Ver detalle</button>
     </div>
 
     <button class="btn-primary" style="margin-top: 20px;">Repetir pedido</button>
@@ -61,6 +95,37 @@
         sidebar.classList.remove('open');
         overlay.classList.remove('show');
     });
+</script>
+<script>
+    const botones = document.querySelectorAll('.btn');
+    const pedidos = document.querySelectorAll('.pedido');
+    const semanaSelect = document.getElementById('semana');
+
+    function filtrarPedidos() {
+        const estado = document.querySelector('.btn.active').textContent.toLowerCase();
+        const semana = semanaSelect.value;
+
+        pedidos.forEach(p => {
+            const coincideEstado = estado === 'todos' || p.dataset.estado === estado;
+            const coincideSemana = p.dataset.semana === semana;
+
+            if (coincideEstado && coincideSemana) {
+                p.style.display = 'block';
+            } else {
+                p.style.display = 'none';
+            }
+        });
+    }
+
+    botones.forEach(btn => {
+        btn.addEventListener('click', () => {
+            botones.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filtrarPedidos();
+        });
+    });
+
+    semanaSelect.addEventListener('change', filtrarPedidos);
 </script>
 
 
