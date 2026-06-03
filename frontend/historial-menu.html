@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Pedidos - Sistema de Pedidos</title>
+
+    <link rel="stylesheet" href="style3.css">
+</head>
+<body>
+
+<button id ="menu-toggle" class="hamburger">☰</button>
+<div class="top-bar-right">
+    <span class="welcome">Bienvenido, Juan</span>
+    <button id="logout-btn" class="butn-logout">Cerrar sesion</button>
+</div>
+<nav id="sidebar" class="sidebar">
+    <ul>
+        <li><a href="index.html">Inicio</a></li>
+<li><a href="#">Menu Semanal</a></li>
+        <li><a href="historial-menu.html">Historial</a></li>
+        <li><a href="#">Mi Perfil</a></li>
+        <li><a href="Login.html">Cerrar sesion</a></li>
+
+    </ul>
+
+</nav>
+<div id="overlay" class="overlay"></div>
+<main>
+    <h1>Historial de Pedidos</h1>
+    <label for="semana">Semana:</label>
+    <select id="semana">
+        <option>Semana del 25/05 al 29/05</option>
+        <option>Semana del 18/05 al 22/05</option>
+    </select>
+
+    <div class="pedido">
+        <h3>Lunes 25/05</h3>
+        <p>Plato: Milanesa con puré</p>
+        <p>Estado: Confirmado</p>
+    </div>
+
+    <div class="pedido">
+        <h3>Martes 26/05</h3>
+        <p>Plato: Ensalada Caesar</p>
+        <p>Estado: Confirmado</p>
+    </div>
+
+    <button class="btn-primary" style="margin-top: 20px;">Repetir pedido</button>
+</main>
+<script>
+    const toggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    toggle.addEventListener('click', ()=>{
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    });
+    overlay.addEventListener('click',()=>{
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    });
+</script>
+
+
+</body>
+</html>
