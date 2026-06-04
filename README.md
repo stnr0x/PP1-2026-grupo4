@@ -5,7 +5,6 @@
 **Integrantes**:
 - [Zanutigh Federico]
 - [Nuñez Giancarlo]
-- [Gazzano Santino]
 - [Villareal Matias]
 
 ---
