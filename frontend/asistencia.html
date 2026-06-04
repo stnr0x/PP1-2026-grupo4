@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="stylesheet" href="style2.css">
+    <meta charset="UTF-8">
+    <title>Configurar asistencia</title>
+</head>
+<body>
+    <header>
+        <p>Sistema de pedidos</p>
+        <nav>
+          <a href="index.html">Inicio</a>
+          <a href="perfil.html">Mi perfil</a>
+        </nav>
+        <a href="login.html">Cerrar sesión</a>
+      </header>
+      <main>
+        <h1>Configurar asistencia semanal</h1>
+        <p>Seleccioná los días que vas a asistir presencialmente</p>
+      
+        <p>⚠ Tu configuración determina qué menús vas a poder ver al hacer un pedido.</p>
+      
+        <section>
+          <label for="semana">Semana:</label>
+          <input type="week" id="semana" name="semana">
+        </section>
+      
+        <p>Configuración actual: <strong>Lun, Mié, Vie</strong></p>
+        <section>
+            <h2>Seleccioná tus días:</h2>
+        
+            <article>
+              <input type="checkbox" id="lunes" name="dias" value="lunes" checked>
+              <label for="lunes">Lunes</label>
+            </article>
+        
+            <article>
+              <input type="checkbox" id="martes" name="dias" value="martes">
+              <label for="martes">Martes</label>
+            </article>
+        
+            <article>
+              <input type="checkbox" id="miercoles" name="dias" value="miercoles" checked>
+              <label for="miercoles">Miércoles</label>
+            </article>
+        
+            <article>
+              <input type="checkbox" id="jueves" name="dias" value="jueves">
+              <label for="jueves">Jueves</label>
+            </article>
+        
+            <article>
+              <input type="checkbox" id="viernes" name="dias" value="viernes" checked>
+              <label for="viernes">Viernes</label>
+            </article>
+        
+          </section>
+          <form>
+            <button type="submit">Guardar configuración</button>
+          </form>
+        </main>
+        <footer>
+          <p>© 2026 Sistema de pedidos</p>
+        </footer>
+</body>
+</html>
