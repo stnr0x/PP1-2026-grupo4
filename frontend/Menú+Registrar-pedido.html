@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecciona tu menu semanal</title>
+
+    <link rel="stylesheet" href="style3.css">
+</head>
+<body>
+
+<button id ="menu-toggle" class="hamburger">☰</button>
+<div class="top-bar-right">
+    <span class="welcome">Bienvenido, Juan</span>
+    <button id="logout-btn" class="butn-logout">Cerrar sesion</button>
+</div>
+<nav id="sidebar" class="sidebar">
+    <ul>
+        <li><a href="index.html">Inicio</a></li>
+<li><a href="#">Menu Semanal</a></li>
+        <li><a href="Menú+Registrar-pedido.html">Historial</a></li>
+        <li><a href="#">Mi Perfil</a></li>
+
+    </ul>
+
+</nav>
+<div id="overlay" class="overlay"></div>
+<main>
+    <h1>Selecciona tu menu semanal</h1>
+    <div class="alerta-asistencia">
+        <p>No configuraste tu asistencia.</p>
+        <p>Configura tu asistencia para ver el menu.</p>
+   <a href="asistencia.html" class="btn-ir">Ir a asistencia</a>
+    </div>
+    <section class="menu-grid">
+        <article class="card-dia">
+            <h3>LUNES</h3>
+            <hr>
+            <label class="opcion">
+                <input type="radio" name="lunes" value="opcion1"> Opcion1 $800
+                <span class="stock disponible">✅</span>
+            </label>
+            <label class="opcion">
+                <input type="radio" name="lunes" value="opcion2"> Opcion2 $850
+                <span class="stock disponible">✅</span>
+            </label>
+            <label class="opcion">
+                <input type="radio" name="lunes" value="opcion3"> Opcion3 $900
+                <span class="stock disponible">✅</span>
+            </label>
+            <small class="plazo">Plazo: hasta 9 HS</small>
+        </article>
+        <article class="card-dia">
+                 <h3>MIERCOLES</h3>
+        <hr>
+        <label class="opcion">
+            <input type="radio" name="miercoles" value="opcion1"> Opcion 1 $800
+            <span class="stock no disponible">❌</span>
+        </label>
+        <label class="opcion">
+        <input type="radio" name="miercoles" value="opcion2"> Opcion 2 $900
+            <span class="stock disponible">✅</span>
+        </label>
+        <label class="opcion">
+            <input type="radio" name="miercoles" value="opcion3"> Opcion 3 $850
+            <span class="stock disponible">✅</span>
+        </label>
+        <small class="plazo">Plazo: hasta 9 HS</small>
+        </article>
+        <article class="card-dia">
+            <h3>VIERNES</h3>
+            <hr>
+            <label class="opcion">
+                <input type="radio" name="viernes" value="opcion1"> Opcion 1 $900
+                <span class="stock disponible">✅</span>
+            </label>
+            <label class="opcion">
+                <input type="radio" name="viernes" value="opcion2"> Opcion 2 $800
+                <span class="stock disponible">✅</span>
+            </label>
+            <label class="opcion">
+                <input type="radio" name="viernes" value="opcion3"> Opcion 3 $850
+                <span class="stock no disponible">❌</span>
+            </label>
+            <small class="plazo">Plazo: hasta 9 HS</small>
+        </article>
+    </section>
+    <section class="resumen" id="resumen">
+        <h2>Resumen del pedido</h2>
+        <div id="resumen-items">
+            <p>Lunes ➜ <span id="res-lunes"></span></p>
+            <p>Miercoles ➜ <span id="res-miercoles"></span></p>
+        <p>Viernes ➜ <span id="res-viernes"></span></p>
+        </div>
+        <hr>
+        <p><strong>Total estimado:</strong> $<span id ="res-total">0</span></p>
+<p><strong>Estado:</strong> Borrador</p>
+        <button class="btn-guardar">Guardar pedido</button>
+    </section>
+    <footer>
+        <small>© 2026 Sistema de pedidos</small>
+    </footer>
+</main>
+<script>
+    const toggle = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    toggle.addEventListener('click', ()=>{
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    });
+    overlay.addEventListener('click',()=>{
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    });
+
+    // Lógica de resumen dinámico
+    const radios = document.querySelectorAll('input[type="radio"]');
+    const precios = {
+        lunes: { opcion1: 800, opcion2: 850, opcion3: 900 },
+        miercoles: { opcion1: 800, opcion2: 900, opcion3: 850 },
+        viernes: { opcion1: 900, opcion2: 800, opcion3: 850 },
+    };
+
+    function actualizarResumen() {
+        let total = 0;
+        ['lunes', 'miercoles', 'viernes'].forEach(dia => {
+            const sel = document.querySelector(`input[name="${dia}"]:checked`);
+            const span = document.getElementById(`res-${dia}`);
+            if (sel) {
+                const txt = sel.parentElement.textContent.trim();
+                span.textContent = txt;
+                total += precios[dia][sel.value];
+            } else {
+                span.textContent = '—';
+            }
+        });
+        document.getElementById('res-total').textContent = total;
+    }
+
+    radios.forEach(r => r.addEventListener('change', actualizarResumen));
+</script>
+
+
+</body>
+</html>

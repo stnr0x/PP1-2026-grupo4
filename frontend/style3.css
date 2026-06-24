@@ -89,7 +89,7 @@ body {
 main{
     padding: 50px;
     background-color: #211b3e;
-    max-width: 350px;
+    max-width: 700px;
     margin: 100px auto;
     border: 15px;
 }
@@ -169,5 +169,110 @@ label{
     background:  transparent;
     cursor: pointer;
 }
-
-
+.alerta-asistencia{
+    background-color: #2c2453;
+    border: 1px solid #41367c;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: #cccccc;
+    margin-bottom: 20px;
+}
+.alerta-asistencia .btn-ir{
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 20px;
+    background-color: #41367c;
+    color: #cccccc;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 7000;
+}
+.menu-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+.card-dia{
+    background-color: #2c2453;
+    border: 1px solid #41367c;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.card-dia h3 {
+    color: white;
+    margin: 0 0 5px 0;
+    text-align: center;
+}
+.card-dia hr {
+    border: none;
+    border-top: 1px solid #41367c;
+    margin: 8px 0;
+}
+.opcion {
+    display: block;
+    color: #cccccc;
+    margin: 6px 0;
+    cursor: pointer;
+    font-size: 14px;
+}
+.opcion input {
+    margin-right: 6px;
+}
+.plazo {
+    display: block;
+    color: #888;
+    font-size: 12px;
+    margin-top: auto;
+    text-align: center;
+    padding-top: 15px;
+}
+.resumen {
+    background-color: #2c2453;
+    border: 1px solid #41367c;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+.resumen h2 {
+    color: white;
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+.resumen hr {
+    border: none;
+    border-top: 1px solid #41367c;
+    margin: 10px 0;
+}
+.resumen p {
+    color: #cccccc;
+    margin: 5px 0;
+}
+.btn-guardar{
+    display: block;
+    width: 100%;
+    padding: 5px;
+    background-color: #41367c;
+    color: #cccccc;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.btn-guardar:hover {
+    background-color: #5246a0;
+}
+footer {
+    text-align: center;
+    padding: 10px;
+    color: #555;
+    font-size: 12px;
+    border-top: 1px solid #41367c;
+    margin-top: 20px;
+}
