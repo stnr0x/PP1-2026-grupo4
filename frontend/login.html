@@ -1,29 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Login — Sistema de Pedidos</title>
-  <link rel="stylesheet" href="style.css"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Sistema de Pedidos</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<main>
-    <form>
-        <h1>Login</h1>
-      <input type="email" name="email" id="email" placeholder="Email">
+<main class="login-container">
 
-      <input type="password" name="password" id="password" placeholder="Contraseña">
+    <section class="login-card">
 
-      <label>
-         <input type="checkbox" name="remember"> Recordarme</label>
+        <h1>Iniciar Sesión</h1>
 
-      <p><a href="recuperar.html">¿Olvidaste tu contraseña?</a></p>
+        <form>
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+            </div>
 
-        <button type="submit" class="btn-primary">Iniciar Sesión</button>
-    </form>
+            <!-- Contraseña -->
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
 
-     <p>¿No tenés cuenta?</p>
-     <button type="button" class="btn-secundary">Registrate</button>
+            <!-- Opciones -->
+            <div class="form-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="remember"> Recordarme
+                </label>
+                <a href="recuperar.html" class="forgot-link">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+        </form>
+
+        <!-- Sección de registro -->
+        <section class="register-section">
+            <p>¿No tenés cuenta?</p>
+            <button type="button" class="btn btn-secondary">Registrate</button>
+        </section>
+
+    </section>
+
 </main>
+
 </body>
 </html>

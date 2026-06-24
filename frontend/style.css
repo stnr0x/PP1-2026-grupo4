@@ -1,85 +1,169 @@
+:root {
+    /* Colores base */
+    --color-header: #0F172A;
+    --color-bg: #F8FAFC;
+    --color-surface: #FFFFFF;
+    --color-text: #1E2937;
+    --color-text-muted: #64748B;
+    --color-border: #E2E8F0;
+
+    /* Colores de acento */
+    --color-primary: #0D9488;
+    --color-primary-dark: #0F766E;
+    --color-accent: #14B8A6;
+    --color-success: #15803D;
+
+    /* Avisos */
+    --color-warning-bg: #FEF3C7;
+    --color-warning-text: #92400E;
+}
+
+/*
+   BASE - Fuente y estilos generales
+ */
 body {
-    font-family: 'Segoe UI', 'Arial', sans-serif;
-    color: #333333;
-    background-color: #161229;
-}
-h1 {
-    color: white;
-    padding: 5px;
-    text-align: center;
-    margin-bottom: 50px;
-}
-main {
-    padding: 50px;
-    background-color: #211b3e;
-    max-width: 350px;
-    margin: 100px auto;
-    border-radius: 15px;
-}
-label {
-    display: inline-flex;
-    color: white;
-    margin-top: 20px;
-    font-weight: 250;
- }
-input {
-    width: 95%;
-    padding: 10px;
-    margin-top: 15px;
-    border: 0px solid #cccccc;
-    border-radius: 10px;
-    background-color: #2c2453;
-    color: #cccccc;
-}
-a:link {
-    color: grey;
-    display: inline-flex;
-}
- p{
-    color: grey;
-    text-align: center;
-}
-.btn-primary{
-    width: 50%;
-    padding: 13px;
-    margin-top: 20px;
-    background-color: #41367c;
-    color: #cccccc;
-    border: none;
-    border-radius: 5px;
-    font-weight: 700;
-    cursor: pointer;
-}
-.btn-secundary{
-    width: 40%;
-    padding: 13px;
-    margin-top: 5px;
-    background-color: #41367c;
-    color: #cccccc;
-    border: none;
-    border-radius: 4px;
-    font-weight: 700;
-    cursor: pointer;
-}
-input[type="submit"], button {
-    display: block;
-    margin: 15px auto 0;
-}
-label:not([for]) {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-}
-label:has(input[name="remember"]) {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    color: #cccccc;
-}
-label:has(input[name="remember"]) input[type="checkbox"] {
-    width: auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
     margin: 0;
-    padding: 0;
-    vertical-align: middle;
+}
+/*
+   LOGIN
+ */
+
+/* Contenedor principal */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: var(--color-bg);
+}
+
+/* Tarjeta del formulario */
+.login-card {
+    background-color: var(--color-surface);
+    width: 100%;
+    max-width: 380px;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+    border: 1px solid var(--color-border);
+}
+
+.login-card h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.75rem;
+    color: var(--color-text);
+}
+
+/* Grupo de formulario */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 0.95rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+/* Fila de opciones (Recordarme + Link) */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+/* Checkbox */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+/* Link de recuperar contraseña */
+.forgot-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+    color: var(--color-primary-dark);
+}
+
+/* ============================================
+   BOTONES
+============================================ */
+.btn {
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+.btn-secondary:hover {
+    background-color: #f0fdfa;
+}
+
+/*
+   SECCIÓN DE REGISTRO
+*/
+.register-section {
+    text-align: center;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.register-section p {
+    margin: 0 0 0.75rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
 }
