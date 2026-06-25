@@ -71,6 +71,6 @@
 
 ### Pantalla 05 — Generar Consolidado
 - Esta es la única pantalla del rol Administrador, por lo que se diferenció claramente del resto mediante un navbar específico (“Panel del Administrador”) y un diseño más orientado a la visualización de datos.
-Se optó por un layout simple con una tabla de pedidos consolidados y una sección de totales, priorizando la claridad y facilidad de lectura.
-Se mantuvo coherencia con los pedidos confirmados que podrían venir de la Pantalla 04, y se utilizó el botón “Enviar al proveedor” para reflejar correctamente el flujo del sistema.
-Se dejaron afuera componentes opcionales (como filtros avanzados) para mantener la pantalla simple y cumplir solo con lo mínimo requerido. Se consultó IA de forma puntual para mejorar la estructura semántica y el layout.
+- Se optó por un layout simple con una tabla de pedidos consolidados y una sección de totales, priorizando la claridad y facilidad de lectura.
+- Se mantuvo coherencia con los pedidos confirmados que podrían venir de la Pantalla 04, y se utilizó el botón “Enviar al proveedor” para reflejar correctamente el flujo del sistema.
+- Se dejaron afuera componentes opcionales (como filtros avanzados) para mantener la pantalla simple y cumplir solo con lo mínimo requerido. Se consultó IA de forma puntual para mejorar la estructura semántica y el layout.
