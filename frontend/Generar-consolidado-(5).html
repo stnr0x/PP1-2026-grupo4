@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Consolidado | Sistema de Pedidos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar - Vista de Administrador -->
+<header class="navbar admin-navbar">
+    <div class="navbar-inner">
+        <div class="navbar-brand">
+            <span class="logo">Byte</span>
+            <span class="brand-name">Sistema de Pedidos</span>
+        </div>
+
+        <div class="navbar-admin">
+            <span class="admin-label">Panel del Administrador</span>
+        </div>
+
+        <div class="navbar-user">
+            <span class="user-name">Admin</span>
+            <a href="login.html" class="btn btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+
+    <header class="page-header">
+        <h1>Generar Consolidado Semanal</h1>
+        <p class="description">
+            Consolidá los pedidos confirmados de la semana para enviar a cocina.
+        </p>
+    </header>
+
+    <!-- Controles -->
+    <div class="controls">
+        <div class="form-group">
+            <label for="fecha">Semana de consolidado</label>
+            <input type="week" id="fecha" value="2026-W26">
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-secondary">Generar</button>
+            <button class="btn btn-secondary">Descargar PDF</button>
+            <button class="btn btn-primary">Enviar al proveedor</button>
+        </div>
+    </div>
+
+    <!-- Tabla de Consolidado -->
+    <section class="consolidado-section">
+        <h2>Pedidos confirmados de la semana</h2>
+
+        <table class="consolidado-table">
+            <thead>
+            <tr>
+                <th>Empleado</th>
+                <th>Opción de menú</th>
+                <th>Comentarios</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Carla Gómez</td>
+                <td>Milanesa con puré (Lun, Vie)<br>Tarta de verdura (Mié)</td>
+                <td>Sin observaciones</td>
+            </tr>
+            <tr>
+                <td>Juan Rodríguez</td>
+                <td>Tarta de verdura (Lun, Mié)</td>
+                <td>Extra queso</td>
+            </tr>
+            <tr>
+                <td>María López</td>
+                <td>Milanesa con puré (Mié, Vie)</td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td>Pedro Sánchez</td>
+                <td>Ensalada completa (Lun)<br>Milanesa con puré (Vie)</td>
+                <td>Sin sal</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Totales -->
+    <aside class="totales-section">
+        <h3>Totales por opción</h3>
+        <ul class="totales-list">
+            <li><span>Milanesa con puré</span> <strong>× 5</strong></li>
+            <li><span>Tarta de verdura</span> <strong>× 3</strong></li>
+            <li><span>Ensalada completa</span> <strong>× 2</strong></li>
+        </ul>
+
+        <div class="resumen-total">
+            <p><strong>Total empleados:</strong> 4</p>
+            <p><strong>Total menús a preparar:</strong> 10</p>
+        </div>
+    </aside>
+
+</main>
+
+</body>
+</html>
