@@ -13,7 +13,7 @@
 | 02 | Menu Semanal y Pedido | Empleado | CU-05, CU-06, CU-07, CU-09 | Permite al empleado visualizar el menú semanal filtrado por sus días de asistencia, registrar su pedido como borrador, modificarlo y confirmarlo definitivamente. |
 | 03 | Historial de Pedidos | Empleado | CU-11 | Permite al empleado consultar sus pedidos realizados en semanas anteriores, ver su estado y detalle de opciones seleccionadas. |
 | 04 | Mis Pedidos | Empleado | CU-06, CU-07, CU-12 | Permite al empleado gestionar sus pedidos activos: confirmar borradores, modificarlos o cancelarlos. |
-| 05 | | | | |
+| 05 |Generar Consolidado |Administrador |CU-14 |Permite al Administrador generar el consolidado de los pedidos confirmados de la semana para enviarlo al proveedor. |
 
 ---
 
@@ -25,7 +25,7 @@
 | 02 — Menu semanal y pedido | CU-05, CU-06, CU-07, CU-08 | HU-07, HU-08, HU-09, HU-10 | Empleado |
 | 03 — Historial de Pedidos | CU-11 | HU-04 | Empleado |
 | 04 — Mis Pedidos | CU-06, CU-07, CU-12 | HU-09, HU-10 | Empleado |
-| 05 — [Nombre] | | | |
+| 05 — Generar Consolidado | CU-14|HU-15 |Administrador |
 
 ---
 
@@ -70,4 +70,7 @@
 - No se incluyó el detalle de platos por pedido en esta pantalla para mantenerla simple; ese detalle se concentra en la pantalla 03 (Historial de Pedidos).
 
 ### Pantalla 05 — [Nombre]
-- (Pendiente)
+- Esta es la única pantalla del rol Administrador, por lo que se diferenció claramente del resto mediante un navbar específico (“Panel del Administrador”) y un diseño más orientado a la visualización de datos.
+Se optó por un layout simple con una tabla de pedidos consolidados y una sección de totales, priorizando la claridad y facilidad de lectura.
+Se mantuvo coherencia con los pedidos confirmados que podrían venir de la Pantalla 04, y se utilizó el botón “Enviar al proveedor” para reflejar correctamente el flujo del sistema.
+Se dejaron afuera componentes opcionales (como filtros avanzados) para mantener la pantalla simple y cumplir solo con lo mínimo requerido. Se consultó IA de forma puntual para mejorar la estructura semántica y el layout.
