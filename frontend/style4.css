@@ -1,0 +1,127 @@
+body {
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background-color: #161229;
+  color: #cccccc;
+  margin: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #211b3e;
+  border-bottom: 1px solid #41367c;
+}
+
+header p {
+  margin: 0;
+  color: white;
+  font-size: 14px;
+}
+
+header nav a {
+  color: #cccccc;
+  text-decoration: none;
+  margin-right: 16px;
+  font-size: 13px;
+}
+
+header > a {
+  color: #cccccc;
+  text-decoration: none;
+  border: 1px solid #41367c;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+main {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 0 2rem;
+}
+
+h1 {
+  color: white;
+  font-size: 20px;
+  margin-bottom: 24px;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+article {
+  background-color: #211b3e;
+  border: 1px solid #41367c;
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+article h2 {
+  color: white;
+  font-size: 15px;
+  margin: 0;
+}
+
+article p {
+  margin: 0;
+}
+
+article span {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge-borrador {
+  border: 1px dashed #41367c;
+  color: #cccccc;
+}
+
+.badge-confirmado {
+  border: 1px solid #41367c;
+  background-color: #41367c;
+  color: white;
+}
+
+article div {
+  display: flex;
+  gap: 8px;
+}
+
+article button {
+  padding: 8px 16px;
+  border: 1px solid #41367c;
+  border-radius: 5px;
+  background-color: transparent;
+  color: #cccccc;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+article button:first-of-type {
+  background-color: #41367c;
+  color: white;
+  border: none;
+  font-weight: 700;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: #555;
+  font-size: 12px;
+  border-top: 1px solid #41367c;
+  margin-top: 40px;
+}
