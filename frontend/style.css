@@ -320,3 +320,101 @@ body {
     background-color: #52458f;
     color: white;
 }
+
+/*
+   RESPONSIVE
+*/
+@media (max-width: 768px) {
+    .login-container {
+        padding: 1rem;
+    }
+
+    .login-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .navbar-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .navbar-admin {
+        order: 3;
+        width: 100%;
+        text-align: center;
+    }
+
+    .main-content {
+        padding: 0 1rem;
+        margin: 1.5rem auto;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .controls .form-group {
+        width: 100%;
+    }
+
+    .controls .form-group input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .actions {
+        flex-wrap: wrap;
+        justify-content: stretch;
+    }
+
+    .actions .btn {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .consolidado-section {
+        overflow-x: auto;
+    }
+
+    .consolidado-table {
+        min-width: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-card h1 {
+        font-size: 1.4rem;
+    }
+
+    .brand-name {
+        font-size: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .consolidado-section {
+        padding: 1rem;
+    }
+
+    .totales-section {
+        padding: 1rem;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .actions .btn {
+        width: 100%;
+    }
+}
