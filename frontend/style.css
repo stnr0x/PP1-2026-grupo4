@@ -1,94 +1,65 @@
-:root {
-    /* Colores base */
-    --color-header: #0F172A;
-    --color-bg: #F8FAFC;
-    --color-surface: #FFFFFF;
-    --color-text: #1E2937;
-    --color-text-muted: #64748B;
-    --color-border: #E2E8F0;
-
-    /* Colores de acento */
-    --color-primary: #0D9488;
-    --color-primary-dark: #0F766E;
-    --color-accent: #14B8A6;
-    --color-success: #15803D;
-
-    /* Avisos */
-    --color-warning-bg: #FEF3C7;
-    --color-warning-text: #92400E;
-}
-
-/*
-   BASE - Fuente y estilos generales
- */
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    color: #333333;
+    background-color: #161229;
     margin: 0;
 }
-/*
+
+/* 
    LOGIN
  */
-
-/* Contenedor principal */
 .login-container {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     padding: 2rem;
-    background-color: var(--color-bg);
+    background-color: #161229;
 }
 
-/* Tarjeta del formulario */
 .login-card {
-    background-color: var(--color-surface);
+    background-color: #211b3e;
     width: 100%;
     max-width: 380px;
     padding: 2.5rem 2rem;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
-    border: 1px solid var(--color-border);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .login-card h1 {
+    color: white;
     text-align: center;
     margin-bottom: 2rem;
     font-size: 1.75rem;
-    color: var(--color-text);
 }
 
-/* Grupo de formulario */
 .form-group {
     margin-bottom: 1.25rem;
 }
 
 .form-group label {
     display: block;
+    color: white;
     margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: var(--color-text);
-    font-size: 0.95rem;
+    font-weight: 500;
 }
 
 .form-group input {
     width: 100%;
-    padding: 0.85rem 1rem;
-    border: 1px solid var(--color-border);
+    padding: 12px;
+    border: none;
     border-radius: 10px;
+    background-color: #2c2453;
+    color: #cccccc;
     font-size: 1rem;
     box-sizing: border-box;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+    border: 2px solid #41367c;
 }
 
-/* Fila de opciones (Recordarme + Link) */
 .form-options {
     display: flex;
     justify-content: space-between;
@@ -97,73 +68,255 @@ body {
     font-size: 0.9rem;
 }
 
-/* Checkbox */
 .checkbox-label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--color-text-muted);
+    color: #cccccc;
     cursor: pointer;
 }
 
-/* Link de recuperar contraseña */
 .forgot-link {
-    color: var(--color-primary);
+    color: #aaaaaa;
     text-decoration: none;
-    transition: color 0.2s ease;
 }
 
 .forgot-link:hover {
     text-decoration: underline;
-    color: var(--color-primary-dark);
 }
 
-/* ============================================
-   BOTONES
-============================================ */
 .btn {
     width: 100%;
-    padding: 0.9rem;
+    padding: 13px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
+    font-weight: 700;
     font-size: 1rem;
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
+    transition: background-color 0.3s ease;
+    margin-top: 0.5rem;
 }
 
 .btn-primary {
-    background-color: var(--color-primary);
-    color: white;
+    background-color: #41367c;
+    color: #cccccc;
 }
 
 .btn-primary:hover {
-    background-color: var(--color-primary-dark);
+    background-color: #52458f;
 }
 
 .btn-secondary {
-    background-color: transparent;
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
+    background-color: #41367c;
+    color: #cccccc;
+    width: auto;
+    padding: 10px 25px;
 }
 
 .btn-secondary:hover {
-    background-color: #f0fdfa;
+    background-color: #52458f;
 }
 
-/*
-   SECCIÓN DE REGISTRO
-*/
 .register-section {
     text-align: center;
-    margin-top: 1.75rem;
+    margin-top: 2rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid #3a2f5e;
 }
 
 .register-section p {
-    margin: 0 0 0.75rem;
-    color: var(--color-text-muted);
-    font-size: 0.95rem;
+    color: #aaaaaa;
+    margin-bottom: 0.75rem;
+}
+
+/* 
+   PANTALLA 05 - GENERAR CONSOLIDADO
+ */
+
+.main-content {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    padding: 0 2rem;
+    color: #e0e0e0;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.description {
+    color: #aaaaaa;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.form-group label {
+    display: block;
+    color: white;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Tabla de consolidado */
+.consolidado-section {
+    background-color: #211b3e;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.consolidado-section h2 {
+    color: white;
+    margin-top: 0;
+}
+
+.consolidado-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.consolidado-table th,
+.consolidado-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #3a2f5e;
+    color: #e0e0e0;
+}
+
+.consolidado-table th {
+    background-color: #2c2453;
+    color: white;
+    font-weight: 600;
+}
+
+/* Totales */
+.totales-section {
+    background-color: #211b3e;
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.totales-section h3 {
+    color: white;
+    margin-top: 0;
+}
+
+.totales-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.totales-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #3a2f5e;
+    color: #e0e0e0;
+}
+
+.resumen-total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #3a2f5e;
+    color: #e0e0e0;
+}
+
+/* Botones en Pantalla 5 */
+.actions .btn {
+    width: auto;
+    padding: 10px 20px;
+}
+/* 
+   Navbar admin
+ */
+.navbar {
+    background-color: #211b3e;
+    padding: 14px 24px;
+    border-bottom: 1px solid #3a2f5e;
+}
+
+.navbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+.logo {
+    color: #41367c;
+}
+
+.brand-name {
+    color: #e0e0e0;
+}
+
+/* Etiqueta de Administrador */
+.navbar-admin {
+    background-color: #41367c;
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+.admin-label {
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Usuario y Logout */
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name {
+    color: #e0e0e0;
+    font-weight: 500;
+}
+
+.btn-logout {
+    background-color: #41367c;
+    color: #cccccc;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #52458f;
+    color: white;
 }
