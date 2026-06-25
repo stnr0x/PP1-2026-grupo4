@@ -55,12 +55,12 @@
 - Se incluyó nota explicativa que vincula esta pantalla con el flujo.
 
 ### Pantalla 03 — Menu + Registrar pedido
--Se incorporó la indicación visible del plazo límite para realizar pedidos de cada día, con el objetivo de evitar solicitudes fuera del horario permitido y brindar claridad al usuario sobre la disponibilidad del servicio.
--Se implementó una validación previa de asistencia del empleado. En caso de que no haya configurado su asistencia, se muestra el mensaje: "Configurá tu asistencia para ver el menú", evitando que el usuario avance en el proceso sin cumplir este requisito.
--Cada opción del menú incluye un indicador de stock o disponibilidad, permitiendo al usuario conocer en tiempo real qué productos pueden ser solicitados y reduciendo errores durante el registro del pedido.
--Se decidió mostrar el precio individual de cada opción junto con un total estimado del pedido, proporcionando transparencia en los costos y facilitando la toma de decisiones antes de confirmar la compra.
--La información de disponibilidad y precios se actualiza dinámicamente según los datos registrados en el sistema, garantizando consistencia entre el menú mostrado y el pedido generado.
--Se priorizó una interfaz clara y sencilla, concentrando en una misma pantalla toda la información necesaria para que el usuario pueda seleccionar productos y registrar su pedido de forma rápida y eficiente.
+-Se incorporo la indicacion visible del plazo limite para realizar pedidos de cada dia, con el objetivo de evitar solicitudes fuera del horario permitido y brindar claridad al usuario sobre la disponibilidad del servicio.
+-Se implemento una validacion previa de asistencia del empleado. En caso de que no haya configurado su asistencia, se muestra el mensaje: "Configura tu asistencia para ver el menu", evitando que el usuario avance en el proceso sin cumplir este requisito.
+-Cada opción del menu incluye un indicador de stock o disponibilidad, permitiendo al usuario conocer en tiempo real que productos pueden ser solicitados y reduciendo errores durante el registro del pedido.
+-Se decidio mostrar el precio individual de cada opción junto con un total estimado del pedido, proporcionando transparencia en los costos y facilitando la toma de decisiones antes de confirmar la compra.
+-La informacion de disponibilidad y precios se actualiza dinamicamente segun los datos registrados en el sistema, garantizando consistencia entre el menu mostrado y el pedido generado.
+-Se priorizo una interfaz clara y sencilla, concentrando en una misma pantalla toda la informacion necesaria para que el usuario pueda seleccionar productos y registrar su pedido de forma rápida y eficiente.
 
 ### Pantalla 04 — Mis Pedidos
 - Se eligió una lista vertical de pedidos (un article por pedido) en lugar de grilla, porque cada pedido tiene contenido variable (acciones según estado) y la lista facilita la lectura secuencial.
