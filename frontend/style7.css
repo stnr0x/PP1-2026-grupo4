@@ -1,10 +1,5 @@
 @import url('style.css');
 
-/* ==========================================
-   ESTILOS PANTALLA MI PERFIL (style7.css)
-   ========================================== */
-
-/* Extensión de Navegación */
 .navbar-nav {
     display: flex;
     gap: 1.25rem;
@@ -33,7 +28,6 @@
     padding-bottom: 2px;
 }
 
-/* Layout y Grilla de Perfil */
 .profile-header-container {
     max-width: 900px;
     margin: 2.5rem auto 1rem auto;
