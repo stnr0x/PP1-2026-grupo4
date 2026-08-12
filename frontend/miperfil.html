@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil — Sistema de Pedidos</title>
+    <link rel="stylesheet" href="style7.css">
+</head>
+<body>
+
+<!-- Navbar del Sistema -->
+<header class="navbar">
+    <div class="navbar-inner">
+        <div class="navbar-brand">
+            <span class="logo">Byte</span>
+            <span class="brand-name">Sistema de Pedidos</span>
+        </div>
+
+        <nav>
+            <ul class="navbar-nav">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="Menú+Registrar-pedido.html">Menú</a></li>
+                <li><a href="pedidos.html">Mis Pedidos</a></li>
+                <li><a href="miperfil.html" class="active">Mi Perfil</a></li>
+            </ul>
+        </nav>
+
+        <div class="navbar-user">
+            <span class="user-name">Juan Pérez</span>
+            <a href="login.html" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+</header>
+
+<!-- Contenido Principal -->
+<main>
+    <section class="profile-header-container">
+        <h1>Mi Perfil</h1>
+        <p>Consultá y actualizá tus datos personales y credenciales de acceso.</p>
+    </section>
+
+    <div class="profile-wrapper">
+        <!-- Formulario 1: Datos Personales (Valores actuales cargados) -->
+        <section class="profile-card">
+            <div>
+                <div class="profile-card-header">
+                    <h2>Datos Personales</h2>
+                    <p class="card-desc">Información básica de la cuenta de empleado.</p>
+                </div>
+
+                <div class="role-tag">Rol: Empleado</div>
+
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo</label>
+                        <input type="text" id="nombre" name="nombre" value="Juan Pérez" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" name="email" value="juan.perez@empresa.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="legajo">Número de legajo</label>
+                        <input type="text" id="legajo" name="legajo" value="EMP-4092" class="readonly-input" readonly>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Guardar cambios</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Formulario 2: Cambiar Contraseña (Sección Aparte) -->
+        <section class="profile-card">
+            <div>
+                <div class="profile-card-header">
+                    <h2>Cambiar Contraseña</h2>
+                    <p class="card-desc">Actualizá tu clave de acceso para mantener tu cuenta segura.</p>
+                </div>
+
+                <form action="#" method="POST">
+                    <div class="form-group">
+                        <label for="current-password">Contraseña actual</label>
+                        <input type="password" id="current-password" name="current-password" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-password">Nueva contraseña</label>
+                        <input type="password" id="new-password" name="new-password" placeholder="••••••••" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-new-password">Confirmar nueva contraseña</label>
+                        <input type="password" id="confirm-new-password" name="confirm-new-password" placeholder="••••••••" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary" style="margin-top: 1rem;">Actualizar contraseña</button>
+                </form>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer-profile">
+    <small>Grupo N°4 — PP1 2026 | Sistema de Pedidos de Almuerzo</small>
+</footer>
+
+</body>
+</html>

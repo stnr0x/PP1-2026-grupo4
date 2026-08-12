@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro — Sistema de Pedidos</title>
+    <link rel="stylesheet" href="style6.css">
+</head>
+
+<body>
+
+    <main class="login-container">
+
+        <section class="register-card">
+
+            <h1>Crear Cuenta</h1>
+            <p class="register-subtitle">Registrate como empleado para realizar y gestionar tus pedidos de almuerzo.</p>
+
+            <div class="role-notice">
+                <strong>Nota:</strong> El alta se realiza únicamente para el rol <strong>Empleado</strong>. Las cuentas
+                de Administrador son gestionadas por el sistema.
+            </div>
+
+            <form action="#" method="POST">
+                <!-- Nombre Completo -->
+                <div class="form-group">
+                    <label for="nombre">Nombre completo</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej. Juan Pérez" required>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required minlength="6">
+                </div>
+
+                <!-- Confirmar Contraseña -->
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar contraseña</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="••••••••" required
+                        minlength="6">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Crear cuenta</button>
+            </form>
+
+            <!-- Redirección a Login -->
+            <section class="login-redirect-section">
+                <p>¿Ya tenés una cuenta?</p>
+                <a href="login.html" class="btn-login-link">Iniciar sesión</a>
+            </section>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>

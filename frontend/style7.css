@@ -1,0 +1,129 @@
+@import url('style.css');
+
+/* ==========================================
+   ESTILOS PANTALLA MI PERFIL (style7.css)
+   ========================================== */
+
+/* Extensión de Navegación */
+.navbar-nav {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav a {
+    color: #cccccc;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.navbar-nav a:hover,
+.navbar-nav a.active {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.navbar-nav a.active {
+    border-bottom: 2px solid #52458f;
+    padding-bottom: 2px;
+}
+
+/* Layout y Grilla de Perfil */
+.profile-header-container {
+    max-width: 900px;
+    margin: 2.5rem auto 1rem auto;
+    padding: 0 1.5rem;
+    text-align: center;
+}
+
+.profile-header-container h1 {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.profile-header-container p {
+    color: #aaaaaa;
+    margin-top: 0;
+    font-size: 1rem;
+}
+
+.profile-wrapper {
+    max-width: 900px;
+    margin: 0 auto 3rem auto;
+    padding: 0 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.profile-card {
+    background-color: #211b3e;
+    padding: 2rem;
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.profile-card-header {
+    border-bottom: 1px solid #3a2f5e;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.profile-card h2 {
+    color: #ffffff;
+    font-size: 1.35rem;
+    margin: 0 0 0.4rem 0;
+}
+
+.profile-card p.card-desc {
+    color: #aaaaaa;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.role-tag {
+    display: inline-block;
+    background-color: #2c2453;
+    color: #cccccc;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border: 1px solid #41367c;
+}
+
+.readonly-input {
+    background-color: #191433 !important;
+    color: #888888 !important;
+    cursor: not-allowed;
+    border: 1px solid #2a224a !important;
+}
+
+.footer-profile {
+    text-align: center;
+    padding: 1.5rem;
+    color: #777777;
+    font-size: 0.85rem;
+    border-top: 1px solid #3a2f5e;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .profile-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .navbar-nav {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+}

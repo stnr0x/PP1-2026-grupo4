@@ -95,6 +95,10 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 0.5rem;
+    text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .btn-primary {

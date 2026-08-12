@@ -1,0 +1,71 @@
+@import url('style.css');
+
+/* ==========================================
+   ESTILOS PANTALLA REGISTRO (style6.css)
+   ========================================== */
+
+.register-card {
+    background-color: #211b3e;
+    width: 100%;
+    max-width: 440px;
+    padding: 2.5rem 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.register-card h1 {
+    color: #ffffff;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.75rem;
+}
+
+.register-subtitle {
+    color: #aaaaaa;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.role-notice {
+    background-color: #2c2453;
+    border-left: 4px solid #41367c;
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: #cccccc;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.login-redirect-section {
+    text-align: center;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #3a2f5e;
+}
+
+.login-redirect-section p {
+    color: #aaaaaa;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.login-redirect-section .btn-login-link {
+    display: inline-block;
+    color: #ffffff;
+    background-color: #41367c;
+    padding: 10px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+}
+
+.login-redirect-section .btn-login-link:hover {
+    background-color: #52458f;
+}

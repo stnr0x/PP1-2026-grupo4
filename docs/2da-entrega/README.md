@@ -13,7 +13,9 @@
 | 02 | Menu Semanal y Pedido | Empleado | CU-05, CU-06, CU-07, CU-09 | Permite al empleado visualizar el menú semanal filtrado por sus días de asistencia, registrar su pedido como borrador, modificarlo y confirmarlo definitivamente. |
 | 03 | Historial de Pedidos | Empleado | CU-11 | Permite al empleado consultar sus pedidos realizados en semanas anteriores, ver su estado y detalle de opciones seleccionadas. |
 | 04 | Mis Pedidos | Empleado | CU-06, CU-07, CU-12 | Permite al empleado gestionar sus pedidos activos: confirmar borradores, modificarlos o cancelarlos. |
-| 05 |Generar Consolidado |Administrador |CU-14 |Permite al Administrador generar el consolidado de los pedidos confirmados de la semana para enviarlo al proveedor. |
+| 05 | Generar Consolidado | Administrador | CU-14 | Permite al Administrador generar el consolidado de los pedidos confirmados de la semana para enviarlo al proveedor. |
+| 06 | Registro de Usuario | Empleado sin cuenta | CU-03 | Permite el alta de nuevos empleados en el sistema solicitando nombre, email y contraseña. |
+| 07 | Mi Perfil | Empleado | CU-04 | Permite al empleado visualizar y actualizar sus datos personales y cambiar su contraseña en una sección dedicada. |
 
 ---
 
@@ -25,7 +27,9 @@
 | 02 — Menu semanal y pedido | CU-05, CU-06, CU-07, CU-08 | HU-07, HU-08, HU-09, HU-10 | Empleado |
 | 03 — Historial de Pedidos | CU-11 | HU-04 | Empleado |
 | 04 — Mis Pedidos | CU-06, CU-07, CU-12 | HU-09, HU-10 | Empleado |
-| 05 — Generar Consolidado | CU-14|HU-15 |Administrador |
+| 05 — Generar Consolidado | CU-14 | HU-15 | Administrador |
+| 06 — Registro | CU-03 | HU-05 | Empleado sin cuenta |
+| 07 — Mi Perfil | CU-04 | HU-06 | Empleado |
 
 ---
 
@@ -76,3 +80,16 @@
 - Se optó por un layout simple con una tabla de pedidos consolidados y una sección de totales, priorizando la claridad y facilidad de lectura.
 - Se mantuvo coherencia con los pedidos confirmados que podrían venir de la Pantalla 04, y se utilizó el botón “Enviar al proveedor” para reflejar correctamente el flujo del sistema.
 - Se dejaron afuera componentes opcionales (como filtros avanzados) para mantener la pantalla simple y cumplir con lo requerido.
+
+### Pantalla 06 — Registro (Liviana)
+- Permite el alta únicamente como rol Empleado (el Administrador ya posee cuenta).
+- Incluye campos obligatorios: nombre, email, contraseña y confirmación de contraseña, integrados con validaciones nativas HTML5 (`required`, `type="email"`, `minlength`).
+- Posee enlace directo a la pantalla de Login para cerrar el flujo de usuario.
+- Hereda la estética de `style.css` mediante `style6.css` para mantener la identidad visual del proyecto.
+
+### Pantalla 07 — Mi Perfil (Liviana)
+- Mantiene la barra de navegación (navbar) para navegar fácilmente entre las secciones del sistema.
+- Formulario de datos personales editables con los valores actuales cargados (nombre, email y legajo de lectura).
+- Sección separada para el cambio de contraseña (clave actual, nueva clave y confirmación), otorgando mayor seguridad y claridad.
+- Hereda la estética global mediante `style7.css` importando `style.css`.
+
