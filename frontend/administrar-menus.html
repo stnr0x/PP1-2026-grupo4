@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Menús — Administrador</title>
+    <link rel="stylesheet" href="style5.css">
+</head>
+<body>
+
+<button id="menu-toggle" class="hamburger">☰</button>
+<div class="top-bar-right">
+    <span class="welcome">Bienvenido, Federico</span>
+    <button id="logout-btn" class="butn-logout">Cerrar sesión</button>
+</div>
+<nav id="sidebar" class="sidebar">
+    <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="administrar-menus.html">Administrar Menús</a></li>
+        <li><a href="#">Consolidado Diario</a></li>
+        <li><a href="#">Gestionar Usuarios</a></li>
+        <li><a href="#">Configuración</a></li>
+    </ul>
+</nav>
+<div id="overlay" class="overlay"></div>
+
+<main>
+    <div class="role-badge-wrap">
+        <span class="role-badge">Vista del Administrador</span>
+    </div>
+    <h1>Administrar / Publicar Menús</h1>
+    <p class="subtitulo">Cargá las opciones de la semana y publicá el menú para que los empleados puedan pedir.</p>
+
+    <section class="semana-list">
+        <article class="semana-item">
+            <span class="fecha">Semana del 19/05 al 23/05</span>
+            <span class="estado estado-borrador">Borrador</span>
+            <button type="button" class="btn-editar">Editar</button>
+        </article>
+        <article class="semana-item">
+            <span class="fecha">Semana del 02/06 al 06/06</span>
+            <span class="estado estado-publicado">Publicado</span>
+            <button type="button" class="btn-editar">Editar</button>
+        </article>
+        <article class="semana-item">
+            <span class="fecha">Semana del 09/06 al 13/06</span>
+            <span class="estado estado-borrador">Borrador</span>
+            <button type="button" class="btn-editar">Editar</button>
+        </article>
+    </section>
+
+    <h2 class="semana-titulo">Semana del 02/06 al 06/06</h2>
+    <p class="subtitulo">Menú publicado (mismo que ven los empleados).</p>
+
+    <section class="menu-grid">
+        <article class="card-dia">
+            <h3>LUNES</h3>
+            <hr>
+            <div class="dia-opcion">
+                <label>Opción 1 <span class="stock">✅</span></label>
+                <input type="text" value="Pollo al horno" aria-label="Nombre opción 1">
+                <input type="number" value="800" aria-label="Precio opción 1">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox" checked> Vegetariana</label>
+                    <label class="tag"><input type="checkbox"> Sin TACC</label>
+                </div>
+            </div>
+            <div class="dia-opcion">
+                <label>Opción 2 <span class="stock">✅</span></label>
+                <input type="text" value="Milanesa con puré" aria-label="Nombre opción 2">
+                <input type="number" value="850" aria-label="Precio opción 2">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox" checked> Sin TACC</label>
+                </div>
+            </div>
+            <div class="dia-opcion">
+                <label>Opción 3 <span class="stock">✅</span></label>
+                <input type="text" value="Ensalada completa" aria-label="Nombre opción 3">
+                <input type="number" value="900" aria-label="Precio opción 3">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox" checked> Vegetariana</label>
+                    <label class="tag"><input type="checkbox"> Sin TACC</label>
+                </div>
+            </div>
+        </article>
+
+        <article class="card-dia">
+            <h3>MARTES</h3>
+            <hr>
+            <div class="dia-opcion">
+                <label>Opción 1</label>
+                <input type="text" placeholder="Nombre del plato">
+                <input type="number" placeholder="Precio">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox"> Sin TACC</label>
+                </div>
+            </div>
+            <button type="button" class="mas-opcion">+ Agregar opción</button>
+        </article>
+
+        <article class="card-dia">
+            <h3>MIÉRCOLES</h3>
+            <hr>
+            <div class="dia-opcion">
+                <label>Opción 1 <span class="stock">❌</span></label>
+                <input type="text" value="Fideos con salsa" aria-label="Nombre opción 1">
+                <input type="number" value="800" aria-label="Precio opción 1">
+                <div class="fila-stock"><input type="checkbox"> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox"> Sin TACC</label>
+                </div>
+            </div>
+            <div class="dia-opcion">
+                <label>Opción 2 <span class="stock">✅</span></label>
+                <input type="text" value="Carne al horno" aria-label="Nombre opción 2">
+                <input type="number" value="900" aria-label="Precio opción 2">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox" checked> Sin TACC</label>
+                </div>
+            </div>
+            <div class="dia-opcion">
+                <label>Opción 3 <span class="stock">✅</span></label>
+                <input type="text" value="Bondiola a la cerveza" aria-label="Nombre opción 3">
+                <input type="number" value="850" aria-label="Precio opción 3">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox"> Sin TACC</label>
+                </div>
+            </div>
+        </article>
+
+        <article class="card-dia">
+            <h3>JUEVES</h3>
+            <hr>
+            <div class="dia-opcion">
+                <label>Opción 1</label>
+                <input type="text" placeholder="Nombre del plato">
+                <input type="number" placeholder="Precio">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox"> Sin TACC</label>
+                </div>
+            </div>
+            <button type="button" class="mas-opcion">+ Agregar opción</button>
+        </article>
+
+        <article class="card-dia">
+            <h3>VIERNES</h3>
+            <hr>
+            <div class="dia-opcion">
+                <label>Opción 1 <span class="stock">✅</span></label>
+                <input type="text" value="Pizza a la piedra" aria-label="Nombre opción 1">
+                <input type="number" value="900" aria-label="Precio opción 1">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox" checked> Sin TACC</label>
+                </div>
+            </div>
+            <div class="dia-opcion">
+                <label>Opción 2 <span class="stock">✅</span></label>
+                <input type="text" value="Pollo grillé" aria-label="Nombre opción 2">
+                <input type="number" value="800" aria-label="Precio opción 2">
+                <div class="fila-stock"><input type="checkbox" checked> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox" checked> Sin TACC</label>
+                </div>
+            </div>
+            <div class="dia-opcion">
+                <label>Opción 3 <span class="stock">❌</span></label>
+                <input type="text" value="Lomo al champignon" aria-label="Nombre opción 3">
+                <input type="number" value="850" aria-label="Precio opción 3">
+                <div class="fila-stock"><input type="checkbox"> Disponible</div>
+                <div class="tags">
+                    <label class="tag"><input type="checkbox"> Vegetariana</label>
+                    <label class="tag"><input type="checkbox"> Sin TACC</label>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <button type="button" class="btn-duplicar">Duplicar menú de la semana anterior</button>
+
+    <div class="acciones">
+        <button type="button" class="btn-guardar">Guardar borrador</button>
+        <button type="button" class="btn-publicar">Publicar menú</button>
+    </div>
+
+    <p class="aviso">El menú en Borrador no es visible para los empleados hasta que lo publiques. El menú publicado de 02/06 al 06/06 es el que aparece hoy en la pantalla de pedido.</p>
+
+    <footer>
+        <small>© 2026 Sistema de pedidos</small>
+        <p class="cu-ref">Requisitos RF-07 / RF-08 · Casos de uso CU-12 Administrar Menús · CU-13 Publicar Menú · HU-02 / HU-03</p>
+    </footer>
+</main>
+
+</body>
+</html>
