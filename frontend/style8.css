@@ -1,0 +1,198 @@
+body {
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background-color: #161229;
+  color: #cccccc;
+  margin: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #211b3e;
+  border-bottom: 1px solid #41367c;
+}
+
+header p {
+  margin: 0;
+  color: white;
+  font-size: 14px;
+}
+
+header nav a {
+  color: #cccccc;
+  text-decoration: none;
+  margin-right: 16px;
+  font-size: 13px;
+}
+
+header > a {
+  color: #cccccc;
+  text-decoration: none;
+  border: 1px solid #41367c;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+main {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 2rem;
+  background-color: #211b3e;
+  border-radius: 12px;
+}
+
+h1 {
+  color: white;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+main > p {
+  color: #cccccc;
+  font-size: 13px;
+  margin: 4px 0 16px 0;
+}
+
+section:first-of-type {
+  margin-bottom: 20px;
+}
+
+section:first-of-type label {
+  color: #cccccc;
+  font-size: 13px;
+  margin-right: 8px;
+}
+
+input[type="month"] {
+  padding: 8px;
+  background-color: #2c2453;
+  border: 1px solid #41367c;
+  border-radius: 5px;
+  color: #cccccc;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background-color: #2c2453;
+  color: #cccccc;
+  font-size: 12px;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #41367c;
+}
+
+td {
+  border: 1px solid #41367c;
+  text-align: center;
+  padding: 12px 6px;
+  font-size: 13px;
+  color: #cccccc;
+  cursor: pointer;
+}
+
+td label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: #cccccc;
+  font-size: 13px;
+}
+
+td input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+td.feriado {
+  border: 2px dashed #41367c;
+  background-color: transparent;
+}
+
+td.feriado span {
+  display: block;
+  font-size: 9px;
+  color: #41367c;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+td.finde {
+  color: #555;
+  background-color: #1a1535;
+  cursor: default;
+}
+
+aside {
+  display: flex;
+  gap: 24px;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #cccccc;
+}
+
+aside p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.legend-feriado {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px dashed #41367c;
+  border-radius: 3px;
+}
+
+.legend-habil {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #41367c;
+  border-radius: 3px;
+}
+
+.legend-finde {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #1a1535;
+  border: 1px solid #555;
+  border-radius: 3px;
+}
+
+form {
+  text-align: center;
+  margin-top: 24px;
+}
+
+form button {
+  padding: 12px 40px;
+  background-color: #41367c;
+  color: #cccccc;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: #555;
+  font-size: 12px;
+  border-top: 1px solid #41367c;
+  margin-top: 40px;
+}

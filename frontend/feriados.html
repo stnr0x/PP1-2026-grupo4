@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendario de feriados</title>
+    <link rel="stylesheet" href="style8.css">
+</head>
+<body>
+
+  <header>
+    <p>Sistema de pedidos — Admin</p>
+    <nav>
+      <a href="index.html">Panel Admin</a>
+      <a href="menu.html">Menú</a>
+      <a href="feriados.html">Feriados</a>
+    </nav>
+    <a href="login.html">Cerrar sesión</a>
+  </header>
+
+  <main>
+    <h1>Calendario de feriados</h1>
+    <p>Marcá los días sin servicio: no se publica menú ni se reciben pedidos.</p>
+    <p>⚠ Los días marcados como feriado quedan bloqueados para todos los empleados — no pueden pedir.</p>
+
+    <section>
+      <label for="mes">Mes:</label>
+      <input type="month" id="mes" name="mes" value="2026-06">
+    </section>
+
+    <section>
+      <table>
+        <thead>
+          <tr>
+            <th>LUN</th>
+            <th>MAR</th>
+            <th>MIÉ</th>
+            <th>JUE</th>
+            <th>VIE</th>
+            <th>SAB</th>
+            <th>DOM</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-01"> 1</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-02"> 2</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-03"> 3</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-04"> 4</label></td>
+            <td class="feriado"><label><input type="checkbox" name="feriado" value="2026-06-05" checked> 5</label><span>FERIADO</span></td>
+            <td class="finde"><label>6</label></td>
+            <td class="finde"><label>7</label></td>
+          </tr>
+          <tr>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-08"> 8</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-09"> 9</label></td>
+            <td class="feriado"><label><input type="checkbox" name="feriado" value="2026-06-10" checked> 10</label><span>FERIADO</span></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-11"> 11</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-12"> 12</label></td>
+            <td class="finde"><label>13</label></td>
+            <td class="finde"><label>14</label></td>
+          </tr>
+          <tr>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-15"> 15</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-16"> 16</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-17"> 17</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-18"> 18</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-19"> 19</label></td>
+            <td class="finde"><label>20</label></td>
+            <td class="finde"><label>21</label></td>
+          </tr>
+          <tr>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-22"> 22</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-23"> 23</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-24"> 24</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-25"> 25</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-26"> 26</label></td>
+            <td class="finde"><label>27</label></td>
+            <td class="finde"><label>28</label></td>
+          </tr>
+          <tr>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-29"> 29</label></td>
+            <td><label><input type="checkbox" name="feriado" value="2026-06-30"> 30</label></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <aside>
+      <p><span class="legend-feriado"></span> Feriado (bloqueado)</p>
+      <p><span class="legend-habil"></span> Día hábil</p>
+      <p><span class="legend-finde"></span> Fin de semana</p>
+    </aside>
+
+    <form>
+      <button type="submit">Guardar cambios</button>
+    </form>
+
+  </main>
+
+  <footer>
+    <p>© 2026 Sistema de pedidos</p>
+  </footer>
+
+</body>
+</html>
