@@ -16,6 +16,7 @@
 | 05 | Generar Consolidado | Administrador | CU-14 | Permite al Administrador generar el consolidado de los pedidos confirmados de la semana para enviarlo al proveedor. |
 | 06 | Registro de Usuario | Empleado sin cuenta | CU-03 | Permite el alta de nuevos empleados en el sistema solicitando nombre, email y contraseña. |
 | 07 | Mi Perfil | Empleado | CU-04 | Permite al empleado visualizar y actualizar sus datos personales y cambiar su contraseña en una sección dedicada. |
+| 08 | Calendario de feriados | Administrador | CU-10 | Permite al Administrador marcar y desmarcar días como feriado, bloqueando la publicación de menú y la recepción de pedidos en esas fechas. |
 
 ---
 
@@ -30,6 +31,7 @@
 | 05 — Generar Consolidado | CU-14 | HU-15 | Administrador |
 | 06 — Registro | CU-03 | HU-05 | Empleado sin cuenta |
 | 07 — Mi Perfil | CU-04 | HU-06 | Empleado |
+| 08 — Calendario de feriados | CU-10 | HU-11 | Administrador |
 
 ---
 
@@ -76,9 +78,9 @@
 - No se incluyó el detalle de platos por pedido en esta pantalla para mantenerla simple; ese detalle se concentra en la pantalla 03 (Historial de Pedidos).
 
 ### Pantalla 05 — Generar Consolidado
-- Esta es la única pantalla del rol Administrador, por lo que se diferenció claramente del resto mediante un navbar específico (“Panel del Administrador”) y un diseño más orientado a la visualización de datos.
+- Esta es la única pantalla del rol Administrador, por lo que se diferenció claramente del resto mediante un navbar específico ("Panel del Administrador") y un diseño más orientado a la visualización de datos.
 - Se optó por un layout simple con una tabla de pedidos consolidados y una sección de totales, priorizando la claridad y facilidad de lectura.
-- Se mantuvo coherencia con los pedidos confirmados que podrían venir de la Pantalla 04, y se utilizó el botón “Enviar al proveedor” para reflejar correctamente el flujo del sistema.
+- Se mantuvo coherencia con los pedidos confirmados que podrían venir de la Pantalla 04, y se utilizó el botón "Enviar al proveedor" para reflejar correctamente el flujo del sistema.
 - Se dejaron afuera componentes opcionales (como filtros avanzados) para mantener la pantalla simple y cumplir con lo requerido.
 
 ### Pantalla 06 — Registro (Liviana)
@@ -93,3 +95,12 @@
 - Sección separada para el cambio de contraseña (clave actual, nueva clave y confirmación), otorgando mayor seguridad y claridad.
 - Hereda la estética global mediante `style7.css` importando `style.css`.
 
+### Pantalla 08 — Calendario de feriados
+- Se eligió una grilla de calendario mensual (tabla HTML) porque permite ver todos los días del mes de un vistazo y es la representación más natural para gestionar fechas.
+- Los días feriados se marcan con checkbox y se diferencian visualmente con borde punteado y etiqueta "FERIADO".
+- Los fines de semana se muestran en gris y sin checkbox, ya que no son días hábiles y no aplica marcarlos.
+- Se incluyó una leyenda visual (feriado / hábil / fin de semana) para que el estado de cada celda sea inmediatamente comprensible.
+- Se agregó una nota explicativa que vincula esta pantalla con el flujo: los días marcados como feriado bloquean la publicación de menú y la recepción de pedidos para todos los empleados.
+- El navbar es específico del rol Administrador, diferenciándose del navbar del Empleado.
+- Se usó input[type="month"] para el selector de mes
+- Cubre CU-10 (verificar ID y nombre exactos en E1).
