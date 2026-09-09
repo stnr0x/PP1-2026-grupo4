@@ -18,7 +18,7 @@
     <ul>
         <li><a href="index.html">Inicio</a></li>
 <li><a href="#">Menu Semanal</a></li>
-        <li><a href="Menú+Registrar-pedido.html">Historial</a></li>
+        <li><a href="Menu+Registrar-pedido.html">Historial</a></li>
         <li><a href="#">Mi Perfil</a></li>
 
     </ul>
@@ -101,46 +101,7 @@
         <small>© 2026 Sistema de pedidos</small>
     </footer>
 </main>
-<script>
-    const toggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-
-    toggle.addEventListener('click', ()=>{
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
-    });
-    overlay.addEventListener('click',()=>{
-        sidebar.classList.remove('open');
-        overlay.classList.remove('show');
-    });
-
-    // Lógica de resumen dinámico
-    const radios = document.querySelectorAll('input[type="radio"]');
-    const precios = {
-        lunes: { opcion1: 800, opcion2: 850, opcion3: 900 },
-        miercoles: { opcion1: 800, opcion2: 900, opcion3: 850 },
-        viernes: { opcion1: 900, opcion2: 800, opcion3: 850 },
-    };
-
-    function actualizarResumen() {
-        let total = 0;
-        ['lunes', 'miercoles', 'viernes'].forEach(dia => {
-            const sel = document.querySelector(`input[name="${dia}"]:checked`);
-            const span = document.getElementById(`res-${dia}`);
-            if (sel) {
-                const txt = sel.parentElement.textContent.trim();
-                span.textContent = txt;
-                total += precios[dia][sel.value];
-            } else {
-                span.textContent = '—';
-            }
-        });
-        document.getElementById('res-total').textContent = total;
-    }
-
-    radios.forEach(r => r.addEventListener('change', actualizarResumen));
-</script>
+<script src="menu.js"></script>
 
 
 </body>
