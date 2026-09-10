@@ -101,7 +101,6 @@ h1{
 label{
     color: white;
     display: inline-flex;
-    margin-top: ;
 }
 
 .alerta-asistencia{
@@ -125,7 +124,7 @@ label{
 }
 .menu-grid{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
     margin: 20px 0;
 }
