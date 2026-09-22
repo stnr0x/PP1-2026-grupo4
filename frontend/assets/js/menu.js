@@ -1,11 +1,9 @@
-
 const contenedorPlatos = document.querySelector('#lista-platos');
 const selectPlato = document.querySelector('#select-plato');
 const cajaError = document.querySelector('#error-pedido');
 const form = document.querySelector('#form-pedido');
 
 let platos = [];
-let estado = 'cargando';
 
 function crearTarjeta(plato){
 return `
@@ -27,7 +25,6 @@ return option;}
 function renderPlatos(lista){
     if (lista.length === 0) {
         contenedorPlatos.innerHTML = '<p style="color:#cccccc;text-align:center;">No hay platos disponibles.</p>';
-        estado = 'vacio';
         return;
     }
     let html = '';
@@ -35,31 +32,30 @@ function renderPlatos(lista){
         html = html + crearTarjeta(plato);
     }
     contenedorPlatos.innerHTML = html;
-    estado = 'listo';
 }
 
-function renderEstado(estado){
-    const estados = {
-        cargando: '<p style="color:#cccccc;text-align:center;">Cargando menú...</p>',
-        vacio: '<p style="color:#cccccc;text-align:center;">No hay platos disponibles.</p>',
-        error: '<p style="color:#b00020;text-align:center;">Error al cargar el menú.</p>',
-        listo: ''
-    };
-    contenedorPlatos.innerHTML = estados[estado] || '';
+function mostrarMensaje(texto, tipo, selector) {
+    const contenedor = document.querySelector(selector);
+    contenedor.innerHTML = `<p class="mensaje ${tipo}">${texto}</p>`;
 }
 
-async function cargarPlatos(){
-    renderEstado('cargando');
+async function cargarPlatos() {
+    mostrarMensaje('Cargando el menú...', 'cargando', '#lista-platos');
     try {
-        const res = await fetch('data/platos.json');
-        if (!res.ok) throw new Error('HTTP error');
-        platos = await res.json();
+        const respuesta = await fetch('data/platos.json');
+        if (!respuesta.ok) throw new Error('HTTP error');
+        const platos = await respuesta.json();
+        if (platos.length === 0) {
+            mostrarMensaje('Todavía no hay platos cargados para esta semana.', 'vacio', '#lista-platos');
+            return;
+        }
         renderPlatos(platos);
-        for (const plato of platos){
+        for (const plato of platos) {
             selectPlato.appendChild(crearOpcionSelect(plato));
         }
-    } catch (err) {
-        renderEstado('error');
+    } catch (error) {
+        console.error('No se pudieron cargar los platos:', error);
+        mostrarMensaje('No pudimos cargar el menú. Probá recargar la página.', 'error', '#lista-platos');
     }
 }
 cargarPlatos();
