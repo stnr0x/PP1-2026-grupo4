@@ -182,7 +182,14 @@ label{
     padding: 20px;
     margin: 20px 0;
 }
-.resumen h2 {
+#resumen h3 {
+    color: white;
+    text-align: center;
+    margin: 10px 0 5px 0;
+    font-size: 16px;
+}
+
+#resumen h2 {
     color: white;
     margin: 0 0 10px 0;
     text-align: center;
