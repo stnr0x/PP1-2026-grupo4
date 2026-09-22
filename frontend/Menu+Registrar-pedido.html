@@ -30,30 +30,33 @@
         <a href="asistencia.html" class="btn-ir">Ir a asistencia</a>
     </div>
     <div id="lista-platos" class="menu-grid"></div>
-    <form id="form-pedido">
-        <select id="select-plato">
-            <option value="">Elegí un plato</option>
-        </select>
-        <input type="number" id="input-cantidad" placeholder="Cantidad" min="1">
-        <button type="submit" class="btn-guardar">Agregar al pedido</button>
-    </form>
     <section class="resumen" id="resumen">
-        <h2>Resumen del pedido</h2>
-        <div id="resumen-items">
-            <p>Lunes ➜ <span id="res-lunes"></span></p>
-            <p>Miercoles ➜ <span id="res-miercoles"></span></p>
-            <p>Viernes ➜ <span id="res-viernes"></span></p>
-        </div>
-        <hr>
-        <p><strong>Total estimado:</strong> $<span id="res-total">0</span></p>
-        <p><strong>Estado:</strong> Borrador</p>
-        <button class="btn-guardar">Guardar pedido</button>
+        <h2>Registrar pedido</h2>
+
+        <form id="form-pedido">
+            <label for="select-plato">Plato</label>
+            <select id="select-plato">
+                <option value="">Elegí un plato</option>
+                <option value="Milanesa con pure">Milanesa con pure</option>
+                <option value="Pastel de papa">Pastel de papa</option>
+                <option value="Tortilla de acelga">Tortilla de acelga</option>
+                <option value="Matambre de cerdo">Matambre de cerdo</option>
+            </select>
+
+            <label for="input-cantidad">Cantidad</label>
+            <input type="number" id="input-cantidad" min="1" value="1">
+
+            <p id="error-pedido"></p>
+
+            <button type="submit" class="btn-guardar">Guardar pedido</button>
+        </form>
+
+        <h3>Pedidos registrados</h3>
+        <ul id="lista-pedidos"></ul>
     </section>
     <footer>
         <small>© 2026 Sistema de pedidos</small>
     </footer>
-    <ul id="lista-pedidos"></ul>
-    <p id="error-pedido"></p>
 </main>
 <script src="assets/js/menu.js"></script>
 </body>

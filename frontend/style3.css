@@ -215,8 +215,55 @@ footer {
     border-top: 1px solid #41367c;
     margin-top: 20px;
 }
-.mensaje { text-align: center; padding: 40px 24px; border-radius: 12px;grid-column: 1 / -1; }
-.mensaje.cargando { background: #f0f0f0; color: #777; }
-.mensaje.vacio { background: #fff8e1; color: #8a6d3b; }
-.mensaje.error { background: #fdecea; color: #96281b; font-weight: bold; }
 
+.mensaje {
+    text-align: center;
+    padding: 40px 24px;
+    border-radius: 12px;
+    grid-column: 1 / -1;
+}
+
+.mensaje.cargando {
+    background: #f0f0f0;
+    color: #777;
+}
+
+.mensaje.vacio {
+    background: #fff8e1;
+    color: #8a6d3b;
+}
+
+.mensaje.error {
+    background: #fdecea;
+    color: #96281b;
+    font-weight: bold;
+}
+
+#error-pedido.visible {
+    color: #b00020;
+    font-weight: bold;
+}
+
+#form-pedido {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+#form-pedido select,
+#form-pedido input {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+#lista-pedidos {
+    list-style: none;
+    padding: 0;
+}
+
+#lista-pedidos li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
