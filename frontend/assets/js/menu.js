@@ -52,7 +52,10 @@ cargarPlatos();
 const pedidos = [];
 
 function crearItemPedido(pedido) {
-    return `<li>${pedido.empleado} — ${pedido.plato} (${pedido.cantidad}) · ${pedido.estado}</li>`;
+    return `<li class="card-pedido">
+        <h4>${pedido.plato}</h4>
+        <p>${pedido.empleado} · Cantidad: ${pedido.cantidad} · Estado: ${pedido.estado}</p>
+    </li>`;
 }
 
 function renderPedidos(lista) {
