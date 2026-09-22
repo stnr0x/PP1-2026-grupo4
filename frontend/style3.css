@@ -141,6 +141,7 @@ label{
     color: white;
     margin: 0 0 5px 0;
     text-align: center;
+    font-size: 18px;
 }
 .card-dia hr {
     border: none;
@@ -214,3 +215,4 @@ footer {
     border-top: 1px solid #41367c;
     margin-top: 20px;
 }
+

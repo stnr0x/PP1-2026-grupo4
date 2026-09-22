@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selecciona tu menu semanal</title>
-
     <link rel="stylesheet" href="style3.css">
 </head>
 <body>
@@ -17,12 +16,10 @@
 <nav id="sidebar" class="sidebar">
     <ul>
         <li><a href="index.html">Inicio</a></li>
-<li><a href="#">Menu Semanal</a></li>
+        <li><a href="#">Menu Semanal</a></li>
         <li><a href="Menu+Registrar-pedido.html">Historial</a></li>
         <li><a href="#">Mi Perfil</a></li>
-
     </ul>
-
 </nav>
 <div id="overlay" class="overlay"></div>
 <main>
@@ -30,27 +27,34 @@
     <div class="alerta-asistencia">
         <p>No configuraste tu asistencia.</p>
         <p>Configura tu asistencia para ver el menu.</p>
-   <a href="asistencia.html" class="btn-ir">Ir a asistencia</a>
+        <a href="asistencia.html" class="btn-ir">Ir a asistencia</a>
     </div>
-    <div id="lista-platos" class ="menu-grid"></div>
+    <div id="lista-platos" class="menu-grid"></div>
+    <form id="form-pedido">
+        <select id="select-plato">
+            <option value="">Elegí un plato</option>
+        </select>
+        <input type="number" id="input-cantidad" placeholder="Cantidad" min="1">
+        <button type="submit" class="btn-guardar">Agregar al pedido</button>
+    </form>
     <section class="resumen" id="resumen">
         <h2>Resumen del pedido</h2>
         <div id="resumen-items">
             <p>Lunes ➜ <span id="res-lunes"></span></p>
             <p>Miercoles ➜ <span id="res-miercoles"></span></p>
-        <p>Viernes ➜ <span id="res-viernes"></span></p>
+            <p>Viernes ➜ <span id="res-viernes"></span></p>
         </div>
         <hr>
-        <p><strong>Total estimado:</strong> $<span id ="res-total">0</span></p>
-<p><strong>Estado:</strong> Borrador</p>
+        <p><strong>Total estimado:</strong> $<span id="res-total">0</span></p>
+        <p><strong>Estado:</strong> Borrador</p>
         <button class="btn-guardar">Guardar pedido</button>
     </section>
     <footer>
         <small>© 2026 Sistema de pedidos</small>
     </footer>
+    <ul id="lista-pedidos"></ul>
+    <p id="error-pedido"></p>
 </main>
 <script src="assets/js/menu.js"></script>
-
-
 </body>
 </html>
