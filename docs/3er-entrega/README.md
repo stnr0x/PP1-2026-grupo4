@@ -10,7 +10,7 @@
 
 | Capacidad | Pantalla | Archivo JS | CU de E1 | Qué hace |
 |-----------|----------|-----------|----------|----------|
-| Cap. 1 — Login validado | login.html | assets/js/login.js | CU-01 | Valida email y campos vacíos, muestra error en el DOM, redirige al menú |
+| Cap. 1 — Login validado | login.html | assets/js/login.js | CU-01 | Valida email y campos vacíos, muestra error en el DOM, redirige al menú. *Entregado por otro integrante del grupo.* |
 | Cap. 2 — Listado desde datos | Menu+Registrar-pedido.html | assets/js/menu.js | CU-05, CU-06 | Trae platos desde `data/platos.json` con fetch, los renderiza en cards |
 | Cap. 3 — Acción del usuario | Menu+Registrar-pedido.html | assets/js/menu.js | CU-06 | Formulario de registro de pedido, valida campos, agrega a lista de pedidos |
 | Cap. 4 — Estados de interfaz | Menu+Registrar-pedido.html | assets/js/menu.js | CU-05 | Muestra estados de cargando, vacío y error para el listado de platos |
@@ -18,7 +18,24 @@
 
 ---
 
-## 2. Decisiones del grupo
+## 2. Inventario de pantallas
+
+| Pantalla | Archivo | JS | Estado |
+|----------|---------|----|--------|
+| Inicio | index.html | — | Estática, links a todas las pantallas |
+| Login | login.html | assets/js/login.js | Entregado por otro integrante |
+| Registro | registro.html | — | Estática |
+| Mi Perfil | miperfil.html | — | Estática |
+| Asistencia | asistencia.html | — | Estática |
+| Menú + Registrar pedido | Menu+Registrar-pedido.html | assets/js/menu.js | **Capacidades 2, 3, 4** |
+| Administrar Menús | administrar-menus.html | — | Estática, Capacidad 5 |
+| Generar Consolidado | Generar-consolidado-(5).html | — | Estática |
+| Feriados | feriados.html | — | Estática |
+| Mis pedidos | pedidos.html | — | Estática |
+
+---
+
+## 3. Decisiones del grupo
 
 ### Organización de archivos JS
 Se usa un solo archivo JS por pantalla (`menu.js` para la pantalla 03). Cada pantalla tiene su propio archivo porque es más fácil de mantener y cada uno tiene su propia entidad (`platos`, `pedidos`). La organización es consistente: cada archivo contiene el array de datos, las funciones de render, y el manejo de eventos de esa pantalla.
@@ -34,7 +51,7 @@ Se implementó un patrón simple con `renderEstado(estado)` que reemplaza el con
 
 ---
 
-## 3. Declaración de uso de IA
+## 4. Declaración de uso de IA
 
 | Herramienta | Para qué |
 |-------------|----------|
@@ -43,7 +60,7 @@ Se implementó un patrón simple con `renderEstado(estado)` que reemplaza el con
 
 ---
 
-## 4. Estructura del repo
+## 5. Estructura del repo
 
 ```
 frontend/
@@ -58,6 +75,12 @@ frontend/
 ├── administrar-menus.html
 ├── Generar-consolidado-(5).html
 ├── index.html
+├── login.html
+├── registro.html
+├── miperfil.html
+├── asistencia.html
+├── feriados.html
+├── pedidos.html
 └── *.html        ← resto de pantallas E2
 docs/
 └── 3er-entrega/
