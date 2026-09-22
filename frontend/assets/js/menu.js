@@ -1,13 +1,12 @@
 
-//console.log('probando 123');
-const platos =[
-{id: 1, nombre:'Milanesa con pure', descripcion:'clasica, con guarnicion',categoria:'clasico',precio:800, imagen: 'assets/img/milanesa.jpg'},
-    {id: 2, nombre:'Pastel de papa', descripcion:'clasico sin aceitunas',categoria:'clasico',precio:850, imagen: 'assets/img/pasteldepapa.jpg'},
-    {id: 3, nombre:'Tortilla de acelga', descripcion:'clasica',categoria:'vegetarianos',precio:900, imagen: 'assets/img/tortilladeacelga.jpg'},
-    {id: 4, nombre:'Matambre de cerdo', descripcion:'con ensalda o papas fritas',categoria:'clasico',precio:1000, imagen: 'assets/img/matambre.jpg'},
-    ];
+const contenedorPlatos = document.querySelector('#lista-platos');
+const selectPlato = document.querySelector('#select-plato');
+const cajaError = document.querySelector('#error-pedido');
+const form = document.querySelector('#form-pedido');
 
-console.log('cantidad platos',platos.length)
+let platos = [];
+let estado = 'cargando';
+
 function crearTarjeta(plato){
 return `
 <article class="card-dia">
@@ -19,23 +18,51 @@ return `
 </article>
 `}
 
+function crearOpcionSelect(plato){
+const option = document.createElement('option');
+option.value = plato.nombre;
+option.textContent = plato.nombre;
+return option;}
+
 function renderPlatos(lista){
-    const contener = document.querySelector('#lista-platos');
+    if (lista.length === 0) {
+        contenedorPlatos.innerHTML = '<p style="color:#cccccc;text-align:center;">No hay platos disponibles.</p>';
+        estado = 'vacio';
+        return;
+    }
     let html = '';
     for (const plato of lista){
         html = html + crearTarjeta(plato);
     }
-    contener.innerHTML = html;
+    contenedorPlatos.innerHTML = html;
+    estado = 'listo';
 }
-renderPlatos(platos);
 
-const selectPlato = document.querySelector('#select-plato');
-for (const plato of platos){
-    const option = document.createElement('option');
-    option.value = plato.nombre;
-    option.textContent = plato.nombre;
-    selectPlato.appendChild(option);
+function renderEstado(estado){
+    const estados = {
+        cargando: '<p style="color:#cccccc;text-align:center;">Cargando menú...</p>',
+        vacio: '<p style="color:#cccccc;text-align:center;">No hay platos disponibles.</p>',
+        error: '<p style="color:#b00020;text-align:center;">Error al cargar el menú.</p>',
+        listo: ''
+    };
+    contenedorPlatos.innerHTML = estados[estado] || '';
 }
+
+async function cargarPlatos(){
+    renderEstado('cargando');
+    try {
+        const res = await fetch('data/platos.json');
+        if (!res.ok) throw new Error('HTTP error');
+        platos = await res.json();
+        renderPlatos(platos);
+        for (const plato of platos){
+            selectPlato.appendChild(crearOpcionSelect(plato));
+        }
+    } catch (err) {
+        renderEstado('error');
+    }
+}
+cargarPlatos();
 
 const pedidos =[];
 
@@ -52,8 +79,6 @@ function renderPedidos(lista){
 async function guardarPedido(pedido) {
     pedidos.push(pedido);
 }
-const cajaError = document.querySelector('#error-pedido');
-const form = document.querySelector('#form-pedido');
 form.addEventListener('submit',function (evento){
     evento.preventDefault();
     const plato = document.querySelector('#select-plato').value;
