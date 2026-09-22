@@ -47,7 +47,7 @@ Se eligió **Administrar Menús** (`administrar-menus.html`) como pantalla admin
 La consigna indica explícitamente no rehacer el HTML/CSS de E2. Se mantuvieron las pantallas existentes y se les agregó comportamiento. No se crearon pantallas nuevas.
 
 ### Estado cargando/vacío/error
-Se implementó un patrón simple con `renderEstado(estado)` que reemplaza el contenido del contenedor. Los estados se manejan con un string (`cargando`, `listo`, `vacio`, `error`) que se actualiza según el resultado del fetch.
+Se implementó la función `mostrarMensaje(texto, tipo, selector)` que reemplaza el contenido del contenedor con un mensaje CSS estilizado. Los estados son: `cargando`, `vacio` y `error`.
 
 ---
 
