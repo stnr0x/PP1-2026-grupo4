@@ -1,14 +1,23 @@
-// esto es para el login de la pagina, elige el formulario y el contener del mensaje de error
-const form = document.querySelector('#form-login');
-const cajaError = document.querySelector('#error-login');
+// Selecciona los elementos que ya existen en login.html
+const form = document.querySelector('form');
+const emailInput = document.querySelector('#email');
+const passwordInput = document.querySelector('#password');
+
+// Desactiva la validacion nativa del navegador
+form.noValidate = true;
+
+// Crea la caja para los mensajes de error
+const cajaError = document.createElement('div');
+cajaError.id = 'error-login';
+form.prepend(cajaError);
 
 // eschucha el evento submit del formulario
 form.addEventListener('submit', function (evento) {
     evento.preventDefault(); // esto evita  que se recargue la pagina automaticamnte al enviar el formulario
     
     // obtiene los valores de los inputs del formulario
-    const email = document.querySelector('#input-email').value.trim();
-    const password = document.querySelector('#input-password').value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
     // validamos los campos del formulario
     if (email === '' || password === '') {
@@ -23,16 +32,18 @@ form.addEventListener('submit', function (evento) {
     }
     // si los datos son validos, limpiamos el mensaje de error y enviamos los datos 
     limpiarError();
-    window.location.href = 'menu.html'; // redirige a la pantalla de menu
+    window.location.href = 'Menu+Registrar-pedido.html'; // redirige a la pantalla de menu
 });
     // funcion para mostrar el mensaje de error
     function mostrarError(mensaje) {
         cajaError.textContent = mensaje; // muestra el mensaje de error en la caja de error
         cajaError.classList.add('visible'); // hace visible la caja de error
+        cajaError.style.display = 'block';
     }
 
     // funcion para limpiar el mensaje de error
     function limpiarError() {
         cajaError.textContent = ''; // limpia el mensaje de error
         cajaError.classList.remove('visible'); // oculta la caja de error
+        cajaError.style.display = 'none';
     }

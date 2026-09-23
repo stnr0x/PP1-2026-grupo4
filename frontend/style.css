@@ -422,3 +422,12 @@ body {
         width: 100%;
     }
 }
+
+/* error de login */
+#error-login {
+    display: none;
+    color :#a71732;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
