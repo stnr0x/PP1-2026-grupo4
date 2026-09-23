@@ -313,6 +313,7 @@ body {
     background-color: #41367c;
     color: #cccccc;
     padding: 8px 16px;
+    margin-top: 0;
     border-radius: 6px;
     text-decoration: none;
     font-size: 0.9rem;
@@ -430,4 +431,24 @@ body {
     font-weight: bold;
     font-size: 0.9rem;
     margin-top: 10px;
+}
+/* error de consolidado*/
+.mensaje-error {
+    color: #a71732;
+    font-weight: bold;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+.mensaje-error.visible {
+    display: block;
+}
+.mensaje-exito {
+    display: none;
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-top: 15px;
+}
+.mensaje-exito.visible {
+    display: block;
 }

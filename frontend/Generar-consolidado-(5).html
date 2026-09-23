@@ -41,14 +41,16 @@
         <div class="form-group">
             <label for="fecha">Semana de consolidado</label>
             <input type="week" id="fecha" value="2026-W26">
+            <p id="error-consolidado" class="error-message"></p>
         </div>
 
         <div class="actions">
-            <button class="btn btn-secondary">Generar</button>
+            <button id="btn-generar" class="btn btn-secondary">Generar</button>
             <button class="btn btn-secondary">Descargar PDF</button>
             <button class="btn btn-primary">Enviar al proveedor</button>
         </div>
     </div>
+    <p id="mensaje-exito" class="success-message"></p>
 
     <!-- Tabla de Consolidado -->
     <section class="consolidado-section">
@@ -103,6 +105,6 @@
     </aside>
 
 </main>
-
+<script src="assets/js/consolidado.js"></script>
 </body>
 </html>
