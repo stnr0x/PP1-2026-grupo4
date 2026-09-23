@@ -51,6 +51,9 @@ cargarPlatos();
 
 const pedidos = [];
 
+const form = document.querySelector('#form-pedido');
+const cajaError = document.querySelector('#error-pedido');
+
 function crearItemPedido(pedido) {
     return `<li class="card-pedido">
         <h4>${pedido.plato}</h4>
@@ -67,39 +70,33 @@ function renderPedidos(lista) {
     contenedor.innerHTML = html;
 }
 
+
 async function guardarPedido(pedido) {
     pedidos.push(pedido);
 }
 
-const form = document.querySelector('#form-pedido');
-const cajaError = document.querySelector('#error-pedido');
+form.addEventListener('submit', async function (evento) {
+    evento.preventDefault();
 
-if (form) {
-    form.addEventListener('submit', function (evento) {
-        evento.preventDefault();
+    const plato = document.querySelector('#select-plato').value;
+    const cantidad = Number(document.querySelector('#input-cantidad').value);
 
-        const plato = document.querySelector('#select-plato').value;
-        const cantidad = Number(document.querySelector('#input-cantidad').value);
+    if (plato === '' || cantidad <= 0) {
+        cajaError.textContent = 'Elegí un plato y una cantidad válida.';
+        return;
+    }
 
-        if (plato === '' || cantidad <= 0) {
-            cajaError.textContent = 'Elegí un plato y una cantidad válida.';
-            cajaError.classList.add('visible');
-            return;
-        }
+    cajaError.textContent = '';
 
-        cajaError.textContent = '';
-        cajaError.classList.remove('visible');
+    const pedido = {
+        id: pedidos.length + 1,
+        empleado: 'Juan',
+        plato: plato,
+        cantidad: cantidad,
+        estado: 'BORRADOR'
+    };
 
-        const pedido = {
-            id: pedidos.length + 1,
-            empleado: 'Gaston Aguirre',
-            plato: plato,
-            cantidad: cantidad,
-            estado: 'BORRADOR'
-        };
-
-        guardarPedido(pedido);
-        renderPedidos(pedidos);
-        form.reset();
-    });
-}
+    await guardarPedido(pedido);
+    renderPedidos(pedidos);
+    form.reset();
+});
