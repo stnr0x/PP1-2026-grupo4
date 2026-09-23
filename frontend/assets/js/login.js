@@ -1,14 +1,14 @@
 // esto es para el login de la pagina, elige el formulario y el contener del mensaje de error
-const form = document.querySelector('#form-login'); 
+const form = document.querySelector('#form-login');
 const cajaError = document.querySelector('#error-login');
 
 // eschucha el evento submit del formulario
-form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // esto evita  que se recargue la pagina automaticamnte al enviar el formulario
+form.addEventListener('submit', function (evento) {
+    evento.preventDefault(); // esto evita  que se recargue la pagina automaticamnte al enviar el formulario
     
     // obtiene los valores de los inputs del formulario
-    const email = form.email.value;
-    const password = form.password.value;  
+    const email = document.querySelector('#input-email').value.trim();
+    const password = document.querySelector('#input-password').value.trim();
 
     // validamos los campos del formulario
     if (email === '' || password === '') {
@@ -21,11 +21,10 @@ form.addEventListener('submit', async (e) => {
         mostrarError('Por favor, ingresá un email válido.'); 
         return;
     }
-
     // si los datos son validos, limpiamos el mensaje de error y enviamos los datos 
     limpiarError();
     window.location.href = 'menu.html'; // redirige a la pantalla de menu
-
+});
     // funcion para mostrar el mensaje de error
     function mostrarError(mensaje) {
         cajaError.textContent = mensaje; // muestra el mensaje de error en la caja de error
