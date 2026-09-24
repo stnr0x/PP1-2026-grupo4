@@ -7,14 +7,29 @@
 </head>
 <body>
 
-  <header>
-    <p>Sistema de pedidos — Admin</p>
-    <nav>
-      <a href="index.html">Panel Admin</a>
-      <a href="menu.html">Menú</a>
-      <a href="feriados.html">Feriados</a>
-    </nav>
-    <a href="login.html">Cerrar sesión</a>
+  <!-- Navbar - Vista de Administrador (igual que Generar consolidado) -->
+  <header class="navbar admin-navbar">
+    <div class="navbar-inner">
+      <div class="navbar-brand">
+        <span class="logo">Byte</span>
+        <span class="brand-name">Sistema de Pedidos</span>
+        <span class="navbar-admin"><span class="admin-label">Admin</span></span>
+      </div>
+
+      <nav>
+        <ul class="navbar-nav">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="administrar-menus.html">Menús</a></li>
+          <li><a href="Generar-consolidado-(5).html">Consolidado</a></li>
+          <li><a href="feriados.html" class="active">Feriados</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-user">
+        <span class="user-name">Admin</span>
+        <a href="login.html" class="btn-logout">Cerrar sesión</a>
+      </div>
+    </div>
   </header>
 
   <main>

@@ -6,14 +6,28 @@
     <title>Configurar asistencia</title>
 </head>
 <body>
-    <header>
-        <p>Sistema de pedidos</p>
+    <header class="navbar">
+      <div class="navbar-inner">
+        <div class="navbar-brand">
+          <span class="logo">Byte</span>
+          <span class="brand-name">Sistema de Pedidos</span>
+        </div>
+
         <nav>
-          <a href="index.html">Inicio</a>
-          <a href="perfil.html">Mi perfil</a>
+          <ul class="navbar-nav">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="Menu+Registrar-pedido.html">Menú</a></li>
+            <li><a href="pedidos.html">Mis Pedidos</a></li>
+            <li><a href="miperfil.html">Mi Perfil</a></li>
+          </ul>
         </nav>
-        <a href="login.html">Cerrar sesión</a>
-      </header>
+
+        <div class="navbar-user">
+          <span class="user-name">Juan Pérez</span>
+          <a href="login.html" class="btn-logout">Cerrar sesión</a>
+        </div>
+      </div>
+    </header>
       <main>
         <h1>Configurar asistencia semanal</h1>
         <p>Seleccioná los días que vas a asistir presencialmente</p>

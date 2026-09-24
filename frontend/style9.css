@@ -41,15 +41,47 @@ body {
 
 /* Etiqueta de Administrador */
 .navbar-admin {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1.4;
     background-color: #6B4423;
-    padding: 6px 14px;
+    padding: 3px 10px;
     border-radius: 20px;
 }
 
 .admin-label {
     color: #FFFFFF;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
+}
+
+/* Links para navegar entre las pantallas del admin */
+.navbar-nav {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav a {
+    color: #7A6A5A;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.navbar-nav a:hover,
+.navbar-nav a.active {
+    color: #2B2118;
+    font-weight: 600;
+}
+
+.navbar-nav a.active {
+    border-bottom: 2px solid #B8862B;
+    padding-bottom: 2px;
 }
 
 /* Usuario y Logout */
@@ -307,10 +339,10 @@ body {
         gap: 10px;
     }
 
-    .navbar-admin {
-        order: 3;
-        width: 100%;
-        text-align: center;
+    .navbar-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
     }
 
     .main-content {
