@@ -339,10 +339,6 @@ footer {
     border-top: 1px solid #E0D4C0;
     margin-top: 20px;
 }
-footer .cu-ref{
-    color: #7A6A5A;
-    margin-top: 6px;
-}
 
 @media (max-width: 900px) {
     .menu-grid {

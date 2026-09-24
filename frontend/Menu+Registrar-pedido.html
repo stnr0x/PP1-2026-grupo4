@@ -8,11 +8,28 @@
 </head>
 <body>
 
-<button id ="menu-toggle" class="hamburger">☰</button>
-<div class="top-bar-right">
-    <span class="welcome">Bienvenido, Juan</span>
-    <button id="logout-btn" class="butn-logout">Cerrar sesion</button>
-</div>
+<header class="navbar">
+    <div class="navbar-inner">
+        <div class="navbar-brand">
+            <span class="logo">Byte</span>
+            <span class="brand-name">Sistema de Pedidos</span>
+        </div>
+
+        <nav>
+            <ul class="navbar-nav">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="Menu+Registrar-pedido.html" class="active">Menú</a></li>
+                <li><a href="pedidos.html">Mis Pedidos</a></li>
+                <li><a href="miperfil.html">Mi Perfil</a></li>
+            </ul>
+        </nav>
+
+        <div class="navbar-user">
+            <span class="user-name">Juan Pérez</span>
+            <a href="login.html" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+</header>
 
 <main>
     <h1>Selecciona tu menu semanal</h1>
@@ -47,7 +64,7 @@
         <ul id="lista-pedidos"></ul>
     </section>
     <footer>
-        <small>© 2026 Sistema de pedidos</small>
+        <small>© 2026 Byte — Sistema de Pedidos de Almuerzo</small>
     </footer>
 </main>
 <script src="assets/js/menu.js"></script>
