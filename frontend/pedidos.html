@@ -6,15 +6,27 @@
     <link rel="stylesheet" href="style4.css">
 </head>
 <body>
-  <header>
-    <p>Sistema de pedidos</p>
-    <nav>
-      <a href="index.html">Inicio</a>
-      <a href="asistencia.html">Asistencia</a>
-      <a href="menu.html">Menú</a>
-      <a href="pedidos.html">Mis pedidos</a>
-    </nav>
-    <a href="login.html">Cerrar sesión</a>
+  <header class="navbar">
+    <div class="navbar-inner">
+      <div class="navbar-brand">
+        <span class="logo">Byte</span>
+        <span class="brand-name">Sistema de Pedidos</span>
+      </div>
+
+      <nav>
+        <ul class="navbar-nav">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="Menu+Registrar-pedido.html">Menú</a></li>
+          <li><a href="pedidos.html" class="active">Mis Pedidos</a></li>
+          <li><a href="miperfil.html">Mi Perfil</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar-user">
+        <span class="user-name">Juan Pérez</span>
+        <a href="login.html" class="btn-logout">Cerrar sesión</a>
+      </div>
+    </div>
   </header>
 
   

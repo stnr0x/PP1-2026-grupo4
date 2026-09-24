@@ -1,39 +1,108 @@
 body {
   font-family: 'Segoe UI', 'Arial', sans-serif;
-  background-color: #161229;
-  color: #cccccc;
+  background-color: #F5EFE6;
+  color: #2B2118;
   margin: 0;
 }
 
-header {
+/*
+   Navbar (misma que Mi Perfil)
+ */
+.navbar {
+  background-color: #EFE6D8;
+  padding: 14px 24px;
+  border-bottom: 1px solid #E0D4C0;
+}
+
+.navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #211b3e;
-  border-bottom: 1px solid #41367c;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-header p {
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.logo {
+  color: #6B4423;
+}
+
+.brand-name {
+  color: #2B2118;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-name {
+  color: #2B2118;
+  font-weight: 500;
+}
+
+.btn-logout {
+  background-color: #6B4423;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-logout:hover {
+  background-color: #5A381C;
+}
+
+.navbar-nav {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  list-style: none;
   margin: 0;
-  color: white;
-  font-size: 14px;
+  padding: 0;
 }
 
-header nav a {
-  color: #cccccc;
+.navbar-nav a {
+  color: #7A6A5A;
   text-decoration: none;
-  margin-right: 16px;
-  font-size: 13px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-header > a {
-  color: #cccccc;
-  text-decoration: none;
-  border: 1px solid #41367c;
-  padding: 6px 12px;
-  border-radius: 5px;
-  font-size: 13px;
+.navbar-nav a:hover,
+.navbar-nav a.active {
+  color: #2B2118;
+  font-weight: 600;
+}
+
+.navbar-nav a.active {
+  border-bottom: 2px solid #B8862B;
+  padding-bottom: 2px;
+}
+
+@media (max-width: 768px) {
+  .navbar-inner {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .navbar-nav {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
 }
 
 main {
@@ -43,7 +112,7 @@ main {
 }
 
 h1 {
-  color: white;
+  color: #2B2118;
   font-size: 20px;
   margin-bottom: 24px;
 }
@@ -55,8 +124,9 @@ section {
 }
 
 article {
-  background-color: #211b3e;
-  border: 1px solid #41367c;
+  background-color: #EFE6D8;
+  border: 1px solid #E0D4C0;
+  box-shadow: 0 4px 20px rgba(107, 68, 35, 0.08);
   border-radius: 10px;
   padding: 1.2rem 1.5rem;
   display: flex;
@@ -67,7 +137,7 @@ article {
 }
 
 article h2 {
-  color: white;
+  color: #2B2118;
   font-size: 15px;
   margin: 0;
 }
@@ -85,14 +155,15 @@ article span {
 }
 
 .badge-borrador {
-  border: 1px dashed #41367c;
-  color: #cccccc;
+  border: 1px dashed #B8862B;
+  background-color: #F5EFE6;
+  color: #6B4423;
 }
 
 .badge-confirmado {
-  border: 1px solid #41367c;
-  background-color: #41367c;
-  color: white;
+  border: 1px solid #6B4423;
+  background-color: #6B4423;
+  color: #FFFFFF;
 }
 
 article div {
@@ -102,17 +173,17 @@ article div {
 
 article button {
   padding: 8px 16px;
-  border: 1px solid #41367c;
+  border: 1px solid #6B4423;
   border-radius: 5px;
   background-color: transparent;
-  color: #cccccc;
+  color: #6B4423;
   font-size: 12px;
   cursor: pointer;
 }
 
 article button:first-of-type {
-  background-color: #41367c;
-  color: white;
+  background-color: #6B4423;
+  color: #FFFFFF;
   border: none;
   font-weight: 700;
 }
@@ -120,8 +191,8 @@ article button:first-of-type {
 footer {
   text-align: center;
   padding: 1rem;
-  color: #555;
+  color: #7A6A5A;
   font-size: 12px;
-  border-top: 1px solid #41367c;
+  border-top: 1px solid #E0D4C0;
   margin-top: 40px;
 }
