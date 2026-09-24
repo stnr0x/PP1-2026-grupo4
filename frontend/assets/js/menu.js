@@ -83,10 +83,12 @@ form.addEventListener('submit', async function (evento) {
 
     if (plato === '' || cantidad <= 0) {
         cajaError.textContent = 'Elegí un plato y una cantidad válida.';
+        cajaError.classList.add('visible'); //este es para que el error se vea en rojo y en negrita
         return;
     }
 
     cajaError.textContent = '';
+    cajaError.classList.remove('visible');//esto saca la clase, asi el error no queda pegado
 
     const pedido = {
         id: pedidos.length + 1,
