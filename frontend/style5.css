@@ -1,136 +1,143 @@
 body {
-    background-color: #eef5f0;
-    color: #1f2933;
+    background-color: #F5EFE6;
+    color: #2B2118;
     margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
-.hamburger{
-    position: fixed;
-    left: 15px;
-    top: 15px;
-    background: none;
-    border: none;
-    color: #2e7d32;
-    font-size: 28px;
-    cursor: pointer;
-    z-index: 1000;
-    margin: 0;
+/*
+   Navbar admin (igual que Consolidado y Feriados)
+ */
+.navbar {
+    background-color: #EFE6D8;
+    padding: 14px 24px;
+    border-bottom: 1px solid #E0D4C0;
 }
 
-.sidebar {
+.navbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 250px;
-    height: 100%;
-    background-color: #ffffff;
-    padding-top: 60px;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index:999;
-    border-right: 1px solid #cde8d0;
-}
-.sidebar.open {
-    transform: translateX(0);
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
 }
 
-.sidebar ul {
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+.logo {
+    color: #6B4423;
+}
+
+.brand-name {
+    color: #2B2118;
+}
+
+.navbar-admin {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1.4;
+    background-color: #6B4423;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.admin-label {
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Links para navegar entre las pantallas del admin */
+.navbar-nav {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
     list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
 }
 
-.sidebar li {
-    padding: 15px 25px;
-}
-
-.sidebar a {
-    color: #1f2933;
+.navbar-nav a {
+    color: #7A6A5A;
     text-decoration: none;
-    font-size: 18px;
-}
-.sidebar a:hover {
-    color: #2e7d32;
-}
-
-.overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 998;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
 }
 
-.overlay.show {
-    display: block;
+.navbar-nav a:hover,
+.navbar-nav a.active {
+    color: #2B2118;
+    font-weight: 600;
 }
 
-.top-bar-right{
-    position:fixed;
-    top: 15px;
-    right: 15px;
+.navbar-nav a.active {
+    border-bottom: 2px solid #B8862B;
+    padding-bottom: 2px;
+}
+
+.navbar-user {
     display: flex;
     align-items: center;
     gap: 15px;
-    z-index: 1000;
 }
 
-.welcome{
-    color: #1f2933;
-    font-size: 16px;
+.user-name {
+    color: #2B2118;
+    font-weight: 500;
 }
 
-.butn-logout{
-    background-color: #2e7d32;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 15px;
-    font-weight: 700;
-    cursor: pointer;
-    margin: 0;
+.btn-logout {
+    background-color: #6B4423;
+    color: #FFFFFF;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
 }
 
+.btn-logout:hover {
+    background-color: #5A381C;
+}
+
+/*
+   Contenido
+ */
 main{
     padding: 50px;
-    background-color: #ffffff;
+    background-color: #EFE6D8;
     max-width: 900px;
-    margin: 100px auto;
+    margin: 40px auto;
     border-radius: 15px;
-    border: 1px solid #cde8d0;
-    box-shadow: 0 4px 20px rgba(46, 125, 50, 0.08);
+    border: 1px solid #E0D4C0;
+    box-shadow: 0 4px 20px rgba(107, 68, 35, 0.12);
 }
 
 h1{
-    color: #1f2933;
+    color: #2B2118;
     text-align: center;
 }
 
 label{
-    color: #1f2933;
+    color: #2B2118;
     display: inline-flex;
 }
 
-.role-badge{
-    display: inline-block;
-    padding: 6px 16px;
-    background-color: #2e7d32;
-    color: #ffffff;
-    border-radius: 50px;
-    font-weight: 700;
-    text-align: center;
-    margin: 0 auto 10px auto;
-}
-.role-badge-wrap{
-    text-align: center;
-    margin-bottom: 5px;
+input[type="checkbox"] {
+    accent-color: #6B4423;
 }
 
 .subtitulo{
-    color: #6b7280;
+    color: #7A6A5A;
     text-align: center;
     margin-top: 0;
 }
@@ -145,14 +152,14 @@ label{
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    background-color: #f7fbf8;
-    border: 1px solid #cde8d0;
+    background-color: #FBF8F3;
+    border: 1px solid #DCCDB5;
     border-radius: 10px;
     padding: 12px 16px;
     margin-bottom: 10px;
 }
 .semana-item .fecha{
-    color: #1f2933;
+    color: #2B2118;
     font-weight: 700;
 }
 .estado{
@@ -162,19 +169,19 @@ label{
     border-radius: 5px;
 }
 .estado-publicado{
-    background-color: #2e7d32;
-    color: #ffffff;
-    border: 1px solid #1b5e20;
+    background-color: #6B4423;
+    color: #FFFFFF;
+    border: 1px solid #5A381C;
 }
 .estado-borrador{
-    background-color: transparent;
-    color: #9aa5b1;
-    border: 1px dashed #9aa5b1;
+    background-color: #F5EFE6;
+    color: #6B4423;
+    border: 1px dashed #B8862B;
 }
 .btn-editar{
     background-color: transparent;
-    border: 1px solid #2e7d32;
-    color: #2e7d32;
+    border: 1px solid #6B4423;
+    color: #6B4423;
     border-radius: 5px;
     padding: 6px 12px;
     font-weight: 700;
@@ -183,7 +190,7 @@ label{
 
 /* --- Formulario por día --- */
 .semana-titulo{
-    color: #1f2933;
+    color: #2B2118;
     text-align: center;
 }
 .menu-grid{
@@ -193,8 +200,8 @@ label{
     margin: 20px 0;
 }
 .card-dia{
-    background-color: #ffffff;
-    border: 1px solid #cde8d0;
+    background-color: #FBF8F3;
+    border: 1px solid #DCCDB5;
     border-radius: 10px;
     padding: 15px;
     display: flex;
@@ -202,25 +209,25 @@ label{
     min-width: 0;
 }
 .card-dia h3 {
-    color: #2e7d32;
+    color: #6B4423;
     margin: 0 0 5px 0;
     text-align: center;
 }
 .card-dia hr {
     border: none;
-    border-top: 1px solid #cde8d0;
+    border-top: 1px solid #E0D4C0;
     margin: 8px 0;
 }
 .dia-opcion{
     display: block;
-    background-color: #f7fbf8;
-    border: 1px solid #cde8d0;
+    background-color: #F5EFE6;
+    border: 1px solid #E0D4C0;
     border-radius: 8px;
     padding: 8px;
     margin: 6px 0;
 }
 .dia-opcion label{
-    color: #37474f;
+    color: #2B2118;
     font-size: 13px;
     display: block;
     margin: 4px 0;
@@ -230,16 +237,16 @@ label{
     width: 100%;
     box-sizing: border-box;
     padding: 6px;
-    background-color: #ffffff;
-    border: 1px solid #cde8d0;
+    background-color: #FFFFFF;
+    border: 1px solid #DCCDB5;
     border-radius: 5px;
-    color: #1f2933;
+    color: #2B2118;
 }
 .fila-stock{
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #6b7280;
+    color: #7A6A5A;
     font-size: 12px;
     margin: 6px 0;
 }
@@ -251,7 +258,7 @@ label{
 }
 .tag{
     font-size: 11px;
-    color: #6b7280;
+    color: #7A6A5A;
 }
 .tag input{
     margin-right: 3px;
@@ -262,8 +269,8 @@ label{
     margin-top: 8px;
     padding: 5px;
     background-color: transparent;
-    border: 1px dashed #8f9b9a;
-    color: #6b7280;
+    border: 1px dashed #CBBBA0;
+    color: #7A6A5A;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -278,8 +285,8 @@ label{
 .btn-guardar{
     flex: 1;
     padding: 10px;
-    background-color: #2e7d32;
-    color: #ffffff;
+    background-color: #6B4423;
+    color: #FFFFFF;
     border: none;
     border-radius: 5px;
     font-size: 16px;
@@ -287,13 +294,13 @@ label{
     cursor: pointer;
 }
 .btn-guardar:hover {
-    background-color: #1b5e20;
+    background-color: #5A381C;
 }
 .btn-publicar{
     flex: 1;
     padding: 10px;
-    background-color: #4caf50;
-    color: #ffffff;
+    background-color: #A0741F;
+    color: #FFFFFF;
     border: none;
     border-radius: 5px;
     font-size: 16px;
@@ -301,25 +308,25 @@ label{
     cursor: pointer;
 }
 .btn-publicar:hover{
-    background-color: #388e3c;
+    background-color: #87611A;
 }
 .btn-duplicar{
     width: 100%;
     padding: 8px;
     background-color: transparent;
-    border: 1px solid #2e7d32;
-    color: #2e7d32;
+    border: 1px solid #6B4423;
+    color: #6B4423;
     border-radius: 5px;
     font-weight: 700;
     cursor: pointer;
     margin-top: 10px;
 }
 .aviso{
-    background-color: #e8f5e9;
-    border: 1px dashed #a5d6a7;
+    background-color: #F5EFE6;
+    border: 1px dashed #B8862B;
     border-radius: 8px;
     padding: 10px 14px;
-    color: #37474f;
+    color: #2B2118;
     font-size: 13px;
     margin-top: 15px;
 }
@@ -327,13 +334,13 @@ label{
 footer {
     text-align: center;
     padding: 10px;
-    color: #78909c;
+    color: #7A6A5A;
     font-size: 12px;
-    border-top: 1px solid #cde8d0;
+    border-top: 1px solid #E0D4C0;
     margin-top: 20px;
 }
 footer .cu-ref{
-    color: #6b7280;
+    color: #7A6A5A;
     margin-top: 6px;
 }
 
@@ -343,9 +350,22 @@ footer .cu-ref{
     }
 }
 
+@media (max-width: 768px) {
+    .navbar-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    .navbar-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+}
+
 @media (max-width: 620px) {
     main {
-        margin: 70px 15px;
+        margin: 24px 15px;
         padding: 25px;
     }
     .menu-grid {

@@ -8,26 +8,32 @@
 </head>
 <body>
 
-<button id="menu-toggle" class="hamburger">☰</button>
-<div class="top-bar-right">
-    <span class="welcome">Bienvenido, Federico</span>
-    <button id="logout-btn" class="butn-logout">Cerrar sesión</button>
-</div>
-<nav id="sidebar" class="sidebar">
-    <ul>
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="administrar-menus.html">Administrar Menús</a></li>
-        <li><a href="#">Consolidado Diario</a></li>
-        <li><a href="#">Gestionar Usuarios</a></li>
-        <li><a href="#">Configuración</a></li>
-    </ul>
-</nav>
-<div id="overlay" class="overlay"></div>
+<!-- Navbar - Vista de Administrador (igual que Consolidado y Feriados) -->
+<header class="navbar admin-navbar">
+    <div class="navbar-inner">
+        <div class="navbar-brand">
+            <span class="logo">Byte</span>
+            <span class="brand-name">Sistema de Pedidos</span>
+            <span class="navbar-admin"><span class="admin-label">Admin</span></span>
+        </div>
+
+        <nav>
+            <ul class="navbar-nav">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="administrar-menus.html" class="active">Menús</a></li>
+                <li><a href="Generar-consolidado-(5).html">Consolidado</a></li>
+                <li><a href="feriados.html">Feriados</a></li>
+            </ul>
+        </nav>
+
+        <div class="navbar-user">
+            <span class="user-name">Juan</span>
+            <a href="login.html" class="btn-logout">Cerrar sesión</a>
+        </div>
+    </div>
+</header>
 
 <main>
-    <div class="role-badge-wrap">
-        <span class="role-badge">Vista del Administrador</span>
-    </div>
     <h1>Administrar / Publicar Menús</h1>
     <p class="subtitulo">Cargá las opciones de la semana y publicá el menú para que los empleados puedan pedir.</p>
 
