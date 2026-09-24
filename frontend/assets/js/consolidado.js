@@ -27,7 +27,7 @@ const pedidosConfirmados = [{id: 1, empleado: 'Carla Gómez', plato: 'Milanesa c
         for (const pedido of lista) {
           html = html + crearFila(pedido);
         }
-        contenedor.innerHTML = html; //recien aca se dibuja en pantalla. mete todas las dila en el tbody
+        contenedor.innerHTML = html; //recien aca se dibuja en pantalla. mete todas las fila en el tbody
         }
 
       //escucha el click del boton generar

@@ -32,6 +32,8 @@ async function cargarPlatos() {
 
     try {
         const respuesta = await fetch('data/platos.json');
+        //const respuesta = await fetch('data/platos-vacios.json');
+        //const respuesta = await fetch('data/noexiste.json');
         const platos = await respuesta.json();
 
         if (platos.length === 0) {
