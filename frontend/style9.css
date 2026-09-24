@@ -329,6 +329,16 @@ body {
     display: block;
 }
 
+/* Footer */
+footer {
+    text-align: center;
+    padding: 1rem;
+    color: #7A6A5A;
+    font-size: 12px;
+    border-top: 1px solid #E0D4C0;
+    margin-top: 40px;
+}
+
 /*
    RESPONSIVE
 */

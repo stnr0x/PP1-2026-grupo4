@@ -46,8 +46,14 @@ Se eligió **Generar consolidado** (`Generar-consolidado-(5).html`), justificada
 ### Datos del consolidado
 Los pedidos confirmados están en un array dentro de `consolidado.js` y no en un JSON, porque la consigna pide un solo archivo JSON (el del listado de la Capacidad 2). En noviembre esos datos van a venir del backend.
 
-### Por qué no se tocó el HTML/CSS de E2
-La consigna indica no rehacer el HTML/CSS de E2. Solo se agregaron los contenedores vacíos con `id` donde el JS dibuja (`#lista-platos`, `#lista-pedidos`, `#lista-consolidado`) y los párrafos de error.
+### Cambios al HTML/CSS de E2: estilo y navbar unificados
+La consigna pide no rehacer el HTML/CSS de E2, pero también pide **"el mismo estilo y navbar en todas"** las pantallas. En E2 y en el receso cada pantalla la maquetó un integrante distinto, y quedaron con tres paletas de colores (violeta, ámbar y verde) y barras superiores diferentes. Para cumplir con ese requisito se unificó el estilo, sin crear pantallas nuevas ni cambiar su contenido:
+
+- **Paleta común** crema/marrón en todas las pantallas. Solo se cambiaron colores en los CSS; el layout de cada pantalla se mantiene.
+- **Dos navbars comunes:** una para el empleado (Mi Perfil, Mis pedidos, Asistencia y Menú) y otra para el administrador (Administrar menús, Generar consolidado y Feriados), con links para navegar entre las pantallas de cada rol. Reemplazan a las barras anteriores, algunas de las cuales tenían links rotos o un menú hamburguesa sin JS que nunca se abría.
+- **Footer unificado** con el mismo texto en todas las pantallas internas.
+
+Para el JS solo se agregaron los contenedores vacíos con `id` donde se dibuja (`#lista-platos`, `#lista-pedidos`, `#lista-consolidado`) y los párrafos de error. Los `id` que usa el JS no se modificaron.
 
 ### Estados cargando / vacío / error
 La función `mostrarMensaje(texto, tipo)` reemplaza el contenido de `#lista-platos` por un mensaje con la clase CSS del estado (`cargando`, `vacio` o `error`). El mensaje de cargando se muestra antes del primer `await`; el vacío se detecta con `platos.length === 0` y corta con `return`; el error se muestra desde el `catch`.
@@ -67,7 +73,7 @@ Cómo provocar cada estado en vivo:
 | Herramienta | Para qué |
 |-------------|----------|
 | ChatGPT/OpenAI | Revisión de estructura de código, identificación de errores de sintaxis, orientación sobre uso de `fetch` y manejo de estados |
-| Claude | Separación de `style.css` y `style9.css`, explicación paso a paso de la tabla dinámica del consolidado (`crearFila` + `renderConsolidado`), detección de errores (llave sin cerrar, clases CSS que no coincidían, falta de `classList` en el error del pedido), revisión del repositorio contra la consigna y actualización de este README |
+| Claude | Separación de `style.css` y `style9.css`, explicación paso a paso de la tabla dinámica del consolidado (`crearFila` + `renderConsolidado`), detección de errores (llave sin cerrar, clases CSS que no coincidían, falta de `classList` en el error del pedido), revisión del repositorio contra la consigna, unificación del estilo (paleta de colores, navbars y footer en todas las pantallas) y actualización de este README |
 | Documentación de la consigna | Entendimiento de requisitos de la Entrega 3 |
 
 ---
