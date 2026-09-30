@@ -13,7 +13,7 @@
 |----|--------|---------|-----------------|-------------------|-------------------|
 | 01 | Login | `login.html` | Empleado / Administrador | CU-01, CU-02 | Permite al usuario autenticarse con email y contraseña para acceder al sistema. |
 | 02 | Menu Semanal y Pedido | `menu.html` | Empleado | CU-05, CU-06, CU-07, CU-09 | Permite al empleado visualizar el menú semanal filtrado por sus días de asistencia, registrar su pedido como borrador, modificarlo y confirmarlo definitivamente. |
-| 03 | Historial de Pedidos | — (sin archivo propio) | Empleado | CU-11 | Permite al empleado consultar sus pedidos realizados en semanas anteriores, ver su estado y detalle de opciones seleccionadas. |
+| 03 | Historial de Pedidos | `mis-pedidos.html` (junto con la 04) | Empleado | CU-11 | Permite al empleado consultar sus pedidos realizados en semanas anteriores, ver su estado y detalle de opciones seleccionadas. |
 | 04 | Mis Pedidos | `mis-pedidos.html` | Empleado | CU-06, CU-07, CU-12 | Permite al empleado gestionar sus pedidos activos: confirmar borradores, modificarlos o cancelarlos. |
 | 05 | Generar Consolidado | `consolidado.html` | Administrador | CU-14 | Permite al Administrador generar el consolidado de los pedidos confirmados de la semana para enviarlo al proveedor. |
 | 06 | Registro de Usuario | `registro.html` | Empleado sin cuenta | CU-03 | Permite el alta de nuevos empleados en el sistema solicitando nombre, email y contraseña. |
