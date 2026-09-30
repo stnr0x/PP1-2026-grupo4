@@ -1,0 +1,17 @@
+[
+  { "id": 1,  "dia": "lunes",     "idPlato": 1 },
+  { "id": 2,  "dia": "lunes",     "idPlato": 2 },
+  { "id": 3,  "dia": "lunes",     "idPlato": 3 },
+  { "id": 4,  "dia": "martes",    "idPlato": 2 },
+  { "id": 5,  "dia": "martes",    "idPlato": 3 },
+  { "id": 6,  "dia": "martes",    "idPlato": 4 },
+  { "id": 7,  "dia": "miercoles", "idPlato": 1 },
+  { "id": 8,  "dia": "miercoles", "idPlato": 3 },
+  { "id": 9,  "dia": "miercoles", "idPlato": 4 },
+  { "id": 10, "dia": "jueves",    "idPlato": 1 },
+  { "id": 11, "dia": "jueves",    "idPlato": 2 },
+  { "id": 12, "dia": "jueves",    "idPlato": 4 },
+  { "id": 13, "dia": "viernes",   "idPlato": 1 },
+  { "id": 14, "dia": "viernes",   "idPlato": 2 },
+  { "id": 15, "dia": "viernes",   "idPlato": 3 }
+]
