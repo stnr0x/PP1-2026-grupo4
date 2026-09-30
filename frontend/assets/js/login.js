@@ -32,7 +32,7 @@ form.addEventListener('submit', function (evento) {
     }
     // si los datos son validos, limpiamos el mensaje de error y enviamos los datos 
     limpiarError();
-    window.location.href = 'Menu+Registrar-pedido.html'; // redirige a la pantalla de menu
+    window.location.href = 'menu.html'; // redirige a la pantalla de menu
 });
     // funcion para mostrar el mensaje de error
     function mostrarError(mensaje) {
