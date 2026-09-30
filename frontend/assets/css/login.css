@@ -159,11 +159,21 @@ body {
     }
 }
 
-/* error de login */
-#error-login {
+/* campo con error */ 
+.form-group input.input-error,
+.form-group input.input-error:focus {
+    border-color: #A71732;
+    background-color: #FBEAEA;
+}
+/* mensaje de error oculto hasta que se haga visible */
+.error-campo {
     display: none;
     color: #A71732;
-    font-weight: bold;
-    font-size: 0.9rem;
-    margin-top: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin: 6px 0 0;
+}
+/* mensaje de error visible */
+.error-campo.visible {
+    display: block;
 }

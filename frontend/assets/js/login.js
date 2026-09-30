@@ -2,48 +2,71 @@
 const form = document.querySelector('form');
 const emailInput = document.querySelector('#email');
 const passwordInput = document.querySelector('#password');
+const errorEmail = document.querySelector('#error-email'); // p del error del email
+const errorPassword = document.querySelector('#error-password'); // p del error de la contraseña
 
 // Desactiva la validacion nativa del navegador
 form.noValidate = true;
 
-// Crea la caja para los mensajes de error
-const cajaError = document.createElement('div');
-cajaError.id = 'error-login';
-form.prepend(cajaError);
-
 // eschucha el evento submit del formulario
 form.addEventListener('submit', function (evento) {
-    evento.preventDefault(); // esto evita  que se recargue la pagina automaticamnte al enviar el formulario
-    
-    // obtiene los valores de los inputs del formulario
+    evento.preventDefault(); // evita que se recargue la pagina
+
     const email = emailInput.value.trim();
     const password = passwordInput.value.trim();
 
-    // validamos los campos del formulario
-    if (email === '' || password === '') {
-         mostrarError('Por favor, completá todos los campos.'); 
-         return;
-    } // el return es para que no continue con el resto del codigo si hay un error
+    // limpia los errores anteriores antes de validar de nuevo
+    limpiarErrorCampo(emailInput, errorEmail);
+    limpiarErrorCampo(passwordInput, errorPassword);
 
-    //validamos el formato del email
-    if (!email.includes('@') || !email.includes('.')) {
-        mostrarError('Por favor, ingresá un email válido.'); 
-        return;
+    let hayError = false; // es let porque cambia si algun campo falla
+
+    // valida el email
+    if (email === '') {
+        mostrarErrorCampo(emailInput, errorEmail, 'Ingresá tu email.');
+        hayError = true;
+    } else {
+        const partes = email.split('@'); // separa lo que va antes y despues del @
+        if (partes.length !== 2 || partes[0] === '' || !partes[1].includes('.')) {
+            mostrarErrorCampo(emailInput, errorEmail, 'Ingresá un email válido.');
+            hayError = true;
+        }
     }
-    // si los datos son validos, limpiamos el mensaje de error y enviamos los datos 
-    limpiarError();
+
+    // valida la contraseña
+    if (password === '') {
+        mostrarErrorCampo(passwordInput, errorPassword, 'Ingresá tu contraseña.');
+        hayError = true;
+    } else if (password.length < 6) {
+        mostrarErrorCampo(passwordInput, errorPassword, 'La contraseña debe tener al menos 6 caracteres.');
+        hayError = true;
+    }
+
+    if (hayError) {
+        return; // corta aca si algun campo fallo
+    }
+
     window.location.href = 'menu.html'; // redirige a la pantalla de menu
 });
-    // funcion para mostrar el mensaje de error
-    function mostrarError(mensaje) {
-        cajaError.textContent = mensaje; // muestra el mensaje de error en la caja de error
-        cajaError.classList.add('visible'); // hace visible la caja de error
-        cajaError.style.display = 'block';
-    }
 
-    // funcion para limpiar el mensaje de error
-    function limpiarError() {
-        cajaError.textContent = ''; // limpia el mensaje de error
-        cajaError.classList.remove('visible'); // oculta la caja de error
-        cajaError.style.display = 'none';
-    }
+// saca el error del campo en cuanto el usuario escribe
+emailInput.addEventListener('input', function () {
+    limpiarErrorCampo(emailInput, errorEmail);
+});
+passwordInput.addEventListener('input', function () {
+    limpiarErrorCampo(passwordInput, errorPassword);
+});
+
+// funcion para marcar un campo con error
+function mostrarErrorCampo(input, caja, mensaje) {
+    input.classList.add('input-error'); // pone el campo en rojo
+    caja.textContent = mensaje; // escribe el error debajo del campo
+    caja.classList.add('visible'); // muestra el error
+}
+
+// funcion para sacar el error de un campo
+function limpiarErrorCampo(input, caja) {
+    input.classList.remove('input-error');
+    caja.textContent = '';
+    caja.classList.remove('visible');
+}
