@@ -1,0 +1,20 @@
+[
+  { "id": 1, "idMenuDia": 1, "idPlato": 1, "stockDisponible": 20 },
+  { "id": 2, "idMenuDia": 1, "idPlato": 2, "stockDisponible": 20 },
+  { "id": 3, "idMenuDia": 1, "idPlato": 3, "stockDisponible": 20 },
+  { "id": 4, "idMenuDia": 2, "idPlato": 2, "stockDisponible": 20 },
+  { "id": 5, "idMenuDia": 2, "idPlato": 3, "stockDisponible": 20 },
+  { "id": 6, "idMenuDia": 2, "idPlato": 4, "stockDisponible": 20 },
+  { "id": 7, "idMenuDia": 3, "idPlato": 1, "stockDisponible": 20 },
+  { "id": 8, "idMenuDia": 3, "idPlato": 3, "stockDisponible": 20 },
+  { "id": 9, "idMenuDia": 3, "idPlato": 4, "stockDisponible": 20 },
+  { "id": 10, "idMenuDia": 4, "idPlato": 1, "stockDisponible": 20 },
+  { "id": 11, "idMenuDia": 4, "idPlato": 2, "stockDisponible": 20 },
+  { "id": 12, "idMenuDia": 4, "idPlato": 4, "stockDisponible": 20 },
+  { "id": 13, "idMenuDia": 5, "idPlato": 1, "stockDisponible": 20 },
+  { "id": 14, "idMenuDia": 5, "idPlato": 2, "stockDisponible": 20 },
+  { "id": 15, "idMenuDia": 5, "idPlato": 3, "stockDisponible": 20 },
+  { "id": 16, "idMenuDia": 6, "idPlato": 2, "stockDisponible": 20 },
+  { "id": 17, "idMenuDia": 6, "idPlato": 3, "stockDisponible": 20 },
+  { "id": 18, "idMenuDia": 6, "idPlato": 4, "stockDisponible": 20 }
+]

@@ -1,17 +1,8 @@
 [
-  { "id": 1,  "dia": "lunes",     "idPlato": 1 },
-  { "id": 2,  "dia": "lunes",     "idPlato": 2 },
-  { "id": 3,  "dia": "lunes",     "idPlato": 3 },
-  { "id": 4,  "dia": "martes",    "idPlato": 2 },
-  { "id": 5,  "dia": "martes",    "idPlato": 3 },
-  { "id": 6,  "dia": "martes",    "idPlato": 4 },
-  { "id": 7,  "dia": "miercoles", "idPlato": 1 },
-  { "id": 8,  "dia": "miercoles", "idPlato": 3 },
-  { "id": 9,  "dia": "miercoles", "idPlato": 4 },
-  { "id": 10, "dia": "jueves",    "idPlato": 1 },
-  { "id": 11, "dia": "jueves",    "idPlato": 2 },
-  { "id": 12, "dia": "jueves",    "idPlato": 4 },
-  { "id": 13, "dia": "viernes",   "idPlato": 1 },
-  { "id": 14, "dia": "viernes",   "idPlato": 2 },
-  { "id": 15, "dia": "viernes",   "idPlato": 3 }
+  { "id": 1, "fecha": "2026-10-05", "descripcion": "Menú del lunes", "publicado": true, "stockTotal": 60, "idUsuarioCreador": 1 },
+  { "id": 2, "fecha": "2026-10-06", "descripcion": "Menú del martes", "publicado": true, "stockTotal": 60, "idUsuarioCreador": 1 },
+  { "id": 3, "fecha": "2026-10-07", "descripcion": "Menú del miércoles", "publicado": true, "stockTotal": 60, "idUsuarioCreador": 1 },
+  { "id": 4, "fecha": "2026-10-08", "descripcion": "Menú del jueves", "publicado": true, "stockTotal": 60, "idUsuarioCreador": 1 },
+  { "id": 5, "fecha": "2026-10-09", "descripcion": "Menú del viernes", "publicado": true, "stockTotal": 60, "idUsuarioCreador": 1 },
+  { "id": 6, "fecha": "2026-10-10", "descripcion": "Menú del sábado", "publicado": true, "stockTotal": 60, "idUsuarioCreador": 1 }
 ]

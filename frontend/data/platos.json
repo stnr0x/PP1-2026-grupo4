@@ -2,33 +2,29 @@
   {
     "id": 1,
     "nombre": "Milanesa con pure",
-    "descripcion": "clasica, con guarnicion",
+    "descripcion": "Milanesa de carne, puré de papas",
     "categoria": "clasico",
-    "precio": 800,
     "imagen": "assets/img/milanesa.jpg"
   },
   {
     "id": 2,
     "nombre": "Pastel de papa",
-    "descripcion": "clasico sin aceitunas",
+    "descripcion": "Carne picada, puré de papas, queso gratinado",
     "categoria": "clasico",
-    "precio": 850,
     "imagen": "assets/img/pasteldepapa.jpg"
   },
   {
     "id": 3,
     "nombre": "Tortilla de acelga",
-    "descripcion": "clasica",
+    "descripcion": "Huevo, acelga, cebolla",
     "categoria": "vegetarianos",
-    "precio": 900,
     "imagen": "assets/img/tortilladeacelga.jpg"
   },
   {
     "id": 4,
     "nombre": "Matambre de cerdo",
-    "descripcion": "con ensalda o papas fritas",
+    "descripcion": "Matambre de cerdo, salsa de tomate, queso, papas",
     "categoria": "clasico",
-    "precio": 1000,
     "imagen": "assets/img/matambre.jpg"
   }
 ]
