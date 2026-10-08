@@ -5,7 +5,7 @@
 **Fecha de entrega**: 24/09/2026  
 
 ---
-aa
+
 ## 1. Tabla de capacidades JS
 
 | Capacidad | Pantalla | Archivo JS | CU de E1 | Qué hace |
