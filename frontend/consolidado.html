@@ -45,50 +45,61 @@
     <!-- Controles -->
     <div class="controls">
         <div class="form-group">
-            <label for="fecha">Semana de consolidado</label>
-            <input type="week" id="fecha" value="2026-W26">
+            <label for="semana">Semana de consolidado</label>
+            <select id="semana">
+                <option value="">Elegí una semana</option>
+            </select>
             <p id="error-consolidado" class="mensaje-error"></p>
         </div>
 
         <div class="actions">
-            <button id="btn-generar" class="btn btn-secondary">Generar</button>
-            <button class="btn btn-secondary">Descargar PDF</button>
-            <button class="btn btn-primary">Enviar al proveedor</button>
+            <button type="button" id="btn-generar" class="btn btn-secondary">Generar</button>
+            <button type="button" id="btn-pdf" class="btn btn-secondary">Descargar PDF</button>
+            <button type="button" id="btn-enviar" class="btn btn-primary">Enviar al proveedor</button>
         </div>
     </div>
     <p id="mensaje-exito" class="mensaje-exito"></p>
 
-    <!-- Tabla de Consolidado -->
-    <section class="consolidado-section">
-        <h2>Pedidos confirmados de la semana</h2>
+    <!-- mensajes de cargando, vacio y error (los pone el JS) -->
+    <div id="estado-consolidado"></div>
 
-        <table class="consolidado-table">
-            <thead>
-            <tr>
-                <th>Empleado</th>
-                <th>Opción de menú</th>
-                <th>Comentarios</th>
-            </tr>
-            </thead>
-            <tbody id="lista-consolidado"></tbody>
-           <!-- antes estaban hardcodeadas las filas, ahora estan en un array en el javascript -->
-        </table>
-    </section>
+    <!-- resultado (se muestra al generar) -->
+    <div id="resultado-consolidado" class="oculto">
 
-    <!-- Totales -->
-    <aside class="totales-section">
-        <h3>Totales por opción semanal</h3>
-        <ul class="totales-list">
-            <li><span>Milanesa con puré</span> <strong>× 5</strong></li>
-            <li><span>Tarta de verdura</span> <strong>× 3</strong></li>
-            <li><span>Ensalada completa</span> <strong>× 1</strong></li>
-        </ul>
+        <p id="aviso-pendientes" class="aviso-pendientes oculto"></p>
 
-        <div class="resumen-total">
-            <p><strong>Total empleados:</strong> 4</p>
-            <p><strong>Total menús a preparar:</strong> 9</p>
-        </div>
-    </aside>
+        <!-- Lista del dia para cocina -->
+        <section class="consolidado-section">
+            <h2>Cantidades por día (para cocina)</h2>
+            <div id="totales-dia" class="dias-cocina"></div>
+        </section>
+
+        <!-- Tabla de Consolidado -->
+        <section class="consolidado-section">
+            <h2>Pedidos confirmados de la semana</h2>
+
+            <table class="consolidado-table">
+                <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Días y platos</th>
+                </tr>
+                </thead>
+                <tbody id="lista-consolidado"></tbody>
+            </table>
+        </section>
+
+        <!-- Totales -->
+        <aside class="totales-section">
+            <h3>Totales por opción semanal</h3>
+            <ul id="totales-semana" class="totales-list"></ul>
+
+            <div class="resumen-total">
+                <p><strong>Total empleados:</strong> <span id="total-empleados">0</span></p>
+                <p><strong>Total menús a preparar:</strong> <span id="total-menus">0</span></p>
+            </div>
+        </aside>
+    </div>
 
 </main>
 
@@ -96,6 +107,7 @@
     <small>© 2026 Byte — Sistema de Pedidos de Almuerzo</small>
 </footer>
 
+<script src="assets/js/datos.js"></script>
 <script src="assets/js/consolidado.js"></script>
 </body>
 </html>

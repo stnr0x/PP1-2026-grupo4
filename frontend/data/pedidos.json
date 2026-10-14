@@ -1,0 +1,17 @@
+[
+  { "id": 1, "fechaPedido": "2026-10-12", "estado": "CONFIRMADO", "cantidadPersonas": 1, "idUsuario": 2, "pedidoDias": [
+      { "id": 1, "fechaEntrega": "2026-10-19", "idMenuDia": 1, "idPlato": 1 },
+      { "id": 2, "fechaEntrega": "2026-10-21", "idMenuDia": 3, "idPlato": 3 },
+      { "id": 3, "fechaEntrega": "2026-10-23", "idMenuDia": 5, "idPlato": 2 } ] },
+  { "id": 2, "fechaPedido": "2026-10-12", "estado": "CANCELADO", "cantidadPersonas": 1, "idUsuario": 3, "pedidoDias": [
+      { "id": 1, "fechaEntrega": "2026-10-20", "idMenuDia": 2, "idPlato": 3 } ] },
+  { "id": 3, "fechaPedido": "2026-10-13", "estado": "CONFIRMADO", "cantidadPersonas": 1, "idUsuario": 3, "pedidoDias": [
+      { "id": 1, "fechaEntrega": "2026-10-20", "idMenuDia": 2, "idPlato": 2 },
+      { "id": 2, "fechaEntrega": "2026-10-22", "idMenuDia": 4, "idPlato": 4 } ] },
+  { "id": 4, "fechaPedido": "2026-10-13", "estado": "CONFIRMADO", "cantidadPersonas": 1, "idUsuario": 4, "pedidoDias": [
+      { "id": 1, "fechaEntrega": "2026-10-19", "idMenuDia": 1, "idPlato": 2 },
+      { "id": 2, "fechaEntrega": "2026-10-24", "idMenuDia": 6, "idPlato": 3 } ] },
+  { "id": 5, "fechaPedido": "2026-10-14", "estado": "PENDIENTE", "cantidadPersonas": 1, "idUsuario": 5, "pedidoDias": [
+      { "id": 1, "fechaEntrega": "2026-10-19", "idMenuDia": 1, "idPlato": 3 },
+      { "id": 2, "fechaEntrega": "2026-10-21", "idMenuDia": 3, "idPlato": 1 } ] }
+]

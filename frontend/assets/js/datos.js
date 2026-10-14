@@ -104,6 +104,11 @@ async function obtenerMenuPlatos() {
     return obtenerDesdeJson('menuPlatos', 'data/menu-platos.json');
 }
 
+// ---------- usuarios ----------
+async function obtenerUsuarios() {
+    return obtenerDesdeJson('usuarios', 'data/usuarios.json');
+}
+
 // ---------- asistencia ----------
 async function obtenerAsistencia() {
     const asistencia = leer('asistencia');
@@ -121,10 +126,7 @@ async function guardarAsistencia(dias) {
 
 // devuelve los pedidos; los PENDIENTES con el plazo vencido pasan solos a CONFIRMADO
 async function obtenerPedidos() {
-    const pedidos = leer('pedidos');
-    if (pedidos === null) {
-        return []; // todavia no hay pedidos
-    }
+    const pedidos = await obtenerDesdeJson('pedidos', 'data/pedidos.json'); // la primera vez trae los pedidos de ejemplo
 
     let huboCambios = false;
     for (const pedido of pedidos) {

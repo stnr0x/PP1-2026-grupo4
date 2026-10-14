@@ -197,7 +197,8 @@ body {
     font-weight: 500;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     width: 100%;
     padding: 12px;
     border: 1px solid #DCCDB5;
@@ -208,7 +209,8 @@ body {
     box-sizing: border-box;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
     outline: none;
     border-color: #B8862B;
 }
@@ -422,4 +424,108 @@ footer {
     .actions .btn {
         width: 100%;
     }
+}
+
+/* aviso de pedidos pendientes que todavia no cuentan */
+.aviso-pendientes {
+    background-color: #F5EFE6;
+    border: 1px dashed #B8862B;
+    border-radius: 10px;
+    color: #6B4423;
+    padding: 12px 16px;
+    margin: 0 0 20px;
+    font-size: 0.9rem;
+}
+
+/* tarjetas con las cantidades de cada dia */
+.dias-cocina {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 1rem;
+}
+
+.tarjeta-dia {
+    background-color: #FBF8F3;
+    border: 1px solid #DCCDB5;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.tarjeta-dia h3 {
+    color: #6B4423;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #B8862B;
+}
+
+.tarjeta-dia ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tarjeta-dia li {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    color: #2B2118;
+    font-size: 0.9rem;
+}
+
+.tarjeta-dia li.sin-pedidos {
+    color: #9A8B7A;
+}
+
+.tarjeta-dia .total-dia {
+    border-top: 1px solid #DCCDB5;
+    margin-top: 4px;
+    padding-top: 6px;
+    font-weight: 700;
+}
+
+/* estados: cargando, vacio y error */
+.mensaje {
+    text-align: center;
+    padding: 40px 24px;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.mensaje.cargando {
+    background: #F5EFE6;
+    color: #7A6A5A;
+    font-weight: 600;
+}
+
+.mensaje.vacio {
+    background: #F5EFE6;
+    color: #6B4423;
+    border: 1px dashed #B8862B;
+    font-weight: 600;
+}
+
+.mensaje.error {
+    background: #FBEAEA;
+    color: #A71732;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .dias-cocina {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .dias-cocina {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* esconde un elemento (lo pone y lo saca el JS) */
+.oculto {
+    display: none;
 }
