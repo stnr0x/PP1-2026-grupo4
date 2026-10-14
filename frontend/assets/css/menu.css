@@ -458,6 +458,91 @@ footer {
     }
 }
 
+/* leyenda del plazo para pedir o modificar */
+.leyenda-plazo {
+    color: #7A6A5A;
+    font-size: 0.9rem;
+    margin: -4px 0 14px;
+}
+
+/* tarjeta de pedido ya registrado para la semana */
+.pedido-hecho {
+    background-color: #FBF8F3;
+    border: 1px solid #DCCDB5;
+    border-left: 4px solid #6B4423;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 20px 0;
+}
+
+.pedido-hecho-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.pedido-hecho h2 {
+    color: #2B2118;
+    font-size: 1.15rem;
+    margin: 0;
+}
+
+.pedido-hecho ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+}
+
+.pedido-hecho li {
+    padding: 6px 0;
+    border-bottom: 1px solid #E0D4C0;
+    color: #2B2118;
+}
+
+.pedido-hecho p {
+    color: #7A6A5A;
+    margin: 0 0 14px;
+}
+
+/* etiquetas de estado del pedido */
+.badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge-pendiente {
+    border: 1px dashed #B8862B;
+    background-color: #F5EFE6;
+    color: #6B4423;
+}
+
+.badge-confirmado {
+    border: 1px solid #6B4423;
+    background-color: #6B4423;
+    color: #FFFFFF;
+}
+
+/* link con forma de boton */
+.btn-link {
+    display: inline-block;
+    padding: 9px 18px;
+    background-color: #6B4423;
+    color: #FFFFFF;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.btn-link:hover {
+    background-color: #5A381C;
+}
+
 /* esconde un elemento (lo pone y lo saca el JS) */
 .oculto {
     display: none;

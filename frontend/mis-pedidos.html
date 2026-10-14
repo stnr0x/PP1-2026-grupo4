@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis pedidos</title>
     <link rel="stylesheet" href="assets/css/mis-pedidos.css">
 </head>
@@ -32,39 +33,16 @@
   
   <main>
     <h1>Mis pedidos</h1>
+    <p class="subtitulo">Podés modificar o cancelar un pedido pendiente hasta el jueves a las 12 hs anterior a su semana. Después se confirma automáticamente.</p>
 
-    <section>
-
-      <article>
-        <h2>Semana del 19/05 al 23/05</h2>
-        <p><span class="badge-borrador">Pendiente</span></p>
-        <div>
-          <button type="button">Confirmar</button>
-          <button type="button">Modificar</button>
-          <button type="button">Cancelar</button>
-        </div>
-      </article>
-
-      <article>
-        <h2>Semana del 26/05 al 30/05</h2>
-        <p><span class="badge-confirmado">Confirmado</span></p>
-      </article>
-
-      <article>
-        <h2>Semana del 02/06 al 06/06</h2>
-        <p><span class="badge-borrador">Pendiente</span></p>
-        <div>
-          <button type="button">Confirmar</button>
-          <button type="button">Modificar</button>
-          <button type="button">Cancelar</button>
-        </div>
-      </article>
-
-    </section>
+    <!-- lista de pedidos (la dibuja el JS) -->
+    <section id="lista-mis-pedidos"></section>
   </main>
 
   <footer>
     <p>© 2026 Byte — Sistema de Pedidos de Almuerzo</p>
   </footer>
+  <script src="assets/js/datos.js"></script>
+  <script src="assets/js/mis-pedidos.js"></script>
 </body>
 </html>

@@ -5,32 +5,31 @@ let menuPlatos = [];
 
 let seleccion = {}; // plato elegido en cada menu: { idMenuDia: idPlato }
 let asistencia = []; // dias de asistencia guardados, ej: ['lunes', 'miercoles']
+let pedidoEditando = null; // pedido que se esta modificando (viene de Mis pedidos)
+let plazo = null; // jueves a las 12 hs anterior a la semana del menu
+
+const idUsuario = 1; // fijo hasta que este el login
 
 // selecciona los elementos que ya existen en el html
 const form = document.querySelector('#form-pedido');
 const cajaError = document.querySelector('#error-pedido');
 const contenedorPlatos = document.querySelector('#lista-platos');
+const bloquePedido = document.querySelector('#bloque-pedido');
+const tarjetaPedidoHecho = document.querySelector('#pedido-hecho');
 
 // elementos de la asistencia
 const panelAsistencia = document.querySelector('#panel-asistencia');
 const resumenAsistencia = document.querySelector('#resumen-asistencia');
 const errorAsistencia = document.querySelector('#error-asistencia');
 
-// nombres con tilde para mostrar en la leyenda
-const nombresLindos = {
-    lunes: 'Lunes', martes: 'Martes', miercoles: 'Miércoles',
-    jueves: 'Jueves', viernes: 'Viernes', sabado: 'Sábado'
-};
-
-// nombres de los dias en el orden de getDay() (0 = domingo)
-const nombresDias = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+// nombresDias, nombresLindos, nombreDia, formatearFecha, calcularPlazo y textoPlazo estan en datos.js
 
 // funcion que muestra un mensaje en lugar de los platos (cargando, vacio o error)
 function mostrarMensaje(texto, tipo) {
     contenedorPlatos.innerHTML = `<p class="mensaje ${tipo}">${texto}</p>`;
 }
 
-// funcion que trae los tres json y dibuja la pantalla
+// funcion que trae los datos y decide que mostrar
 async function cargarDatos() {
     mostrarMensaje('Cargando el menú...', 'cargando'); // estado cargando, antes del await
 
@@ -39,6 +38,7 @@ async function cargarDatos() {
         menusDia = await obtenerMenusDia();
         menuPlatos = await obtenerMenuPlatos();
         asistencia = await obtenerAsistencia();
+        const pedidos = await obtenerPedidos();
 
         menusDia = menusDia.filter(menu => menu.publicado); // solo los menus publicados
 
@@ -51,25 +51,30 @@ async function cargarDatos() {
         if (asistencia.length > 0) {
             mostrarResumenAsistencia(); // si ya estaba guardada, muestra la leyenda
         }
+
+        plazo = calcularPlazo(menusDia[0].fecha);
+        const plazoAbierto = ahora() < plazo;
+        const pedidoSemana = buscarPedidoDeLaSemana(pedidos, menusDia, idUsuario);
+        const idEditar = Number(new URLSearchParams(location.search).get('editar')); // menu.html?editar=1
+
+        if (pedidoSemana !== undefined && pedidoSemana.id === idEditar && pedidoSemana.estado === 'PENDIENTE' && plazoAbierto) {
+            empezarEdicion(pedidoSemana); // viene de Mis pedidos a modificar
+        } else if (pedidoSemana !== undefined) {
+            mostrarPedidoHecho(pedidoSemana); // ya pidio esta semana
+            return;
+        } else if (!plazoAbierto) {
+            mostrarPlazoCerrado(); // no pidio y ya cerro el plazo
+            return;
+        } else {
+            document.querySelector('#leyenda-plazo').textContent = `Podés hacer tu pedido hasta el ${textoPlazo(plazo)}.`;
+        }
+
         renderMenuSemana();
         renderResumen();
-        renderPedidos(await obtenerPedidos()); // pedidos ya guardados en esta sesion
     } catch (error) {
         console.error('No se pudo cargar el menú:', error); // para el programador
         mostrarMensaje('No pudimos cargar el menú. Probá recargar la página.', 'error'); // estado error
     }
-}
-
-// devuelve el nombre del dia de una fecha, ej: '2026-10-05' -> 'lunes'
-function nombreDia(fecha) {
-    const dia = new Date(fecha + 'T00:00:00'); // T00 para que no tome la fecha en UTC y de el dia anterior
-    return nombresDias[dia.getDay()];
-}
-
-// pasa '2026-10-05' a '05/10'
-function formatearFecha(fecha) {
-    const partes = fecha.split('-'); // ['2026', '10', '05']
-    return partes[2] + '/' + partes[1];
 }
 
 // escribe la semana del pedido con la primera y la ultima fecha del menu
@@ -88,6 +93,59 @@ function diasMarcados() {
     }
     return dias;
 }
+
+// ---------- estados de la pantalla ----------
+
+// carga los platos del pedido para modificarlos
+function empezarEdicion(pedido) {
+    pedidoEditando = pedido;
+    for (const pd of pedido.pedidoDias) {
+        seleccion[pd.idMenuDia] = pd.idPlato; // marca los platos que ya tenia
+    }
+    // si la asistencia cambio, saca los dias que ya no estan
+    for (const menu of menusDia) {
+        if (!asistencia.includes(nombreDia(menu.fecha))) {
+            delete seleccion[menu.id];
+        }
+    }
+    document.querySelector('#leyenda-plazo').textContent = `Estás modificando tu pedido. Podés cambiarlo hasta el ${textoPlazo(plazo)}.`;
+    document.querySelector('#btn-guardar-pedido').textContent = 'Guardar cambios';
+}
+
+// esconde la eleccion y muestra la tarjeta del pedido ya hecho
+function mostrarPedidoHecho(pedido) {
+    let detalle = '';
+    for (const pd of pedido.pedidoDias) {
+        const plato = platos.find(p => p.id === pd.idPlato);
+        detalle = detalle + `<li><strong>${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}:</strong> ${plato.nombre}</li>`;
+    }
+
+    let aviso = 'Tu pedido está confirmado y ya no se puede modificar.';
+    if (pedido.estado === 'PENDIENTE') {
+        aviso = `Podés modificarlo o cancelarlo desde Mis pedidos hasta el ${textoPlazo(plazo)}. Después se confirma automáticamente.`;
+    }
+
+    tarjetaPedidoHecho.innerHTML = `
+        <div class="pedido-hecho-cabecera">
+            <h2>✓ Pedido registrado para la semana del ${document.querySelector('#semana-pedido').textContent}</h2>
+            <span class="badge badge-${pedido.estado.toLowerCase()}">${textosEstado[pedido.estado]}</span>
+        </div>
+        <ul>${detalle}</ul>
+        <p>${aviso}</p>
+        <a href="mis-pedidos.html" class="btn-link">Ir a Mis pedidos</a>
+    `;
+    bloquePedido.classList.add('oculto');
+    tarjetaPedidoHecho.classList.remove('oculto');
+}
+
+// no hizo pedido y el plazo ya vencio
+function mostrarPlazoCerrado() {
+    mostrarMensaje(`El plazo para pedir esta semana cerró el ${textoPlazo(plazo)}.`, 'vacio');
+    document.querySelector('#seccion-resumen').classList.add('oculto');
+}
+
+// ---------- dibujar el menu ----------
+
 // funcion que arma el html de la tarjeta de un plato
 function crearOpcion(menu, plato) {
     let clase = 'opcion-plato';
@@ -141,6 +199,7 @@ function renderMenuSemana() {
     }
     contenedorPlatos.innerHTML = html;
 }
+
 // escucha los clicks en las tarjetas de platos
 contenedorPlatos.addEventListener('click', function (evento) {
     const tarjeta = evento.target.closest('.opcion-plato'); // la tarjeta que se toco
@@ -182,29 +241,8 @@ function renderResumen() {
     }
     contenedor.innerHTML = `<ul>${html}</ul>`;
 }
-// funcion que arma el html de un pedido guardado
-function crearItemPedido(pedido) {
-    let detalle = '';
-    for (const pd of pedido.pedidoDias) {
-        const menu = menusDia.find(m => m.id === pd.idMenuDia);
-        const plato = platos.find(p => p.id === pd.idPlato);
-        detalle = detalle + `<p>${menu.descripcion}: ${plato.nombre}</p>`;
-    }
-    return `<li class="card-pedido">
-        <h4>Pedido #${pedido.id} · ${pedido.estado}</h4>
-        ${detalle}
-    </li>`;
-}
 
-// funcion que dibuja todos los pedidos guardados
-function renderPedidos(lista) {
-    const contenedor = document.querySelector('#lista-pedidos');
-    let html = '';
-    for (const pedido of lista) {
-        html = html + crearItemPedido(pedido);
-    }
-    contenedor.innerHTML = html;
-}
+// ---------- guardar el pedido ----------
 
 // funciones para mostrar y limpiar el error del pedido
 function mostrarError(mensaje) {
@@ -220,6 +258,11 @@ function limpiarError() {
 // escucha el envio del formulario
 form.addEventListener('submit', async function (evento) {
     evento.preventDefault(); // evita que se recargue la pagina
+
+    if (ahora() >= plazo) {
+        mostrarError(`El plazo para pedir cerró el ${textoPlazo(plazo)}.`);
+        return;
+    }
 
     const dias = asistencia; // dias guardados
     if (dias.length === 0) {
@@ -248,22 +291,28 @@ form.addEventListener('submit', async function (evento) {
         });
     }
 
+    if (pedidoEditando !== null) {
+        // modificar: se actualiza el mismo pedido, no se crea otro
+        pedidoEditando.pedidoDias = pedidoDias;
+        await actualizarPedido(pedidoEditando);
+        mostrarPedidoHecho(pedidoEditando);
+        return;
+    }
+
     // arma el Pedido con los nombres del DER
     const pedido = {
         fechaPedido: new Date().toLocaleDateString('en-CA'), // fecha de hoy en formato AAAA-MM-DD
         estado: 'PENDIENTE',
         cantidadPersonas: 1,
-        idUsuario: 1,
+        idUsuario: idUsuario,
         pedidoDias: pedidoDias
     };
 
     await guardarPedido(pedido); // guarda el pedido (datos.js le pone el id)
-    renderPedidos(await obtenerPedidos()); // lee los pedidos guardados y los muestra sin recargar
-
-    seleccion = {}; // borra los platos elegidos
-    renderMenuSemana();
-    renderResumen();
+    mostrarPedidoHecho(pedido); // esconde la eleccion y muestra el pedido registrado, sin recargar
 });
+
+// ---------- asistencia ----------
 
 // muestra la leyenda chica con los dias y esconde los checkboxes
 function mostrarResumenAsistencia() {
@@ -289,7 +338,7 @@ document.querySelector('#btn-guardar-asistencia').addEventListener('click', asyn
     errorAsistencia.textContent = '';
     errorAsistencia.classList.remove('visible');
 
-    await guardarAsistencia(dias); // guarda en datos.js
+    await guardarAsistencia(dias); // guarda en datos.js (no cambia un pedido ya hecho)
     asistencia = dias;
 
     // si se quito un dia, se borra el plato que estaba elegido ese dia

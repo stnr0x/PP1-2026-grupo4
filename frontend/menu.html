@@ -60,24 +60,26 @@
     </div>
 </section>
 
- <section class="paso">
-        <h2>Elegí tu plato para cada día</h2>
-        <div id="lista-platos"></div>
- </section>
+  <!-- bloque para elegir y guardar (se esconde cuando ya hay pedido) -->
+ <div id="bloque-pedido">
+     <section class="paso">
+            <h2>Elegí tu plato para cada día</h2>
+            <p id="leyenda-plazo" class="leyenda-plazo"></p>
+            <div id="lista-platos"></div>
+     </section>
 
- <section class="paso resumen">
-        <h2>Resumen del pedido</h2>
-        <div id="resumen-pedido"></div>
-        <p id="error-pedido"></p>
-        <button type="submit" class="btn-guardar">Guardar pedido</button>
- </section>
+     <section class="paso resumen" id="seccion-resumen">
+            <h2>Resumen del pedido</h2>
+            <div id="resumen-pedido"></div>
+            <p id="error-pedido"></p>
+            <button type="submit" id="btn-guardar-pedido" class="btn-guardar">Guardar pedido</button>
+     </section>
+ </div>
 
 </form>
 
- <section class="resumen">
-        <h3>Pedidos registrados</h3>
-        <ul id="lista-pedidos"></ul>
- </section>
+ <!-- tarjeta que se ve cuando ya hay pedido para la semana -->
+ <section id="pedido-hecho" class="pedido-hecho oculto"></section>
 
  <footer>
         <small>© 2026 Byte — Sistema de Pedidos de Almuerzo</small>
