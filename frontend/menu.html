@@ -36,16 +36,27 @@
 <form id="form-pedido">
 
 <section class="paso">
-    <h2>Configura tus dias de asistencia</h2>
-<p class="semana-pedido">Pedido para la semana del <strong id="semana-pedido"></strong></p>
+    <h2>Tus días de asistencia</h2>
+    <p class="semana-pedido">Pedido para la semana del <strong id="semana-pedido"></strong></p>
 
-    <div class="dias">
-        <label class="dia-check"><input type="checkbox" name="dia" value="lunes"> Lunes</label>
-        <label class="dia-check"><input type="checkbox" name="dia" value="martes"> Martes</label>
-        <label class="dia-check"><input type="checkbox" name="dia" value="miercoles"> Miércoles</label>
-        <label class="dia-check"><input type="checkbox" name="dia" value="jueves"> Jueves</label>
-        <label class="dia-check"><input type="checkbox" name="dia" value="viernes"> Viernes</label>
-        <label class="dia-check"><input type="checkbox" name="dia" value="sabado"> Sábado</label>
+    <!-- panel para elegir los dias (se ve al entrar y al tocar Modificar) -->
+    <div id="panel-asistencia">
+        <div class="dias">
+            <label class="dia-check"><input type="checkbox" name="dia" value="lunes"> Lunes</label>
+            <label class="dia-check"><input type="checkbox" name="dia" value="martes"> Martes</label>
+            <label class="dia-check"><input type="checkbox" name="dia" value="miercoles"> Miércoles</label>
+            <label class="dia-check"><input type="checkbox" name="dia" value="jueves"> Jueves</label>
+            <label class="dia-check"><input type="checkbox" name="dia" value="viernes"> Viernes</label>
+            <label class="dia-check"><input type="checkbox" name="dia" value="sabado"> Sábado</label>
+        </div>
+        <p id="error-asistencia"></p>
+        <button type="button" id="btn-guardar-asistencia" class="btn-asistencia">Guardar asistencia</button>
+    </div>
+
+    <!-- leyenda chica (se ve despues de guardar) -->
+    <div id="resumen-asistencia" class="resumen-asistencia oculto">
+        <p>Venís: <strong id="dias-asistencia"></strong></p>
+        <button type="button" id="btn-modificar-asistencia" class="btn-secundario">Modificar asistencia</button>
     </div>
 </section>
 
@@ -61,6 +72,8 @@
         <button type="submit" class="btn-guardar">Guardar pedido</button>
  </section>
 
+</form>
+
  <section class="resumen">
         <h3>Pedidos registrados</h3>
         <ul id="lista-pedidos"></ul>
@@ -71,6 +84,7 @@
  </footer>
 
 </main>
+<script src="assets/js/datos.js"></script>
 <script src="assets/js/menu.js"></script>
 </body>
 </html>

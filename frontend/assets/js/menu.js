@@ -4,12 +4,23 @@ let menusDia = [];
 let menuPlatos = [];
 
 let seleccion = {}; // plato elegido en cada menu: { idMenuDia: idPlato }
-const pedidos = []; // pedidos guardados en memoria
+let asistencia = []; // dias de asistencia guardados, ej: ['lunes', 'miercoles']
 
 // selecciona los elementos que ya existen en el html
 const form = document.querySelector('#form-pedido');
 const cajaError = document.querySelector('#error-pedido');
 const contenedorPlatos = document.querySelector('#lista-platos');
+
+// elementos de la asistencia
+const panelAsistencia = document.querySelector('#panel-asistencia');
+const resumenAsistencia = document.querySelector('#resumen-asistencia');
+const errorAsistencia = document.querySelector('#error-asistencia');
+
+// nombres con tilde para mostrar en la leyenda
+const nombresLindos = {
+    lunes: 'Lunes', martes: 'Martes', miercoles: 'Miércoles',
+    jueves: 'Jueves', viernes: 'Viernes', sabado: 'Sábado'
+};
 
 // nombres de los dias en el orden de getDay() (0 = domingo)
 const nombresDias = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
@@ -24,16 +35,10 @@ async function cargarDatos() {
     mostrarMensaje('Cargando el menú...', 'cargando'); // estado cargando, antes del await
 
     try {
-        const respuestaPlatos = await fetch('data/platos.json');
-        platos = await respuestaPlatos.json();
-
-        const respuestaMenus = await fetch('data/menus-dia.json');
-        //const respuestaMenus = await fetch('data/menus-dia-vacio.json'); // para probar el estado vacio
-        //const respuestaMenus = await fetch('data/noexiste.json'); // para probar el estado error
-        menusDia = await respuestaMenus.json();
-
-        const respuestaMenuPlatos = await fetch('data/menu-platos.json');
-        menuPlatos = await respuestaMenuPlatos.json();
+        platos = await obtenerPlatos(); // las funciones obtener... estan en datos.js
+        menusDia = await obtenerMenusDia();
+        menuPlatos = await obtenerMenuPlatos();
+        asistencia = await obtenerAsistencia();
 
         menusDia = menusDia.filter(menu => menu.publicado); // solo los menus publicados
 
@@ -43,13 +48,19 @@ async function cargarDatos() {
         }
 
         mostrarSemana();
+        if (asistencia.length > 0) {
+            mostrarResumenAsistencia(); // si ya estaba guardada, muestra la leyenda
+        }
         renderMenuSemana();
         renderResumen();
+        renderPedidos(await obtenerPedidos()); // pedidos ya guardados en esta sesion
     } catch (error) {
         console.error('No se pudo cargar el menú:', error); // para el programador
         mostrarMensaje('No pudimos cargar el menú. Probá recargar la página.', 'error'); // estado error
     }
-}// devuelve el nombre del dia de una fecha, ej: '2026-10-05' -> 'lunes'
+}
+
+// devuelve el nombre del dia de una fecha, ej: '2026-10-05' -> 'lunes'
 function nombreDia(fecha) {
     const dia = new Date(fecha + 'T00:00:00'); // T00 para que no tome la fecha en UTC y de el dia anterior
     return nombresDias[dia.getDay()];
@@ -111,10 +122,14 @@ function crearBloqueDia(menu) {
 
 // funcion que dibuja los dias marcados con sus platos
 function renderMenuSemana() {
-    const dias = diasMarcados();
+    if (menusDia.length === 0) {
+        return; // si no cargo el menu, deja el mensaje de vacio o error
+    }
+
+    const dias = asistencia; // usa los dias guardados, no los tildes
 
     if (dias.length === 0) {
-        mostrarMensaje('Marcá los días que venís para ver el menú.', 'vacio');
+        mostrarMensaje('Configurá tu asistencia para ver el menú.', 'vacio');
         return;
     }
 
@@ -142,23 +157,6 @@ contenedorPlatos.addEventListener('click', function (evento) {
         seleccion[idMenu] = idPlato; // el dia estaba libre: se elige
     } else {
         return; // esta bloqueado: no hace nada
-    }
-
-    renderMenuSemana();
-    renderResumen();
-});
-
-// escucha cuando se tilda o destilda un dia
-document.querySelector('.dias').addEventListener('change', function () {
-    if (menusDia.length === 0) {
-        return; // si no cargo el menu, deja el mensaje de vacio o error
-    }
-
-    const dias = diasMarcados();
-    for (const menu of menusDia) {
-        if (!dias.includes(nombreDia(menu.fecha))) {
-            delete seleccion[menu.id]; // si se destildo el dia, se borra su plato elegido
-        }
     }
 
     renderMenuSemana();
@@ -208,11 +206,6 @@ function renderPedidos(lista) {
     contenedor.innerHTML = html;
 }
 
-// funcion que guarda el pedido, va aparte para despues conectarla al backend
-async function guardarPedido(pedido) {
-    pedidos.push(pedido); // hoy se guarda en memoria
-}
-
 // funciones para mostrar y limpiar el error del pedido
 function mostrarError(mensaje) {
     cajaError.textContent = mensaje;
@@ -228,9 +221,9 @@ function limpiarError() {
 form.addEventListener('submit', async function (evento) {
     evento.preventDefault(); // evita que se recargue la pagina
 
-    const dias = diasMarcados();
+    const dias = asistencia; // dias guardados
     if (dias.length === 0) {
-        mostrarError('Marcá al menos un día de asistencia.'); // CU005 flujo 2A
+        mostrarError('Configurá tu asistencia antes de guardar el pedido.');
         return;
     }
 
@@ -257,7 +250,6 @@ form.addEventListener('submit', async function (evento) {
 
     // arma el Pedido con los nombres del DER
     const pedido = {
-        id: pedidos.length + 1,
         fechaPedido: new Date().toLocaleDateString('en-CA'), // fecha de hoy en formato AAAA-MM-DD
         estado: 'PENDIENTE',
         cantidadPersonas: 1,
@@ -265,13 +257,61 @@ form.addEventListener('submit', async function (evento) {
         pedidoDias: pedidoDias
     };
 
-    await guardarPedido(pedido); // guarda el pedido
-    renderPedidos(pedidos); // muestra la lista sin recargar
+    await guardarPedido(pedido); // guarda el pedido (datos.js le pone el id)
+    renderPedidos(await obtenerPedidos()); // lee los pedidos guardados y los muestra sin recargar
 
-    form.reset(); // destilda los dias
     seleccion = {}; // borra los platos elegidos
     renderMenuSemana();
     renderResumen();
+});
+
+// muestra la leyenda chica con los dias y esconde los checkboxes
+function mostrarResumenAsistencia() {
+    const nombres = [];
+    for (const dia of asistencia) {
+        nombres.push(nombresLindos[dia]);
+    }
+    document.querySelector('#dias-asistencia').textContent = nombres.join(', ');
+    panelAsistencia.classList.add('oculto');
+    resumenAsistencia.classList.remove('oculto');
+}
+
+// boton guardar asistencia
+document.querySelector('#btn-guardar-asistencia').addEventListener('click', async function () {
+    const dias = diasMarcados();
+
+    if (dias.length === 0) {
+        errorAsistencia.textContent = 'Marcá al menos un día de asistencia.'; // CU005 flujo 2A
+        errorAsistencia.classList.add('visible');
+        return;
+    }
+
+    errorAsistencia.textContent = '';
+    errorAsistencia.classList.remove('visible');
+
+    await guardarAsistencia(dias); // guarda en datos.js
+    asistencia = dias;
+
+    // si se quito un dia, se borra el plato que estaba elegido ese dia
+    for (const menu of menusDia) {
+        if (!dias.includes(nombreDia(menu.fecha))) {
+            delete seleccion[menu.id];
+        }
+    }
+
+    mostrarResumenAsistencia();
+    renderMenuSemana();
+    renderResumen();
+});
+
+// boton modificar asistencia
+document.querySelector('#btn-modificar-asistencia').addEventListener('click', function () {
+    // vuelve a tildar los checkboxes segun lo guardado
+    for (const check of document.querySelectorAll('input[name="dia"]')) {
+        check.checked = asistencia.includes(check.value);
+    }
+    resumenAsistencia.classList.add('oculto');
+    panelAsistencia.classList.remove('oculto');
 });
 
 cargarDatos(); // arranca la carga al abrir la pagina

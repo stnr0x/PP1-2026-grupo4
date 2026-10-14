@@ -169,6 +169,64 @@ label {
     cursor: pointer;
 }
 
+/* boton guardar asistencia */
+.btn-asistencia {
+    margin-top: 14px;
+    padding: 10px 20px;
+    background-color: #6B4423;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-asistencia:hover {
+    background-color: #5A381C;
+}
+
+/* error de la asistencia */
+#error-asistencia.visible {
+    color: #A71732;
+    font-weight: bold;
+    margin: 10px 0 0;
+}
+
+/* leyenda chica con los dias guardados */
+.resumen-asistencia {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background-color: #FBF8F3;
+    border: 1px solid #DCCDB5;
+    border-left: 4px solid #6B4423;
+    border-radius: 10px;
+    padding: 12px 16px;
+}
+
+.resumen-asistencia p {
+    margin: 0;
+    color: #2B2118;
+}
+
+/* boton modificar asistencia (con borde, menos llamativo) */
+.btn-secundario {
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #6B4423;
+    border: 1px solid #6B4423;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-secundario:hover {
+    background-color: #6B4423;
+    color: #FFFFFF;
+}
+
 /* bloque de cada dia con sus platos */
 .dia-bloque {
     margin-bottom: 24px;
@@ -398,4 +456,9 @@ footer {
     .opciones {
         grid-template-columns: 1fr;
     }
+}
+
+/* esconde un elemento (lo pone y lo saca el JS) */
+.oculto {
+    display: none;
 }
