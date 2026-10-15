@@ -150,17 +150,96 @@ async function obtenerUsuarios() {
     return obtenerDesdeJson('usuarios', 'data/usuarios.json');
 }
 
+// da de alta un usuario nuevo (el id lo pone el guardado, como la base de datos)
+async function crearUsuario(usuario) {
+    const usuarios = await obtenerUsuarios();
+    let mayor = 0;
+    for (const u of usuarios) {
+        if (u.id > mayor) {
+            mayor = u.id;
+        }
+    }
+    usuario.id = mayor + 1;
+    usuarios.push(usuario);
+    escribir('usuarios', usuarios);
+    return usuario;
+}
+
+// reemplaza un usuario que ya existe (mismo id) por su version nueva
+async function actualizarUsuario(usuarioActualizado) {
+    const usuarios = await obtenerUsuarios();
+    for (let i = 0; i < usuarios.length; i++) {
+        if (usuarios[i].id === usuarioActualizado.id) {
+            usuarios[i] = usuarioActualizado;
+        }
+    }
+    escribir('usuarios', usuarios);
+}
+
+// ---------- sesion ----------
+
+// guarda quien inicio sesion (solo el id)
+function iniciarSesion(usuario) {
+    escribir('usuarioActual', usuario.id);
+}
+
+function cerrarSesion() {
+    sessionStorage.removeItem('usuarioActual');
+}
+
+// devuelve el usuario que inicio sesion, o undefined si no hay nadie
+async function obtenerUsuarioActual() {
+    const id = leer('usuarioActual');
+    if (id === null) {
+        return undefined;
+    }
+    const usuarios = await obtenerUsuarios();
+    return usuarios.find(u => u.id === id && u.activo);
+}
+
+// se llama al abrir cada pantalla: si no hay sesion manda al login,
+// y si el rol no corresponde manda a su pantalla principal
+async function exigirSesion(esRestaurante) {
+    const usuario = await obtenerUsuarioActual();
+
+    if (usuario === undefined) {
+        location.href = 'login.html'; // no inicio sesion
+        return null;
+    }
+
+    if (usuario.esUsuarioRestaurante !== esRestaurante) {
+        if (usuario.esUsuarioRestaurante) {
+            location.href = 'administrar-menus.html'; // es admin: va a su panel
+        } else {
+            location.href = 'menu.html'; // es empleado: va al menu
+        }
+        return null;
+    }
+
+    // muestra el nombre en la navbar y conecta el boton de cerrar sesion
+    const nombre = document.querySelector('.user-name');
+    if (nombre) {
+        nombre.textContent = `${usuario.nombre} ${usuario.apellido}`;
+    }
+    const salir = document.querySelector('.btn-logout');
+    if (salir) {
+        salir.addEventListener('click', cerrarSesion); // borra la sesion antes de ir al login
+    }
+    return usuario;
+}
+
 // ---------- asistencia ----------
-async function obtenerAsistencia() {
-    const asistencia = leer('asistencia');
+// cada usuario tiene su propia asistencia (clave 'asistencia-1', 'asistencia-2', ...)
+async function obtenerAsistencia(idUsuario) {
+    const asistencia = leer('asistencia-' + idUsuario);
     if (asistencia === null) {
         return []; // todavia no se configuro
     }
     return asistencia;
 }
 
-async function guardarAsistencia(dias) {
-    escribir('asistencia', dias);
+async function guardarAsistencia(idUsuario, dias) {
+    escribir('asistencia-' + idUsuario, dias);
 }
 
 // ---------- pedidos ----------

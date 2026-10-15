@@ -47,23 +47,35 @@
 
                 <div class="role-tag">Rol: Empleado</div>
 
-                <form action="#" method="POST">
+                <form id="form-datos">
                     <div class="form-group">
-                        <label for="nombre">Nombre completo</label>
-                        <input type="text" id="nombre" name="nombre" value="Juan Pérez" required>
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre">
+                        <p id="error-nombre" class="error-campo"></p>
                     </div>
-
                     <div class="form-group">
-                        <label for="email">Correo electrónico</label>
-                        <input type="email" id="email" name="email" value="juan.perez@empresa.com" required>
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido" name="apellido">
+                        <p id="error-apellido" class="error-campo"></p>
                     </div>
-
                     <div class="form-group">
-                        <label for="legajo">Número de legajo</label>
-                        <input type="text" id="legajo" name="legajo" value="EMP-4092" class="readonly-input" readonly>
+                        <label for="correo">Correo electrónico</label>
+                        <input type="email" id="correo" name="correo">
+                        <p id="error-correo" class="error-campo"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono">
+                        <p id="error-telefono" class="error-campo"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" id="direccion" name="direccion">
+                        <p id="error-direccion" class="error-campo"></p>
                     </div>
 
                     <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Guardar cambios</button>
+                    <p id="exito-datos" class="exito-perfil"></p>
                 </form>
             </div>
         </section>
@@ -75,24 +87,37 @@
                     <p class="card-desc">Actualizá tu clave de acceso para mantener tu cuenta segura.</p>
                 </div>
 
-                <form action="#" method="POST">
+                <form id="form-clave">
                     <div class="form-group">
-                        <label for="current-password">Contraseña actual</label>
-                        <input type="password" id="current-password" name="current-password" placeholder="••••••••" required>
+                        <label for="clave-actual">Contraseña actual</label>
+                        <input type="password" id="clave-actual" name="clave-actual" placeholder="••••••••">
+                        <p id="error-clave-actual" class="error-campo"></p>
                     </div>
-
                     <div class="form-group">
-                        <label for="new-password">Nueva contraseña</label>
-                        <input type="password" id="new-password" name="new-password" placeholder="••••••••" required minlength="6">
+                        <label for="clave-nueva">Nueva contraseña</label>
+                        <input type="password" id="clave-nueva" name="clave-nueva" placeholder="••••••••">
+                        <p id="error-clave-nueva" class="error-campo"></p>
                     </div>
-
                     <div class="form-group">
-                        <label for="confirm-new-password">Confirmar nueva contraseña</label>
-                        <input type="password" id="confirm-new-password" name="confirm-new-password" placeholder="••••••••" required minlength="6">
+                        <label for="clave-confirmar">Confirmar nueva contraseña</label>
+                        <input type="password" id="clave-confirmar" name="clave-confirmar" placeholder="••••••••">
+                        <p id="error-clave-confirmar" class="error-campo"></p>
                     </div>
 
                     <button type="submit" class="btn btn-secondary" style="margin-top: 1rem;">Actualizar contraseña</button>
+                    <p id="exito-clave" class="exito-perfil"></p>
                 </form>
+            </div>
+        </section>
+
+        <!-- dar de baja la cuenta (CU004) -->
+        <section class="profile-card zona-baja">
+            <div class="profile-card-header">
+                <h2>Dar de baja mi cuenta</h2>
+                <p class="card-desc">Tu cuenta queda desactivada y ya no vas a poder iniciar sesión.</p>
+            </div>
+            <div id="acciones-baja">
+                <button type="button" id="btn-baja" class="btn-baja">Dar de baja mi cuenta</button>
             </div>
         </section>
     </div>
@@ -102,5 +127,7 @@
     <small>© 2026 Byte — Sistema de Pedidos de Almuerzo</small>
 </footer>
 
+<script src="assets/js/datos.js"></script>
+<script src="assets/js/perfil.js"></script>
 </body>
 </html>

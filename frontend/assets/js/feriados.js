@@ -17,6 +17,11 @@ async function cargarDatos() {
     cajaEstado.innerHTML = '<p class="mensaje cargando">Cargando feriados...</p>'; // estado cargando
 
     try {
+        const usuario = await exigirSesion(true); // solo el usuario del restaurante (datos.js)
+        if (usuario === null) {
+            return; // no hay sesion: ya se fue al login
+        }
+
         feriados = await obtenerFeriados(); // las funciones obtener... estan en datos.js
         pedidos = await obtenerPedidos();
 

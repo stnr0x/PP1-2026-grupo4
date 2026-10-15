@@ -8,7 +8,7 @@ let pedidos = [];
 let semanaEditando = ''; // lunes de la semana que se esta editando, ej: '2026-10-26'
 let borrador = {}; // platos tildados en cada dia: { '2026-10-26': [1, 3], ... }
 
-const idAdmin = 6; // usuario que crea los menus (fijo hasta que este el login)
+let idAdmin = null; // usuario que crea los menus (el que inicio sesion)
 const diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
 
 // selecciona los elementos que ya existen en el html
@@ -31,6 +31,12 @@ async function cargarDatos() {
     mostrarMensaje('Cargando menús...', 'cargando'); // estado cargando, antes del await
 
     try {
+        const usuario = await exigirSesion(true); // solo el usuario del restaurante (datos.js)
+        if (usuario === null) {
+            return; // no hay sesion: ya se fue al login
+        }
+        idAdmin = usuario.id;
+
         platos = await obtenerPlatos(); // las funciones obtener... estan en datos.js
         menusDia = await obtenerMenusDia();
         menuPlatos = await obtenerMenuPlatos();

@@ -4,7 +4,7 @@ let pedidos = [];
 
 let cancelando = null; // id del pedido al que se le pregunta "¿seguro?" antes de cancelar
 
-const idUsuario = 1; // fijo hasta que este el login
+let idUsuario = null; // id del usuario que inicio sesion
 
 // selecciona el contenedor que ya existe en el html
 const contenedor = document.querySelector('#lista-mis-pedidos');
@@ -21,6 +21,12 @@ async function cargarDatos() {
     mostrarMensaje('Cargando tus pedidos...', 'cargando'); // estado cargando, antes del await
 
     try {
+        const usuario = await exigirSesion(false); // solo empleados (datos.js)
+        if (usuario === null) {
+            return; // no hay sesion: ya se fue al login
+        }
+        idUsuario = usuario.id;
+
         platos = await obtenerPlatos();
         pedidos = await obtenerPedidos(); // ya vienen confirmados si se vencio el plazo
         renderPedidos();

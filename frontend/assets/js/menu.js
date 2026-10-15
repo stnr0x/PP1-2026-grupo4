@@ -8,7 +8,7 @@ let asistencia = []; // dias de asistencia guardados, ej: ['lunes', 'miercoles']
 let pedidoEditando = null; // pedido que se esta modificando (viene de Mis pedidos)
 let plazo = null; // jueves a las 12 hs anterior a la semana del menu
 
-const idUsuario = 1; // fijo hasta que este el login
+let idUsuario = null; // id del usuario que inicio sesion
 
 // selecciona los elementos que ya existen en el html
 const form = document.querySelector('#form-pedido');
@@ -34,10 +34,16 @@ async function cargarDatos() {
     mostrarMensaje('Cargando el menú...', 'cargando'); // estado cargando, antes del await
 
     try {
+        const usuario = await exigirSesion(false); // solo empleados (datos.js)
+        if (usuario === null) {
+            return; // no hay sesion: ya se fue al login
+        }
+        idUsuario = usuario.id;
+
         platos = await obtenerPlatos(); // las funciones obtener... estan en datos.js
         menusDia = await obtenerMenusDia();
         menuPlatos = await obtenerMenuPlatos();
-        asistencia = await obtenerAsistencia();
+        asistencia = await obtenerAsistencia(idUsuario);
         const pedidos = await obtenerPedidos();
         const feriados = await obtenerFeriados();
 
@@ -345,7 +351,7 @@ document.querySelector('#btn-guardar-asistencia').addEventListener('click', asyn
     errorAsistencia.textContent = '';
     errorAsistencia.classList.remove('visible');
 
-    await guardarAsistencia(dias); // guarda en datos.js (no cambia un pedido ya hecho)
+    await guardarAsistencia(idUsuario, dias); // guarda en datos.js (no cambia un pedido ya hecho)
     asistencia = dias;
 
     // si se quito un dia, se borra el plato que estaba elegido ese dia

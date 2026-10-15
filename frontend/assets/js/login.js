@@ -9,7 +9,7 @@ const errorPassword = document.querySelector('#error-password'); // p del error 
 form.noValidate = true;
 
 // eschucha el evento submit del formulario
-form.addEventListener('submit', function (evento) {
+form.addEventListener('submit', async function (evento) {
     evento.preventDefault(); // evita que se recargue la pagina
 
     const email = emailInput.value.trim();
@@ -46,7 +46,28 @@ form.addEventListener('submit', function (evento) {
         return; // corta aca si algun campo fallo
     }
 
-    window.location.href = 'menu.html'; // redirige a la pantalla de menu
+    // busca el usuario con ese email y contraseña (CU002)
+    const usuarios = await obtenerUsuarios(); // esta en datos.js
+    const usuario = usuarios.find(u => u.correo.toLowerCase() === email.toLowerCase() && u.contrasena === password);
+
+    if (usuario === undefined) {
+        mostrarErrorCampo(passwordInput, errorPassword, 'Email o contraseña incorrectos.'); // CU002 flujo 3A
+        return;
+    }
+
+    if (!usuario.activo) {
+        mostrarErrorCampo(emailInput, errorEmail, 'Esta cuenta está dada de baja.');
+        return;
+    }
+
+    iniciarSesion(usuario); // guarda quien entro (datos.js)
+
+    // cada rol va a su pantalla principal
+    if (usuario.esUsuarioRestaurante) {
+        window.location.href = 'administrar-menus.html';
+    } else {
+        window.location.href = 'menu.html';
+    }
 });
 
 // saca el error del campo en cuanto el usuario escribe

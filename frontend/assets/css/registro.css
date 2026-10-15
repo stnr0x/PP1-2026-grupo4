@@ -67,3 +67,11 @@
 .login-redirect-section .btn-login-link:hover {
     background-color: #5A381C;
 }
+
+/* mensaje de cuenta creada */
+.exito-registro.visible {
+    color: #2E7D32;
+    font-weight: bold;
+    text-align: center;
+    margin: 12px 0 0;
+}

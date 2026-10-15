@@ -27,6 +27,11 @@ async function cargarDatos() {
     mostrarMensaje('Cargando datos...', 'cargando'); // estado cargando, antes del await
 
     try {
+        const usuario = await exigirSesion(true); // solo el usuario del restaurante (datos.js)
+        if (usuario === null) {
+            return; // no hay sesion: ya se fue al login
+        }
+
         platos = await obtenerPlatos(); // las funciones obtener... estan en datos.js
         menusDia = await obtenerMenusDia();
         menuPlatos = await obtenerMenuPlatos();

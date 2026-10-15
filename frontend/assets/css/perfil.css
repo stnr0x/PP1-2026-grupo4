@@ -190,3 +190,41 @@
         gap: 0.75rem;
     }
 }
+
+/* mensaje de datos guardados */
+.exito-perfil.visible {
+    color: #2E7D32;
+    font-weight: bold;
+    margin: 12px 0 0;
+}
+
+/* tarjeta de dar de baja: ocupa todo el ancho */
+.zona-baja {
+    grid-column: 1 / -1;
+    border-left: 4px solid #A71732;
+}
+
+.btn-baja {
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #A71732;
+    border: 1px solid #A71732;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-baja.lleno {
+    background-color: #A71732;
+    color: #FFFFFF;
+}
+
+.pregunta-baja {
+    color: #A71732;
+    font-weight: 600;
+    margin: 0 0 10px;
+}
+
+#acciones-baja button {
+    margin-right: 8px;
+}
