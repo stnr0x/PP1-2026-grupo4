@@ -292,3 +292,42 @@ footer {
   border-top: 1px solid #E0D4C0;
   margin-top: 40px;
 }
+
+/* celdas vacias antes del primer dia y despues del ultimo */
+td.fuera-mes {
+  background-color: transparent;
+  cursor: default;
+}
+
+/* mensajes de error y exito */
+.error-feriados.visible {
+  color: #A71732;
+  font-weight: bold;
+  margin: 0 0 12px;
+}
+
+.exito-feriados.visible {
+  color: #2E7D32;
+  font-weight: bold;
+  margin: 0 0 12px;
+}
+
+/* estados: cargando y error */
+.mensaje {
+  text-align: center;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.mensaje.cargando {
+  background: #F5EFE6;
+  color: #7A6A5A;
+  font-weight: 600;
+}
+
+.mensaje.error {
+  background: #FBEAEA;
+  color: #A71732;
+  font-weight: bold;
+}

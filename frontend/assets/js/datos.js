@@ -71,6 +71,29 @@ function textoSemana(fecha) {
     return `${lunes.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })} al ${sabado.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })}`;
 }
 
+// pasa un Date a texto 'AAAA-MM-DD' (hora local)
+function fechaTexto(fecha) {
+    return fecha.toLocaleDateString('en-CA'); // el formato de Canada es año-mes-dia
+}
+
+// suma (o resta) dias a una fecha, ej: sumarDias('2026-10-19', 7) -> '2026-10-26'
+function sumarDias(fecha, dias) {
+    const dia = new Date(fecha + 'T00:00:00');
+    dia.setDate(dia.getDate() + dias);
+    return fechaTexto(dia);
+}
+
+// lunes de la semana de una fecha, ej: '2026-10-21' -> '2026-10-19'
+function lunesDe(fecha) {
+    const dia = new Date(fecha + 'T00:00:00');
+    return sumarDias(fecha, -((dia.getDay() + 6) % 7));
+}
+
+// lunes de la semana que viene (la semana para la que se pide)
+function lunesSemanaQueViene() {
+    return sumarDias(lunesDe(fechaTexto(ahora())), 7);
+}
+
 // plazo para pedir o modificar: el jueves anterior a esa semana, a las 12 hs
 function calcularPlazo(fechaDeLaSemana) {
     const dia = new Date(fechaDeLaSemana + 'T00:00:00');
@@ -102,6 +125,24 @@ async function obtenerMenusDia() {
 
 async function obtenerMenuPlatos() {
     return obtenerDesdeJson('menuPlatos', 'data/menu-platos.json');
+}
+
+// el admin guarda los menus de la semana (MenuDia) y sus platos (MenuPlato)
+async function guardarMenusDia(lista) {
+    escribir('menusDia', lista);
+}
+
+async function guardarMenuPlatos(lista) {
+    escribir('menuPlatos', lista);
+}
+
+// ---------- feriados ----------
+async function obtenerFeriados() {
+    return obtenerDesdeJson('feriados', 'data/feriados.json'); // lista de fechas 'AAAA-MM-DD'
+}
+
+async function guardarFeriados(lista) {
+    escribir('feriados', lista);
 }
 
 // ---------- usuarios ----------

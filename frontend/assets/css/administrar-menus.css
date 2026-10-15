@@ -195,7 +195,7 @@ input[type="checkbox"] {
 }
 .menu-grid{
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     margin: 20px 0;
 }
@@ -342,7 +342,7 @@ footer {
 
 @media (max-width: 900px) {
     .menu-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -367,4 +367,99 @@ footer {
     .menu-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* semana que se esta editando */
+.semana-item.activa {
+    border-color: #6B4423;
+    border-width: 2px;
+}
+
+/* lista de platos para tildar en cada dia */
+.opcion-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    margin: 4px 0;
+    border: 1px solid #E0D4C0;
+    border-radius: 8px;
+    background-color: #F5EFE6;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.opcion-check:has(input:checked) {
+    border-color: #6B4423;
+    background-color: #FFFFFF;
+}
+
+.opcion-check small {
+    color: #7A6A5A;
+    margin-left: auto;
+}
+
+/* dia feriado: sin servicio */
+.card-dia.feriado {
+    background-color: #EFE6D8;
+    border-style: dashed;
+}
+
+.nota-dia {
+    color: #7A6A5A;
+    font-size: 13px;
+    font-style: italic;
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* semana con pedidos: solo lectura */
+.editor-bloqueado .opcion-check {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* mensajes de error y exito */
+.error-admin.visible {
+    color: #A71732;
+    font-weight: bold;
+    margin: 10px 0 0;
+}
+
+.exito-admin.visible {
+    color: #2E7D32;
+    font-weight: bold;
+    margin: 10px 0 0;
+}
+
+/* estados: cargando, vacio y error */
+.mensaje {
+    text-align: center;
+    padding: 30px 24px;
+    border-radius: 12px;
+    margin: 10px 0 20px;
+}
+
+.mensaje.cargando {
+    background: #F5EFE6;
+    color: #7A6A5A;
+    font-weight: 600;
+}
+
+.mensaje.vacio {
+    background: #F5EFE6;
+    color: #6B4423;
+    border: 1px dashed #B8862B;
+    font-weight: 600;
+}
+
+.mensaje.error {
+    background: #FBEAEA;
+    color: #A71732;
+    font-weight: bold;
+}
+
+/* esconde un elemento (lo pone y lo saca el JS) */
+.oculto {
+    display: none;
 }

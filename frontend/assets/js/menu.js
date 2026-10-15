@@ -39,11 +39,18 @@ async function cargarDatos() {
         menuPlatos = await obtenerMenuPlatos();
         asistencia = await obtenerAsistencia();
         const pedidos = await obtenerPedidos();
+        const feriados = await obtenerFeriados();
 
-        menusDia = menusDia.filter(menu => menu.publicado); // solo los menus publicados
+        // solo los menus publicados de la semana que viene, sin los dias feriados
+        const semana = textoSemana(lunesSemanaQueViene());
+        menusDia = menusDia.filter(menu =>
+            menu.publicado &&
+            textoSemana(menu.fecha) === semana &&
+            !feriados.includes(menu.fecha)
+        );
 
         if (menusDia.length === 0) {
-            mostrarMensaje('Todavía no hay menú publicado para esta semana.', 'vacio'); // estado vacio
+            mostrarMensaje('Todavía no hay menú publicado para la semana que viene.', 'vacio'); // estado vacio
             return;
         }
 
