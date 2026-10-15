@@ -4,32 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selecciona tu menu semanal</title>
+    <link rel="stylesheet" href="assets/css/navbar.css">
     <link rel="stylesheet" href="assets/css/menu.css">
 </head>
 <body>
 
-<header class="navbar">
-    <div class="navbar-inner">
-        <div class="navbar-brand">
-            <span class="logo">Byte</span>
-            <span class="brand-name">Sistema de Pedidos</span>
-        </div>
-
-        <nav>
-            <ul class="navbar-nav">
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="menu.html" class="active">Menú</a></li>
-                <li><a href="mis-pedidos.html">Mis Pedidos</a></li>
-                <li><a href="perfil.html">Mi Perfil</a></li>
-            </ul>
-        </nav>
-
-        <div class="navbar-user">
-            <span class="user-name">Juan Pérez</span>
-            <a href="login.html" class="btn-logout">Cerrar sesión</a>
-        </div>
-    </div>
-</header>
+<header id="navbar" class="navbar"></header> <!-- la arma assets/js/navbar.js -->
 
 <main>
     <h1>Armá tu pedido semanal</h1>
@@ -87,6 +67,7 @@
 
 </main>
 <script src="assets/js/datos.js"></script>
+<script src="assets/js/navbar.js"></script>
 <script src="assets/js/menu.js"></script>
 </body>
 </html>

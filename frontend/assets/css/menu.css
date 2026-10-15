@@ -6,94 +6,6 @@ body {
 }
 
 /*
-   Navbar (misma que Mi Perfil)
- */
-.navbar {
-    background-color: #EFE6D8;
-    padding: 14px 24px;
-    border-bottom: 1px solid #E0D4C0;
-}
-
-.navbar-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.navbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 700;
-    font-size: 1.3rem;
-}
-
-.logo {
-    color: #6B4423;
-}
-
-.brand-name {
-    color: #2B2118;
-}
-
-.navbar-user {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.user-name {
-    color: #2B2118;
-    font-weight: 500;
-}
-
-.btn-logout {
-    background-color: #6B4423;
-    color: #FFFFFF;
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-}
-
-.btn-logout:hover {
-    background-color: #5A381C;
-}
-
-.navbar-nav {
-    display: flex;
-    gap: 1.25rem;
-    align-items: center;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.navbar-nav a {
-    color: #7A6A5A;
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: color 0.2s ease;
-}
-
-.navbar-nav a:hover,
-.navbar-nav a.active {
-    color: #2B2118;
-    font-weight: 600;
-}
-
-.navbar-nav a.active {
-    border-bottom: 2px solid #B8862B;
-    padding-bottom: 2px;
-}
-
-/*
    Contenido
  */
 main {
@@ -436,15 +348,8 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .navbar-inner {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-    .navbar-nav {
-        flex-wrap: wrap;
-        gap: 0.75rem;
-    }
+    
+    
     
     main {
         padding: 20px;

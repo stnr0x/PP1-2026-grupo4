@@ -216,15 +216,7 @@ async function exigirSesion(esRestaurante) {
         return null;
     }
 
-    // muestra el nombre en la navbar y conecta el boton de cerrar sesion
-    const nombre = document.querySelector('.user-name');
-    if (nombre) {
-        nombre.textContent = `${usuario.nombre} ${usuario.apellido}`;
-    }
-    const salir = document.querySelector('.btn-logout');
-    if (salir) {
-        salir.addEventListener('click', cerrarSesion); // borra la sesion antes de ir al login
-    }
+    dibujarNavbar(usuario); // arma la navbar segun el rol (navbar.js)
     return usuario;
 }
 

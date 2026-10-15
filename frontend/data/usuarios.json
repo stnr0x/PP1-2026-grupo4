@@ -4,5 +4,5 @@
   { "id": 3, "nombre": "María", "apellido": "López", "correo": "maria.lopez@empresa.com", "contrasena": "123456", "telefono": "3424000003", "direccion": "Rivadavia 789", "esUsuarioRestaurante": false, "activo": true },
   { "id": 4, "nombre": "Pedro", "apellido": "Sánchez", "correo": "pedro.sanchez@empresa.com", "contrasena": "123456", "telefono": "3424000004", "direccion": "Urquiza 321", "esUsuarioRestaurante": false, "activo": true },
   { "id": 5, "nombre": "Lucía", "apellido": "Fernández", "correo": "lucia.fernandez@empresa.com", "contrasena": "123456", "telefono": "3424000005", "direccion": "Mitre 654", "esUsuarioRestaurante": false, "activo": true },
-  { "id": 6, "nombre": "Admin", "apellido": "Aromas Light", "correo": "admin@aromaslight.com", "contrasena": "admin123", "telefono": "3424000006", "direccion": "25 de Mayo 100", "esUsuarioRestaurante": true, "activo": true }
+  { "id": 6, "nombre": "Juan", "apellido": "Martínez", "correo": "admin@aromaslight.com", "contrasena": "admin123", "telefono": "3424000006", "direccion": "25 de Mayo 100", "esUsuarioRestaurante": true, "activo": true }
 ]
