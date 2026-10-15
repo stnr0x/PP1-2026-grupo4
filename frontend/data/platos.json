@@ -3,28 +3,24 @@
     "id": 1,
     "nombre": "Milanesa con pure",
     "descripcion": "Milanesa de carne, puré de papas",
-    "categoria": "clasico",
     "imagen": "assets/img/milanesa.jpg"
   },
   {
     "id": 2,
     "nombre": "Pastel de papa",
     "descripcion": "Carne picada, puré de papas, queso gratinado",
-    "categoria": "clasico",
     "imagen": "assets/img/pasteldepapa.jpg"
   },
   {
     "id": 3,
     "nombre": "Tortilla de acelga",
     "descripcion": "Huevo, acelga, cebolla",
-    "categoria": "vegetarianos",
     "imagen": "assets/img/tortilladeacelga.jpg"
   },
   {
     "id": 4,
     "nombre": "Matambre de cerdo",
     "descripcion": "Matambre de cerdo, salsa de tomate, queso, papas",
-    "categoria": "clasico",
     "imagen": "assets/img/matambre.jpg"
   }
 ]

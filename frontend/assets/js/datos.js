@@ -1,7 +1,7 @@
 // guardado temporal de datos (sessionStorage): se comparte entre pantallas
-// y se borra al cerrar la pestaña. cuando este el backend, solo cambia este archivo.
+// y se borra al cerrar la pestaña.
 
-// lee un dato guardado (devuelve null si no hay nada)
+// lee un dato guardado 
 function leer(clave) {
     const texto = sessionStorage.getItem(clave);
     if (texto === null) {
@@ -10,12 +10,12 @@ function leer(clave) {
     return JSON.parse(texto); // convierte el texto guardado en objetos
 }
 
-// guarda un dato (sessionStorage solo guarda texto)
+// guarda un dato 
 function escribir(clave, valor) {
     sessionStorage.setItem(clave, JSON.stringify(valor)); // convierte los objetos en texto
 }
 
-// la primera vez trae el json, y despues usa lo guardado
+// la primera vez trae el json, y despues usa lo que esta guardado
 async function obtenerDesdeJson(clave, ruta) {
     const guardado = leer(clave);
     if (guardado !== null) {

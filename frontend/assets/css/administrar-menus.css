@@ -277,11 +277,6 @@ footer {
     background-color: #FFFFFF;
 }
 
-.opcion-check small {
-    color: #7A6A5A;
-    margin-left: auto;
-}
-
 /* dia feriado: sin servicio */
 .card-dia.feriado {
     background-color: #EFE6D8;
