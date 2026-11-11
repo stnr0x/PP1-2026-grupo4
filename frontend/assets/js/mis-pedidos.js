@@ -28,7 +28,7 @@ async function cargarDatos() {
         idUsuario = usuario.id;
 
         platos = await obtenerPlatos();
-        pedidos = await obtenerPedidos(); // ya vienen confirmados si se vencio el plazo
+        pedidos = await obtenerPedidos(idUsuario); // GET /api/pedidos?idUsuario= (cruce 3); ya vienen confirmados si se vencio el plazo
         renderPedidos();
     } catch (error) {
         console.error('No se pudieron cargar los pedidos:', error); // para el programador
@@ -40,13 +40,17 @@ async function cargarDatos() {
 function crearTarjetaPedido(pedido) {
     const primera = pedido.pedidoDias[0].fechaEntrega;
     const plazo = calcularPlazo(primera);
-    const sePuedeModificar = pedido.estado === 'PENDIENTE' && ahora() < plazo;
+    const sePuedeModificar = pedido.estado === 'BORRADOR' && ahora() < plazo;
 
     // un renglon por cada dia del pedido
     let detalle = '';
     for (const pd of pedido.pedidoDias) {
         const plato = platos.find(p => p.id === pd.idPlato);
-        detalle = detalle + `<li><strong>${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}:</strong> ${plato.nombre}</li>`;
+        let comentario = '';
+        if (pd.comentario) {
+            comentario = ` <em>(${pd.comentario})</em>`; // columna comentario de pedido_dia
+        }
+        detalle = detalle + `<li><strong>${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}:</strong> ${plato.nombre}${comentario}</li>`;
     }
 
     // botones segun el estado
@@ -82,7 +86,7 @@ function crearTarjetaPedido(pedido) {
 
 // funcion que dibuja todos los pedidos del usuario, del mas nuevo al mas viejo
 function renderPedidos() {
-    const misPedidos = pedidos.filter(p => p.idUsuario === idUsuario);
+    const misPedidos = pedidos; // el backend ya los manda filtrados y del mas nuevo al mas viejo
 
     if (misPedidos.length === 0) {
         mostrarMensaje('Todavía no hiciste ningún pedido. <a href="menu.html">Ir al menú</a>', 'vacio'); // estado vacio
@@ -90,8 +94,8 @@ function renderPedidos() {
     }
 
     let html = '';
-    for (let i = misPedidos.length - 1; i >= 0; i--) { // recorre al reves: el ultimo pedido primero
-        html = html + crearTarjetaPedido(misPedidos[i]);
+    for (const pedido of misPedidos) {
+        html = html + crearTarjetaPedido(pedido);
     }
     contenedor.innerHTML = html;
 }
@@ -104,22 +108,25 @@ contenedor.addEventListener('click', async function (evento) {
     }
 
     const id = Number(boton.dataset.id); // Number porque dataset devuelve texto
-    const pedido = pedidos.find(p => p.id === id);
 
-    if (boton.dataset.accion === 'confirmar') {
-        pedido.estado = 'CONFIRMADO'; // CU008
-        await actualizarPedido(pedido);
-    } else if (boton.dataset.accion === 'cancelar') {
-        cancelando = id; // muestra la pregunta
-    } else if (boton.dataset.accion === 'cancelar-si') {
-        pedido.estado = 'CANCELADO'; // CU010
-        cancelando = null;
-        await actualizarPedido(pedido);
-    } else if (boton.dataset.accion === 'cancelar-no') {
-        cancelando = null; // vuelve a los botones normales
+    try {
+        if (boton.dataset.accion === 'confirmar') {
+            await cambiarEstadoPedido(id, 'CONFIRMADO'); // CU008: PATCH /api/pedidos/{id}/estado
+            pedidos = await obtenerPedidos(idUsuario); // vuelve a leer de la base
+        } else if (boton.dataset.accion === 'cancelar') {
+            cancelando = id; // muestra la pregunta
+        } else if (boton.dataset.accion === 'cancelar-si') {
+            cancelando = null;
+            await cambiarEstadoPedido(id, 'CANCELADO'); // CU010
+            pedidos = await obtenerPedidos(idUsuario);
+        } else if (boton.dataset.accion === 'cancelar-no') {
+            cancelando = null; // vuelve a los botones normales
+        }
+        renderPedidos();
+    } catch (error) {
+        renderPedidos();
+        contenedor.insertAdjacentHTML('afterbegin', `<p class="mensaje error">${error.message}</p>`);
     }
-
-    renderPedidos();
 });
 
 cargarDatos(); // arranca la carga al abrir la pagina
