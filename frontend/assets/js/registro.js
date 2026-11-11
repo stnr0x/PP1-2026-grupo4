@@ -65,25 +65,25 @@ form.addEventListener('submit', async function (evento) {
         return; // corta aca si algun campo fallo (CU001 flujo 4A)
     }
 
-    // el correo no puede estar registrado (CU001 flujo 4B)
-    const usuarios = await obtenerUsuarios(); // esta en datos.js
-    const existe = usuarios.find(u => u.correo.toLowerCase() === email.toLowerCase());
-    if (existe !== undefined) {
-        mostrarErrorCampo(campos.email, 'Ya hay una cuenta con ese email.');
+    // arma el Usuario con los nombres del modelo. El rol (EMPLEADO) y activo los pone el backend.
+    let usuario;
+    try {
+        usuario = await crearUsuario({ // POST /api/usuarios (datos.js)
+            nombre: nombre,
+            apellido: apellido,
+            correo: email,
+            contrasena: password
+        });
+    } catch (error) {
+        if (error.status === 409) {
+            mostrarErrorCampo(campos.email, error.message); // CU001 flujo 4B: 'Ya hay una cuenta con ese email.'
+        } else if (error.status === 400) {
+            mostrarErrorCampo(campos.email, error.message); // lo rechazo Bean Validation
+        } else {
+            mostrarErrorCampo(campos.email, 'No pudimos conectar con el servidor. Probá de nuevo.');
+        }
         return;
     }
-
-    // arma el Usuario con los nombres del DER (siempre como empleado)
-    const usuario = await crearUsuario({
-        nombre: nombre,
-        apellido: apellido,
-        correo: email,
-        contrasena: password,
-        telefono: '',
-        direccion: '',
-        esUsuarioRestaurante: false,
-        activo: true
-    });
 
     iniciarSesion(usuario); // entra directamente con la cuenta nueva
     cajaExito.textContent = `¡Cuenta creada, ${usuario.nombre}! Te llevamos al menú...`;

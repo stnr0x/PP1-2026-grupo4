@@ -11,7 +11,13 @@ formClave.noValidate = true;
 
 // funcion que trae el usuario y completa el formulario con sus datos (CU003)
 async function cargarDatos() {
-    usuario = await exigirSesion(false); // solo empleados (datos.js)
+    try {
+        usuario = await exigirSesion(false); // solo empleados (datos.js)
+    } catch (error) {
+        console.error('No se pudo cargar el perfil:', error);
+        mostrarExito('#exito-datos', 'No pudimos cargar tus datos. Probá recargar la página.');
+        return;
+    }
     if (usuario === null) {
         return; // no hay sesion: ya se fue al login
     }
@@ -19,8 +25,7 @@ async function cargarDatos() {
     document.querySelector('#nombre').value = usuario.nombre;
     document.querySelector('#apellido').value = usuario.apellido;
     document.querySelector('#correo').value = usuario.correo;
-    document.querySelector('#telefono').value = usuario.telefono;
-    document.querySelector('#direccion').value = usuario.direccion;
+    document.querySelector('#telefono').value = usuario.telefono ?? ''; // puede venir null de la base
 }
 
 // ---------- datos personales ----------
@@ -46,26 +51,26 @@ formDatos.addEventListener('submit', async function (evento) {
     if (partes.length !== 2 || partes[0] === '' || !partes[1].includes('.')) {
         mostrarError('correo', 'Ingresá un email válido.');
         hayError = true;
-    } else {
-        // el correo no puede ser de otra cuenta
-        const usuarios = await obtenerUsuarios();
-        const otro = usuarios.find(u => u.id !== usuario.id && u.correo.toLowerCase() === correo.toLowerCase());
-        if (otro !== undefined) {
-            mostrarError('correo', 'Ese email ya lo usa otra cuenta.');
-            hayError = true;
-        }
     }
 
     if (hayError) {
         return;
     }
 
-    usuario.nombre = nombre;
-    usuario.apellido = apellido;
-    usuario.correo = correo;
-    usuario.telefono = document.querySelector('#telefono').value.trim();
-    usuario.direccion = document.querySelector('#direccion').value.trim();
-    await actualizarUsuario(usuario); // guarda en datos.js
+    const cambios = {
+        id: usuario.id,
+        nombre: nombre,
+        apellido: apellido,
+        correo: correo,
+        telefono: document.querySelector('#telefono').value.trim()
+    };
+    try {
+        usuario = await actualizarUsuario(cambios); // PUT /api/usuarios/{id} (datos.js)
+    } catch (error) {
+        // 409: el correo ya lo usa otra cuenta (lo controla el backend)
+        mostrarError('correo', error.message);
+        return;
+    }
 
     document.querySelector('.user-name').textContent = `${usuario.nombre} ${usuario.apellido}`; // actualiza la navbar
     mostrarExito('#exito-datos', 'Datos actualizados.');
@@ -81,8 +86,8 @@ formClave.addEventListener('submit', async function (evento) {
     const confirmar = document.querySelector('#clave-confirmar').value;
     let hayError = false;
 
-    if (actual !== usuario.contrasena) {
-        mostrarError('clave-actual', 'La contraseña actual no es correcta.');
+    if (actual === '') {
+        mostrarError('clave-actual', 'Ingresá tu contraseña actual.');
         hayError = true;
     }
     if (nueva.length < 6) {
@@ -98,8 +103,13 @@ formClave.addEventListener('submit', async function (evento) {
         return;
     }
 
-    usuario.contrasena = nueva;
-    await actualizarUsuario(usuario); // guarda en datos.js
+    // la contrasena no viaja al frontend: el backend compara la actual
+    try {
+        await cambiarContrasena(usuario.id, actual, nueva); // PUT /api/usuarios/{id}/contrasena
+    } catch (error) {
+        mostrarError('clave-actual', error.message); // 'La contraseña actual no es correcta.'
+        return;
+    }
     formClave.reset(); // vacia los campos
     mostrarExito('#exito-clave', 'Contraseña actualizada.');
 });
@@ -121,7 +131,7 @@ accionesBaja.addEventListener('click', async function (evento) {
         // cancela la accion (CU004 flujo 3A)
         accionesBaja.innerHTML = '<button type="button" id="btn-baja" class="btn-baja">Dar de baja mi cuenta</button>';
     } else if (boton.id === 'btn-baja-si') {
-        usuario.activo = false; // la cuenta queda desactivada
+        usuario.activo = false; // la cuenta queda desactivada (activo = FALSE en la tabla usuario)
         await actualizarUsuario(usuario);
         cerrarSesion();
         window.location.href = 'login.html';

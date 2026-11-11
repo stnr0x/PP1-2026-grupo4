@@ -23,7 +23,7 @@ function dibujarNavbar(usuario) {
         return; // la pagina no tiene navbar (login, registro)
     }
 
-    const esAdmin = usuario.esUsuarioRestaurante;
+    const esAdmin = esAdministrador(usuario); // rol 'ADMINISTRADOR' (datos.js)
     const paginaActual = location.pathname.split('/').pop(); // ej: 'menu.html'
 
     // links del rol, marcando el de la pagina actual

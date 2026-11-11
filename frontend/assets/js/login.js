@@ -46,24 +46,24 @@ form.addEventListener('submit', async function (evento) {
         return; // corta aca si algun campo fallo
     }
 
-    // busca el usuario con ese email y contraseña (CU002)
-    const usuarios = await obtenerUsuarios(); // esta en datos.js
-    const usuario = usuarios.find(u => u.correo.toLowerCase() === email.toLowerCase() && u.contrasena === password);
-
-    if (usuario === undefined) {
-        mostrarErrorCampo(passwordInput, errorPassword, 'Email o contraseña incorrectos.'); // CU002 flujo 3A
-        return;
-    }
-
-    if (!usuario.activo) {
-        mostrarErrorCampo(emailInput, errorEmail, 'Esta cuenta está dada de baja.');
+    // el backend verifica el email y la contraseña (CU002): POST /api/usuarios/login
+    let usuario;
+    try {
+        usuario = await login(email, password); // esta en datos.js
+    } catch (error) {
+        if (error.status === 401) {
+            // CU002 flujo 3A: datos incorrectos o cuenta dada de baja (el mensaje lo manda el backend)
+            mostrarErrorCampo(passwordInput, errorPassword, error.message);
+        } else {
+            mostrarErrorCampo(passwordInput, errorPassword, 'No pudimos conectar con el servidor. Probá de nuevo.');
+        }
         return;
     }
 
     iniciarSesion(usuario); // guarda quien entro (datos.js)
 
     // cada rol va a su pantalla principal
-    if (usuario.esUsuarioRestaurante) {
+    if (esAdministrador(usuario)) {
         window.location.href = 'administrar-menus.html';
     } else {
         window.location.href = 'menu.html';

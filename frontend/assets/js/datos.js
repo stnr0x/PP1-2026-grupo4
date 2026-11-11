@@ -1,30 +1,56 @@
-// guardado temporal de datos (sessionStorage): se comparte entre pantallas
-// y se borra al cerrar la pestaña.
+// acceso a los datos: todas las pantallas llaman a estas funciones.
+// Antes leian los json de data/ y guardaban en sessionStorage ("el backend de mentira").
+// Ahora le piden los datos al backend Spring Boot, que los lee de MySQL.
+// Las funciones mantienen el mismo nombre, asi las pantallas casi no cambiaron.
 
-// lee un dato guardado 
+// el frontend corre en Live Server (5500) y Spring en el 8080: por eso la URL completa
+const API = 'http://localhost:8080/api';
+
+// hace el fetch al backend y devuelve el JSON.
+// Si el backend responde con error (400, 404, 409...), lanza un Error con su mensaje,
+// asi la pantalla puede mostrar el motivo (ej: "El plazo para pedir esa semana ya cerró").
+async function pedirApi(ruta, metodo = 'GET', cuerpo = undefined) {
+    const opciones = { method: metodo, headers: {} };
+    if (cuerpo !== undefined) {
+        opciones.headers['Content-Type'] = 'application/json';
+        opciones.body = JSON.stringify(cuerpo); // convierte los objetos en texto
+    }
+
+    const respuesta = await fetch(`${API}${ruta}`, opciones);
+
+    if (!respuesta.ok) {
+        let mensaje = 'HTTP ' + respuesta.status;
+        try {
+            const error = await respuesta.json(); // el backend manda { mensaje: '...' }
+            if (error.mensaje) {
+                mensaje = error.mensaje;
+            }
+        } catch (e) {
+            // la respuesta no traia JSON: queda el codigo HTTP
+        }
+        const falla = new Error(mensaje);
+        falla.status = respuesta.status;
+        throw falla;
+    }
+
+    if (respuesta.status === 204) {
+        return null; // sin contenido
+    }
+    return respuesta.json();
+}
+
+// ---------- sesion (lo unico que queda en sessionStorage: el id de quien entro) ----------
+
 function leer(clave) {
     const texto = sessionStorage.getItem(clave);
     if (texto === null) {
         return null;
     }
-    return JSON.parse(texto); // convierte el texto guardado en objetos
+    return JSON.parse(texto);
 }
 
-// guarda un dato 
 function escribir(clave, valor) {
-    sessionStorage.setItem(clave, JSON.stringify(valor)); // convierte los objetos en texto
-}
-
-// la primera vez trae el json, y despues usa lo que esta guardado
-async function obtenerDesdeJson(clave, ruta) {
-    const guardado = leer(clave);
-    if (guardado !== null) {
-        return guardado; // ya estaba en el storage
-    }
-    const respuesta = await fetch(ruta);
-    const datos = await respuesta.json();
-    escribir(clave, datos); // lo guarda para las proximas veces
-    return datos;
+    sessionStorage.setItem(clave, JSON.stringify(valor));
 }
 
 // ---------- fechas (las usan todas las pantallas) ----------
@@ -38,9 +64,10 @@ const nombresLindos = {
     jueves: 'Jueves', viernes: 'Viernes', sabado: 'Sábado'
 };
 
-// textos de los estados del pedido (DER: PENDIENTE, CONFIRMADO, CANCELADO)
+// textos de los estados del pedido (los del script: BORRADOR, CONFIRMADO, CANCELADO).
+// Al empleado el BORRADOR se le muestra como "Pendiente" (todavia lo puede cambiar).
 const textosEstado = {
-    PENDIENTE: 'Pendiente', CONFIRMADO: 'Confirmado', CANCELADO: 'Cancelado'
+    BORRADOR: 'Pendiente', CONFIRMADO: 'Confirmado', CANCELADO: 'Cancelado'
 };
 
 // fecha y hora actual
@@ -89,12 +116,18 @@ function lunesDe(fecha) {
     return sumarDias(fecha, -((dia.getDay() + 6) % 7));
 }
 
-// lunes de la semana que viene (la semana para la que se pide)
+// lunes de la semana para la que se pide: la que viene, o la siguiente
+// si el plazo de la que viene ya cerro (jueves 12 hs)
 function lunesSemanaQueViene() {
-    return sumarDias(lunesDe(fechaTexto(ahora())), 7);
+    const lunes = sumarDias(lunesDe(fechaTexto(ahora())), 7);
+    if (ahora() >= calcularPlazo(lunes)) {
+        return sumarDias(lunes, 7);
+    }
+    return lunes;
 }
 
 // plazo para pedir o modificar: el jueves anterior a esa semana, a las 12 hs
+// (la misma regla la controla el backend en Plazos.java)
 function calcularPlazo(fechaDeLaSemana) {
     const dia = new Date(fechaDeLaSemana + 'T00:00:00');
     const lunes = new Date(dia);
@@ -112,68 +145,68 @@ function textoPlazo(plazo) {
     return `jueves ${dia}/${mes} a las 12 hs`;
 }
 
-// ---------- platos y menus ----------
+// ---------- platos y menus (M3) ----------
+
+// GET /api/platos -> tabla plato
 async function obtenerPlatos() {
-    return obtenerDesdeJson('platos', 'data/platos.json');
+    return pedirApi('/platos');
 }
 
+// GET /api/menus -> tabla menu_dia
 async function obtenerMenusDia() {
-    return obtenerDesdeJson('menusDia', 'data/menus-dia.json');
-    //return obtenerDesdeJson('menusDia', 'data/menus-dia-vacio.json'); // para probar el estado vacio
-    //return obtenerDesdeJson('menusDia', 'data/noexiste.json'); // para probar el estado error
+    return pedirApi('/menus');
 }
 
+// GET /api/menu-platos -> tabla menu_plato (que platos tiene cada menu y su stock)
 async function obtenerMenuPlatos() {
-    return obtenerDesdeJson('menuPlatos', 'data/menu-platos.json');
+    return pedirApi('/menu-platos');
 }
 
-// el admin guarda los menus de la semana (MenuDia) y sus platos (MenuPlato)
-async function guardarMenusDia(lista) {
-    escribir('menusDia', lista);
+// el admin guarda o publica los menus de una semana (menu_dia + menu_plato)
+// semana = { lunes, publicar, idUsuarioCreador, dias: [{ fecha, idPlatos: [..] }] }
+async function guardarSemanaMenus(semana) {
+    return pedirApi('/menus/semana', 'PUT', semana);
 }
 
-async function guardarMenuPlatos(lista) {
-    escribir('menuPlatos', lista);
-}
+// ---------- dias no laborables (feriados) ----------
 
-// ---------- feriados ----------
+// GET /api/dias-no-laborables -> las pantallas usan solo la fecha: ['2026-10-30', ...]
 async function obtenerFeriados() {
-    return obtenerDesdeJson('feriados', 'data/feriados.json'); // lista de fechas 'AAAA-MM-DD'
+    const dias = await pedirApi('/dias-no-laborables');
+    return dias.map(d => d.fecha);
 }
 
+// PUT con la lista completa de fechas marcadas
 async function guardarFeriados(lista) {
-    escribir('feriados', lista);
+    const dias = lista.map(fecha => ({ fecha: fecha }));
+    return pedirApi('/dias-no-laborables', 'PUT', dias);
 }
 
-// ---------- usuarios ----------
+// ---------- usuarios (M1) ----------
+
+// GET /api/usuarios (el consolidado muestra el nombre de cada empleado)
 async function obtenerUsuarios() {
-    return obtenerDesdeJson('usuarios', 'data/usuarios.json');
+    return pedirApi('/usuarios');
 }
 
-// da de alta un usuario nuevo (el id lo pone el guardado, como la base de datos)
+// POST /api/usuarios/login -> el usuario, o Error 'Email o contraseña incorrectos.'
+async function login(correo, contrasena) {
+    return pedirApi('/usuarios/login', 'POST', { correo: correo, contrasena: contrasena });
+}
+
+// POST /api/usuarios -> da de alta un empleado (el id lo pone la base)
 async function crearUsuario(usuario) {
-    const usuarios = await obtenerUsuarios();
-    let mayor = 0;
-    for (const u of usuarios) {
-        if (u.id > mayor) {
-            mayor = u.id;
-        }
-    }
-    usuario.id = mayor + 1;
-    usuarios.push(usuario);
-    escribir('usuarios', usuarios);
-    return usuario;
+    return pedirApi('/usuarios', 'POST', usuario);
 }
 
-// reemplaza un usuario que ya existe (mismo id) por su version nueva
-async function actualizarUsuario(usuarioActualizado) {
-    const usuarios = await obtenerUsuarios();
-    for (let i = 0; i < usuarios.length; i++) {
-        if (usuarios[i].id === usuarioActualizado.id) {
-            usuarios[i] = usuarioActualizado;
-        }
-    }
-    escribir('usuarios', usuarios);
+// PUT /api/usuarios/{id} -> datos personales o dar de baja
+async function actualizarUsuario(usuario) {
+    return pedirApi(`/usuarios/${usuario.id}`, 'PUT', usuario);
+}
+
+// PUT /api/usuarios/{id}/contrasena -> el backend verifica la actual
+async function cambiarContrasena(idUsuario, actual, nueva) {
+    return pedirApi(`/usuarios/${idUsuario}/contrasena`, 'PUT', { actual: actual, nueva: nueva });
 }
 
 // ---------- sesion ----------
@@ -187,19 +220,34 @@ function cerrarSesion() {
     sessionStorage.removeItem('usuarioActual');
 }
 
-// devuelve el usuario que inicio sesion, o undefined si no hay nadie
+// devuelve el usuario que inicio sesion (lo pide al backend), o undefined si no hay nadie
 async function obtenerUsuarioActual() {
     const id = leer('usuarioActual');
     if (id === null) {
         return undefined;
     }
-    const usuarios = await obtenerUsuarios();
-    return usuarios.find(u => u.id === id && u.activo);
+    try {
+        const usuario = await pedirApi(`/usuarios/${id}`);
+        if (!usuario.activo) {
+            return undefined;
+        }
+        return usuario;
+    } catch (error) {
+        if (error.status === 404) {
+            return undefined; // el usuario ya no existe
+        }
+        throw error; // otro error (ej: el backend apagado): que lo muestre la pantalla
+    }
+}
+
+// true si el usuario es la administradora (rol del script: 'ADMINISTRADOR' o 'EMPLEADO')
+function esAdministrador(usuario) {
+    return usuario.rol === 'ADMINISTRADOR';
 }
 
 // se llama al abrir cada pantalla: si no hay sesion manda al login,
 // y si el rol no corresponde manda a su pantalla principal
-async function exigirSesion(esRestaurante) {
+async function exigirSesion(soloAdmin) {
     const usuario = await obtenerUsuarioActual();
 
     if (usuario === undefined) {
@@ -207,8 +255,8 @@ async function exigirSesion(esRestaurante) {
         return null;
     }
 
-    if (usuario.esUsuarioRestaurante !== esRestaurante) {
-        if (usuario.esUsuarioRestaurante) {
+    if (esAdministrador(usuario) !== soloAdmin) {
+        if (esAdministrador(usuario)) {
             location.href = 'administrar-menus.html'; // es admin: va a su panel
         } else {
             location.href = 'menu.html'; // es empleado: va al menu
@@ -220,56 +268,54 @@ async function exigirSesion(esRestaurante) {
     return usuario;
 }
 
-// ---------- asistencia ----------
-// cada usuario tiene su propia asistencia (clave 'asistencia-1', 'asistencia-2', ...)
+// ---------- asistencia (M2) ----------
+// En la base hay una fila por empleado y por FECHA (tabla asistencia).
+// La pantalla trabaja con nombres de dia de la semana que se pide: ['lunes', 'miercoles'].
+// Estas dos funciones traducen entre las dos formas.
+
+// GET /api/asistencias?idUsuario=&desde=&hasta= -> ['lunes', 'miercoles', ...]
 async function obtenerAsistencia(idUsuario) {
-    const asistencia = leer('asistencia-' + idUsuario);
-    if (asistencia === null) {
-        return []; // todavia no se configuro
-    }
-    return asistencia;
+    const lunes = lunesSemanaQueViene();
+    const sabado = sumarDias(lunes, 5);
+    const filas = await pedirApi(`/asistencias?idUsuario=${idUsuario}&desde=${lunes}&hasta=${sabado}`);
+    return filas.filter(f => f.asiste).map(f => nombreDia(f.fecha));
 }
 
+// PUT /api/asistencias -> una fila por cada dia (lunes a sabado) con asiste true/false
 async function guardarAsistencia(idUsuario, dias) {
-    escribir('asistencia-' + idUsuario, dias);
+    const lunes = lunesSemanaQueViene();
+    const filas = [];
+    for (let i = 0; i < 6; i++) {
+        const fecha = sumarDias(lunes, i);
+        filas.push({ idUsuario: idUsuario, fecha: fecha, asiste: dias.includes(nombreDia(fecha)) });
+    }
+    return pedirApi('/asistencias', 'PUT', filas);
 }
 
-// ---------- pedidos ----------
+// ---------- pedidos (M4) ----------
 
-// devuelve los pedidos; los PENDIENTES con el plazo vencido pasan solos a CONFIRMADO
-async function obtenerPedidos() {
-    const pedidos = await obtenerDesdeJson('pedidos', 'data/pedidos.json'); // la primera vez trae los pedidos de ejemplo
-
-    let huboCambios = false;
-    for (const pedido of pedidos) {
-        const plazo = calcularPlazo(pedido.pedidoDias[0].fechaEntrega);
-        if (pedido.estado === 'PENDIENTE' && ahora() >= plazo) {
-            pedido.estado = 'CONFIRMADO'; // se confirma automaticamente
-            huboCambios = true;
-        }
+// GET /api/pedidos (todos) o /api/pedidos?idUsuario=3 (los de un empleado).
+// Los BORRADORES con el plazo vencido ya vienen CONFIRMADOS (lo hace el backend).
+async function obtenerPedidos(idUsuario) {
+    if (idUsuario !== undefined) {
+        return pedirApi(`/pedidos?idUsuario=${idUsuario}`);
     }
-    if (huboCambios) {
-        escribir('pedidos', pedidos);
-    }
-    return pedidos;
+    return pedirApi('/pedidos');
 }
 
+// POST /api/pedidos -> devuelve el pedido guardado (con su id y en BORRADOR)
 async function guardarPedido(pedido) {
-    const pedidos = await obtenerPedidos();
-    pedido.id = pedidos.length + 1; // el id lo pone el guardado, como lo hara la base de datos
-    pedidos.push(pedido);
-    escribir('pedidos', pedidos);
+    return pedirApi('/pedidos', 'POST', pedido);
 }
 
-// reemplaza un pedido que ya existe (mismo id) por su version nueva
-async function actualizarPedido(pedidoActualizado) {
-    const pedidos = await obtenerPedidos();
-    for (let i = 0; i < pedidos.length; i++) {
-        if (pedidos[i].id === pedidoActualizado.id) {
-            pedidos[i] = pedidoActualizado;
-        }
-    }
-    escribir('pedidos', pedidos);
+// PUT /api/pedidos/{id} -> reemplaza los dias de un pedido que todavia es BORRADOR
+async function actualizarPedido(pedido) {
+    return pedirApi(`/pedidos/${pedido.id}`, 'PUT', pedido);
+}
+
+// PATCH /api/pedidos/{id}/estado -> 'CONFIRMADO' o 'CANCELADO'
+async function cambiarEstadoPedido(idPedido, estado) {
+    return pedirApi(`/pedidos/${idPedido}/estado`, 'PATCH', { estado: estado });
 }
 
 // pedido (no cancelado) del usuario para la semana de esos menus, o undefined si no hay
@@ -279,4 +325,11 @@ function buscarPedidoDeLaSemana(pedidos, menusDia, idUsuario) {
         pedido.estado !== 'CANCELADO' &&
         menusDia.find(menu => menu.fecha === pedido.pedidoDias[0].fechaEntrega) !== undefined
     );
+}
+
+// ---------- consolidado (M5) ----------
+
+// GET /api/consolidado?fecha= -> [{ plato: 'Milanesa con puré', porciones: 2 }, ...]
+async function obtenerConsolidado(fecha) {
+    return pedirApi(`/consolidado?fecha=${fecha}`);
 }
