@@ -44,7 +44,7 @@ async function cargarDatos() {
         menusDia = await obtenerMenusDia();
         menuPlatos = await obtenerMenuPlatos();
         asistencia = await obtenerAsistencia(idUsuario);
-        const pedidos = await obtenerPedidos();
+        const pedidos = await obtenerPedidos(idUsuario); // solo los mios: /api/pedidos?idUsuario=
         const feriados = await obtenerFeriados();
 
         // solo los menus publicados de la semana que viene, sin los dias feriados
@@ -70,7 +70,7 @@ async function cargarDatos() {
         const pedidoSemana = buscarPedidoDeLaSemana(pedidos, menusDia, idUsuario);
         const idEditar = Number(new URLSearchParams(location.search).get('editar')); // menu.html?editar=1
 
-        if (pedidoSemana !== undefined && pedidoSemana.id === idEditar && pedidoSemana.estado === 'PENDIENTE' && plazoAbierto) {
+        if (pedidoSemana !== undefined && pedidoSemana.id === idEditar && pedidoSemana.estado === 'BORRADOR' && plazoAbierto) {
             empezarEdicion(pedidoSemana); // viene de Mis pedidos a modificar
         } else if (pedidoSemana !== undefined) {
             mostrarPedidoHecho(pedidoSemana); // ya pidio esta semana
@@ -134,7 +134,7 @@ function mostrarPedidoHecho(pedido) {
     }
 
     let aviso = 'Tu pedido está confirmado y ya no se puede modificar.';
-    if (pedido.estado === 'PENDIENTE') {
+    if (pedido.estado === 'BORRADOR') {
         aviso = `Podés modificarlo o cancelarlo desde Mis pedidos hasta el ${textoPlazo(plazo)}. Después se confirma automáticamente.`;
     }
 
@@ -171,7 +171,8 @@ function crearOpcion(menu, plato) {
     }
 
     return `<article class="${clase}" data-menu="${menu.id}" data-plato="${plato.id}">
-        <img src="${plato.imagen}" alt="${plato.nombre}">
+        <img src="${plato.imagen}" alt="${plato.nombre}" onerror="this.onerror=null; this.src='assets/img/sin-imagen.svg'">
+        <span class="categoria-plato">${plato.categoria}</span>
         <h4>${plato.nombre}</h4>
         <p>${plato.descripcion}</p>
     </article>`;
@@ -293,36 +294,36 @@ form.addEventListener('submit', async function (evento) {
 
     limpiarError();
 
-    // arma un PedidoDia por cada dia elegido
+    // arma un PedidoDia por cada dia elegido (tabla pedido_dia)
     const pedidoDias = [];
     for (const menu of menusElegidos) {
         pedidoDias.push({
-            id: pedidoDias.length + 1,
             fechaEntrega: menu.fecha,
             idMenuDia: menu.id,
             idPlato: seleccion[menu.id]
         });
     }
 
-    if (pedidoEditando !== null) {
-        // modificar: se actualiza el mismo pedido, no se crea otro
-        pedidoEditando.pedidoDias = pedidoDias;
-        await actualizarPedido(pedidoEditando);
-        mostrarPedidoHecho(pedidoEditando);
-        return;
-    }
-
-    // arma el Pedido con los nombres del DER
+    // la cabecera (tabla pedido). La fecha, el estado BORRADOR y el id los pone el backend
     const pedido = {
-        fechaPedido: new Date().toLocaleDateString('en-CA'), // fecha de hoy en formato AAAA-MM-DD
-        estado: 'PENDIENTE',
-        cantidadPersonas: 1,
         idUsuario: idUsuario,
         pedidoDias: pedidoDias
     };
 
-    await guardarPedido(pedido); // guarda el pedido (datos.js le pone el id)
-    mostrarPedidoHecho(pedido); // esconde la eleccion y muestra el pedido registrado, sin recargar
+    try {
+        let guardado;
+        if (pedidoEditando !== null) {
+            // modificar: se actualiza el mismo pedido, no se crea otro (PUT)
+            pedido.id = pedidoEditando.id;
+            guardado = await actualizarPedido(pedido);
+        } else {
+            guardado = await guardarPedido(pedido); // POST /api/pedidos
+        }
+        mostrarPedidoHecho(guardado); // esconde la eleccion y muestra el pedido registrado, sin recargar
+    } catch (error) {
+        // el backend rechazo el pedido: muestra el motivo (plazo cerrado, sin stock, dia no laborable...)
+        mostrarError(error.message);
+    }
 });
 
 // ---------- asistencia ----------
@@ -351,7 +352,13 @@ document.querySelector('#btn-guardar-asistencia').addEventListener('click', asyn
     errorAsistencia.textContent = '';
     errorAsistencia.classList.remove('visible');
 
-    await guardarAsistencia(idUsuario, dias); // guarda en datos.js (no cambia un pedido ya hecho)
+    try {
+        await guardarAsistencia(idUsuario, dias); // PUT /api/asistencias (no cambia un pedido ya hecho)
+    } catch (error) {
+        errorAsistencia.textContent = 'No se pudo guardar la asistencia: ' + error.message;
+        errorAsistencia.classList.add('visible');
+        return;
+    }
     asistencia = dias;
 
     // si se quito un dia, se borra el plato que estaba elegido ese dia
