@@ -184,6 +184,19 @@ label {
     margin-bottom: 10px;
 }
 
+/* categoria del plato (columna categoria de la tabla plato) */
+.opcion-plato .categoria-plato {
+    display: inline-block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6B4423;
+    background-color: #F5EFE6;
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-bottom: 6px;
+}
+
 .opcion-plato h4 {
     color: #2B2118;
     font-size: 15px;
@@ -421,7 +434,7 @@ footer {
     font-weight: 700;
 }
 
-.badge-pendiente {
+.badge-borrador {
     border: 1px dashed #B8862B;
     background-color: #F5EFE6;
     color: #6B4423;

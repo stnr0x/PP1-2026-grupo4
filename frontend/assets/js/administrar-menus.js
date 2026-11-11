@@ -75,23 +75,12 @@ function estaPublicada(lunes) {
     return menus.length > 0 && menus.filter(menu => menu.publicado).length === menus.length;
 }
 
-// true si algun empleado ya pidio para esa semana (no cancelado)
+// true si algun empleado ya pidio para esa semana. Cuenta tambien los cancelados:
+// sus lineas de pedido_dia siguen apuntando al menu (FK), asi que el menu no se puede borrar.
 function tienePedidos(lunes) {
     return pedidos.find(pedido =>
-        pedido.estado !== 'CANCELADO' &&
         lunesDe(pedido.pedidoDias[0].fechaEntrega) === lunes
     ) !== undefined;
-}
-
-// siguiente id libre de una lista (como lo haria la base de datos)
-function siguienteId(lista) {
-    let mayor = 0;
-    for (const item of lista) {
-        if (item.id > mayor) {
-            mayor = item.id;
-        }
-    }
-    return mayor + 1;
 }
 
 // ---------- dibujar ----------
@@ -215,50 +204,31 @@ async function guardarSemana(publicar) {
         return;
     }
 
+    // arma la semana: para cada dia, los platos tildados (los feriados van sin platos)
+    const dias = [];
     for (let i = 0; i < diasSemana.length; i++) {
         const fecha = sumarDias(semanaEditando, i);
-        let menu = menusDia.find(m => m.fecha === fecha);
         let ids = borrador[fecha];
         if (feriados.includes(fecha)) {
             ids = []; // los feriados no tienen menu
         }
-
-        // borra los platos viejos de ese dia (se vuelven a cargar abajo)
-        if (menu !== undefined) {
-            menuPlatos = menuPlatos.filter(mp => mp.idMenuDia !== menu.id);
-        }
-
-        // dia sin platos: si tenia menu, se borra
-        if (ids.length === 0) {
-            if (menu !== undefined) {
-                menusDia = menusDia.filter(m => m.id !== menu.id);
-            }
-            continue;
-        }
-
-        // dia con platos: si no tenia menu, se crea (MenuDia del DER)
-        if (menu === undefined) {
-            menu = {
-                id: siguienteId(menusDia),
-                fecha: fecha,
-                descripcion: `Menú del ${nombresLindos[diasSemana[i]].toLowerCase()}`,
-                publicado: false,
-                stockTotal: 60,
-                idUsuarioCreador: idAdmin
-            };
-            menusDia.push(menu);
-        }
-        menu.publicado = publicar;
-
-        // un MenuPlato por cada plato tildado
-        for (const idPlato of ids) {
-            menuPlatos.push({ id: siguienteId(menuPlatos), idMenuDia: menu.id, idPlato: idPlato, stockDisponible: 20 });
-        }
+        dias.push({ fecha: fecha, idPlatos: ids });
     }
 
-    menusDia.sort((a, b) => (a.fecha < b.fecha ? -1 : 1)); // ordena por fecha
-    await guardarMenusDia(menusDia); // guarda en datos.js
-    await guardarMenuPlatos(menuPlatos);
+    // el backend crea/actualiza/borra los menu_dia y sus menu_plato (PUT /api/menus/semana)
+    try {
+        await guardarSemanaMenus({
+            lunes: semanaEditando,
+            publicar: publicar,
+            idUsuarioCreador: idAdmin,
+            dias: dias
+        });
+        menusDia = await obtenerMenusDia(); // vuelve a leer de la base lo que quedo guardado
+        menuPlatos = await obtenerMenuPlatos();
+    } catch (error) {
+        mostrarError(error.message); // ej: 'Esta semana ya tiene pedidos: no se puede modificar.'
+        return;
+    }
 
     if (publicar) {
         mostrarExito(`Menú de la semana del ${textoSemana(semanaEditando)} publicado: los empleados ya pueden pedir.`);

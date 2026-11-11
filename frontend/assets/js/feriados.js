@@ -134,8 +134,13 @@ inputMes.addEventListener('change', function () {
 form.addEventListener('submit', async function (evento) {
     evento.preventDefault(); // evita que se recargue la pagina
     feriados.sort(); // las fechas 'AAAA-MM-DD' se ordenan bien como texto
-    await guardarFeriados(feriados); // guarda en datos.js
     limpiarMensajes();
+    try {
+        await guardarFeriados(feriados); // PUT /api/dias-no-laborables (datos.js)
+    } catch (error) {
+        mostrarError(error.message); // ej: ya hay pedidos para ese dia
+        return;
+    }
     cajaExito.textContent = 'Feriados guardados. Esos días no tienen menú ni se reciben pedidos.';
     cajaExito.classList.add('visible');
 });
