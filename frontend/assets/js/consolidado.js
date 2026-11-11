@@ -88,21 +88,23 @@ function todosLosDias(lista) {
 
 // ---------- dibujar ----------
 
-// cantidades de cada plato por dia (la lista del dia para cocina)
-function renderTotalesPorDia(fecha, confirmados) {
+// cantidades de cada plato por dia (la lista del dia para cocina).
+// Los numeros los cuenta MySQL: GET /api/consolidado?fecha= (cruce 2, COUNT ... GROUP BY sobre pedido_dia)
+async function renderTotalesPorDia(fecha) {
     const semana = textoSemana(fecha);
     const menusSemana = menusDia.filter(menu => textoSemana(menu.fecha) === semana);
-    const diasPedidos = todosLosDias(confirmados);
     let html = '';
 
     for (const menu of menusSemana) {
         const opciones = menuPlatos.filter(mp => mp.idMenuDia === menu.id); // platos de ese dia
+        const conteo = await obtenerConsolidado(menu.fecha); // [{ plato, porciones }]
         let filas = '';
         let totalDia = 0;
 
         for (const mp of opciones) {
             const plato = platos.find(p => p.id === mp.idPlato);
-            const cantidad = diasPedidos.filter(pd => pd.idMenuDia === menu.id && pd.idPlato === mp.idPlato).length; // filtrar y contar
+            const fila = conteo.find(c => c.plato === plato.nombre);
+            const cantidad = fila === undefined ? 0 : fila.porciones; // si nadie lo pidio, no viene: es 0
             totalDia = totalDia + cantidad;
             let clase = '';
             if (cantidad === 0) {
@@ -164,7 +166,7 @@ function renderTotalesSemana(confirmados) {
 // ---------- botones ----------
 
 //escucha el click del boton generar
-btnGenerar.addEventListener('click', function () {
+btnGenerar.addEventListener('click', async function () {
     const semanaVal = selectSemana.value; // aca lee la semana que el usuario selecciono
 
     //validacion de que el usuario haya seleccionado una semana
@@ -176,7 +178,7 @@ btnGenerar.addEventListener('click', function () {
 
     limpiarError();
     const confirmados = pedidosDeLaSemana(semanaVal, 'CONFIRMADO');
-    const pendientes = pedidosDeLaSemana(semanaVal, 'PENDIENTE');
+    const pendientes = pedidosDeLaSemana(semanaVal, 'BORRADOR');
 
     // aviso de los pendientes que todavia pueden cambiar (no entran en el consolidado)
     const aviso = document.querySelector('#aviso-pendientes');
@@ -195,7 +197,13 @@ btnGenerar.addEventListener('click', function () {
     }
 
     // si la semana es valida y hay pedidos, dibujamos todo
-    renderTotalesPorDia(semanaVal, confirmados);
+    try {
+        await renderTotalesPorDia(semanaVal);
+    } catch (error) {
+        console.error('No se pudo generar el consolidado:', error);
+        mostrarMensaje('No pudimos generar el consolidado. Probá de nuevo.', 'error');
+        return;
+    }
     renderConsolidado(confirmados);
     renderTotalesSemana(confirmados);
     cajaEstado.innerHTML = '';
