@@ -8,10 +8,8 @@ target/
 build/
 !gradle-wrapper.jar
 
-# Maven
-.mvn/
-mvnw
-mvnw.cmd
+# Maven (el wrapper mvnw SI se sube, solo se ignora el .jar que baja solo)
+.mvn/wrapper/maven-wrapper.jar
 
 # Node
 node_modules/
