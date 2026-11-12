@@ -3,6 +3,7 @@ package ar.edu.pp1.pedidos.servicio;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,40 @@ public class AsistenciaService {
         this.usuarioRepository = usuarioRepository;
     }
 
+    // Devuelve la asistencia de una semana. Si el empleado todavia no la configuro,
+    // se repite la ultima semana que guardo: su horario queda "guardado hasta que
+    // lo vuelva a cambiar". Esas filas repetidas vienen con id = null porque todavia
+    // no estan en la tabla; se graban recien cuando el empleado guarda (PUT).
     public List<Asistencia> listar(Long idUsuario, LocalDate desde, LocalDate hasta) {
-        return asistenciaRepository.findByIdUsuarioAndFechaBetweenOrderByFecha(idUsuario, desde, hasta);
+        List<Asistencia> semana = asistenciaRepository.findByIdUsuarioAndFechaBetweenOrderByFecha(idUsuario, desde, hasta);
+        if (!semana.isEmpty()) {
+            return semana; // esa semana ya la configuro: se respeta tal cual (ej. un cambio por una reunion)
+        }
+
+        Optional<Asistencia> ultima = asistenciaRepository.findFirstByIdUsuarioAndFechaBeforeOrderByFechaDesc(idUsuario, desde);
+        if (ultima.isEmpty()) {
+            return semana; // nunca configuro nada: lista vacia, la pantalla le pide que la cargue
+        }
+
+        // la semana (lunes a domingo) de esa ultima fila es su patron habitual
+        LocalDate lunesPatron = Plazos.lunesDe(ultima.get().getFecha());
+        List<Asistencia> patron = asistenciaRepository
+                .findByIdUsuarioAndFechaBetweenOrderByFecha(idUsuario, lunesPatron, lunesPatron.plusDays(6));
+
+        // copia el patron a las fechas pedidas, dia de la semana por dia de la semana
+        List<Asistencia> repetida = new ArrayList<>();
+        for (LocalDate fecha = desde; !fecha.isAfter(hasta); fecha = fecha.plusDays(1)) {
+            for (Asistencia dia : patron) {
+                if (dia.getFecha().getDayOfWeek() == fecha.getDayOfWeek()) {
+                    Asistencia copia = new Asistencia();
+                    copia.setIdUsuario(idUsuario);
+                    copia.setFecha(fecha);
+                    copia.setAsiste(dia.getAsiste());
+                    repetida.add(copia);
+                }
+            }
+        }
+        return repetida;
     }
 
     // Guarda la asistencia de varios dias. Si ya habia una fila para ese usuario

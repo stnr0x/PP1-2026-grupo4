@@ -15,4 +15,7 @@ public interface AsistenciaRepository extends JpaRepository<Asistencia, Long> {
 
     // la fila de un empleado para una fecha (UNIQUE id_usuario + fecha)
     Optional<Asistencia> findByIdUsuarioAndFecha(Long idUsuario, LocalDate fecha);
+
+    // la ultima fila que guardo el empleado antes de una fecha (para repetir su semana habitual)
+    Optional<Asistencia> findFirstByIdUsuarioAndFechaBeforeOrderByFechaDesc(Long idUsuario, LocalDate fecha);
 }
