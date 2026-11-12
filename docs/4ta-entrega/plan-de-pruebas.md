@@ -23,7 +23,7 @@ La idea es probar que **el repo solo alcanza** para levantar todo, como lo harí
   ```
 - [ ] **0.2 XAMPP**: abrir el panel → **Start** en **MySQL** y en **Apache** (Apache es para phpMyAdmin). Los dos en verde.
 - [ ] **0.3 Crear la base**: abrir `http://localhost/phpmyadmin` → pestaña **Importar** → elegir `PP-prueba\backend\sql\tp-pedidos.sql` → **Importar**.
-  - Alternativa por terminal: `C:\xampp\mysql\bin\mysql.exe -u root < backend\sql\tp-pedidos.sql`
+  - Alternativa por terminal (desde la raíz del repo): `cmd /c "C:\xampp\mysql\bin\mysql.exe -u root < backend\sql\tp-pedidos.sql"`. En PowerShell el `<` no existe, y pasarlo con `Get-Content | mysql` rompe los acentos (`purÃ©`): usá `cmd /c` o phpMyAdmin.
 - [ ] **0.4 Verificar la base**: en phpMyAdmin → `pp1_pedidos` → pestaña **SQL**, pegar y ejecutar:
   ```sql
   SELECT 'usuario' t, COUNT(*) n FROM usuario UNION ALL
@@ -52,7 +52,7 @@ La idea es probar que **el repo solo alcanza** para levantar todo, como lo harí
   ```
   Eso ya prueba que **las 8 entidades coinciden con las tablas** (`ddl-auto=validate`).
 - [ ] **0.8 Prueba rápida**: en el navegador `http://localhost:8080/api/platos` → JSON con 6 platos.
-- [ ] **0.9 Tests**: en IntelliJ, clic derecho en `src/test/java` → *Run 'All Tests'* (o `.\mvnw.cmd test`). Esperado: **7 tests en verde**.
+- [ ] **0.9 Tests**: en IntelliJ, clic derecho en `src/test/java` → *Run 'All Tests'* (o `.\mvnw.cmd test`). Esperado: **10 tests en verde** (7 de `PedidoServiceTest` + 3 de `AsistenciaServiceTest`).
 - [ ] **0.10 Frontend**: abrir `PP-prueba` en VS Code → clic derecho en `frontend/login.html` → **Open with Live Server** (puerto 5500).
 
 ### Errores típicos del setup
@@ -121,7 +121,7 @@ Antes del código: entender que **lo que se ve en pantalla sale de cruzar tablas
   - La pestaña **Test Results**: chequeos automáticos en verde.
   - La **descripción** de la request (ícono de documento a la derecha): dice qué Controller → Service → tabla toca y qué SQL correr para verificar.
   - La **consola de IntelliJ**: con `show-sql=true` aparece el SQL que ejecutó Hibernate (`Hibernate: insert into pedido …`). **Esto es trazabilidad en vivo.**
-- [ ] **2.5 Correrla entera**: clic derecho en la colección → *Run collection* → *Run*. Esperado: **56 requests, todas verdes**. (Para correrla otra vez: script primero.)
+- [ ] **2.5 Correrla entera**: clic derecho en la colección → *Run collection* → *Run*. Esperado: **58 requests, todas verdes**. (Para correrla otra vez: script primero.)
 - [ ] **2.6 Verificar en la base** después de M4:
   ```sql
   SELECT * FROM pedido ORDER BY id_pedido DESC LIMIT 3;

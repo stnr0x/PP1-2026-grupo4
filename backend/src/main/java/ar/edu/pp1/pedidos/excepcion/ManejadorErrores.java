@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 // Traduce las excepciones a respuestas HTTP con un JSON { "mensaje": "..." }.
 // Asi el frontend puede mostrar el motivo exacto del error.
@@ -37,6 +38,13 @@ public class ManejadorErrores {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> validacion(MethodArgumentNotValidException e) {
         String mensaje = e.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+        return respuesta(HttpStatus.BAD_REQUEST, mensaje);
+    }
+
+    // Bean Validation sobre cada elemento de una lista (List<@Valid Asistencia>)
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<Map<String, String>> validacionLista(HandlerMethodValidationException e) {
+        String mensaje = e.getAllErrors().get(0).getDefaultMessage();
         return respuesta(HttpStatus.BAD_REQUEST, mensaje);
     }
 

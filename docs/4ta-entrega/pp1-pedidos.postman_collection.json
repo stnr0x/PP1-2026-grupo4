@@ -960,6 +960,41 @@
           ]
         },
         {
+          "name": "Falta 'asiste' → 400 (Bean Validation)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/asistencias",
+            "description": "AsistenciaController recibe List<@Valid Asistencia>: el @NotNull de Asistencia.asiste rechaza el elemento antes de llegar al Service. ManejadorErrores lo devuelve como 400 { mensaje }. No se graba nada.",
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-23\"\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje de la anotación', () => pm.expect(pm.response.json().mensaje).to.eql('Falta indicar si asiste.'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Asistencia de Lucía, semana 23/11",
           "request": {
             "method": "GET",

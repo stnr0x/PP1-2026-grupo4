@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.pp1.pedidos.entidad.Asistencia;
+import jakarta.validation.Valid;
 import ar.edu.pp1.pedidos.servicio.AsistenciaService;
 
 // M2 Mis dias.
@@ -32,8 +33,9 @@ public class AsistenciaController {
     }
 
     // PUT /api/asistencias  con [{ idUsuario, fecha, asiste }, ...]  (crea o actualiza cada dia)
+    // List<@Valid ...>: Bean Validation revisa cada elemento de la lista
     @PutMapping
-    public List<Asistencia> guardar(@RequestBody List<Asistencia> dias) {
+    public List<Asistencia> guardar(@RequestBody List<@Valid Asistencia> dias) {
         return asistenciaService.guardar(dias);
     }
 }

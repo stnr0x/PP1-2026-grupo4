@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 // Tabla asistencia: una fila por empleado y por fecha (UNIQUE id_usuario + fecha).
 // Es una tabla propia y no un campo del usuario: asi se puede decir
@@ -21,12 +22,15 @@ public class Asistencia {
     @Column(name = "id_asistencia")
     private Long id;
 
+    @NotNull(message = "Falta el usuario.")
     @Column(nullable = false)
     private Long idUsuario;
 
+    @NotNull(message = "Falta la fecha.")
     @Column(nullable = false)
     private LocalDate fecha;
 
+    @NotNull(message = "Falta indicar si asiste.")
     @Column(nullable = false)
     private Boolean asiste;
 

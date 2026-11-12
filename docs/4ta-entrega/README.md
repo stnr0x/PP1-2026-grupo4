@@ -18,14 +18,16 @@ El flujo principal funciona **desde el frontend, contra el backend Spring Boot y
 | M3 · Mis menús | Menú · Administrar menús · Feriados | `GET /api/platos` · `GET /api/menus` · `GET /api/menu-platos` · `PUT /api/menus/semana` · `GET/PUT /api/dias-no-laborables` | `m3-ok` |
 | M4 · Mi pedido | Menú (registrar/modificar) · Mis pedidos | `POST /api/pedidos` · `PUT /api/pedidos/{id}` · `PATCH /api/pedidos/{id}/estado` · `GET /api/pedidos?idUsuario=` | `m4-ok` |
 | M5 · Admin: consolidado | Consolidado | `GET /api/consolidado?fecha=` · `GET /api/pedidos` · `GET /api/usuarios` | `m5-ok` |
-| Destacado · Regla de negocio con JUnit | — | `PedidoServiceTest` (7 tests) | `regla-ok` |
+| Destacado · Regla de negocio con JUnit | — | `PedidoServiceTest` (7 tests) + `AsistenciaServiceTest` (3 tests) | `regla-ok` |
+
+**Nivel alcanzado: DESTACADO** — M1 + M2 + M3 + M4 + M5 + una regla de negocio con test JUnit (M6 Seguridad completa no se hizo). Tag final: `v4-entrega`.
 
 ---
 
 ## 2. Cómo correrlo
 
 1. **Base**: prender MySQL en el panel de XAMPP y correr el script entero:  
-   `C:\xampp\mysql\bin\mysql.exe -u root < backend/sql/tp-pedidos.sql`  
+   `cmd /c "C:\xampp\mysql\bin\mysql.exe -u root < backend\sql\tp-pedidos.sql"`  (en PowerShell el `<` no existe y un pipe `|` rompe los acentos: por eso `cmd /c`)  
    (o phpMyAdmin → Importar). Se puede correr las veces que haga falta: siempre deja los mismos datos.
 2. **Backend**: desde `backend/`, pasándole la clave de la base en `DB_PASSWORD` (variable de entorno o propiedad de Java). En XAMPP root no tiene clave, y como Windows no guarda variables de entorno vacías, se pasa como propiedad:  
    - IntelliJ: *Run → Edit Configurations → Modify options → Add VM options* → `-DDB_PASSWORD=`  
@@ -33,7 +35,7 @@ El flujo principal funciona **desde el frontend, contra el backend Spring Boot y
    La consola termina en `Started PedidosApplication`.
 3. **Frontend**: abrir `frontend/login.html` con Live Server (puerto 5500).
 4. **Tests**: `./mvnw test` desde `backend/` (no necesitan la base).
-5. **Postman**: importar `docs/4ta-entrega/pp1-pedidos.postman_collection.json` (57 requests con chequeos automáticos, módulo por módulo). El plan completo está en [plan-de-pruebas.md](plan-de-pruebas.md).
+5. **Postman**: importar `docs/4ta-entrega/pp1-pedidos.postman_collection.json` (58 requests con chequeos automáticos, módulo por módulo). El plan completo está en [plan-de-pruebas.md](plan-de-pruebas.md).
 
 Cuentas del script (contraseña `cambiar123`): `laura.gimenez@empresa.com.ar` (administradora), `martin.sosa@…`, `lucia.fernandez@…`, `diego.romero@…`, `carolina.benitez@…` (empleados, todos `@empresa.com.ar`).
 
@@ -55,7 +57,36 @@ pantalla (menu.js)  →  datos.js: fetch(`${API}/pedidos`)  →  PedidoControlle
 
 ---
 
-## 4. Tabla de traducción (A2 completa)
+## 4. Tabla de endpoints
+
+Base: `http://localhost:8080/api`. Los errores vuelven como `{ "mensaje": "…" }`.
+
+| Módulo | Método | URL | Qué hace | Respuestas |
+|---|---|---|---|---|
+| M1 | POST | `/usuarios/login` | Login con `{ correo, contrasena }` | 200 usuario · 401 |
+| M1 | POST | `/usuarios` | Registro (nace `EMPLEADO`, activo) | 201 · 400 · 409 correo repetido |
+| M1 | GET | `/usuarios` · `/usuarios/{id}` | Lista de usuarios / un usuario (sin contraseña) | 200 · 404 |
+| M1 | PUT | `/usuarios/{id}` | Mi Perfil: nombre, apellido, correo, teléfono, `activo` (baja) | 200 · 400 · 409 |
+| M1 | PUT | `/usuarios/{id}/contrasena` | Cambiar contraseña con `{ actual, nueva }` | 204 · 400 |
+| M2 | GET | `/asistencias?idUsuario=&desde=&hasta=` | Días que viene en esa semana (si no la configuró, repite la última) | 200 |
+| M2 | PUT | `/asistencias` | Guarda `[{ idUsuario, fecha, asiste }]` (crea o actualiza) | 200 · 400 |
+| M3 | GET | `/platos` · `/platos/{id}` | Platos | 200 · 404 |
+| M3 | GET | `/menus?fecha=` · `/menus?desde=&hasta=` | Menús del día / de la semana | 200 |
+| M3 | GET | `/menu-platos?idMenuDia=` | Opciones de un menú con su stock | 200 |
+| M3 | PUT | `/menus/semana` | Admin: arma y publica la semana | 200 · 400 |
+| M3 | GET | `/dias-no-laborables` | Feriados | 200 |
+| M3 | PUT | `/dias-no-laborables` | Admin: reemplaza la lista de feriados | 200 · 400 |
+| M4 | GET | `/pedidos?idUsuario=` · `/pedidos` · `/pedidos/{id}` | Mis pedidos / todos (admin) / uno | 200 · 404 |
+| M4 | POST | `/pedidos` | Nuevo pedido, una opción por día, nace `BORRADOR` | 201 · 400 |
+| M4 | PUT | `/pedidos/{id}` | Modificar el pedido antes del plazo | 200 · 400 · 404 |
+| M4 | PATCH | `/pedidos/{id}/estado` | Confirmar o cancelar `{ estado }` | 200 · 400 · 404 |
+| M5 | GET | `/consolidado?fecha=` | Porciones por plato de un día (cruce 2, solo `CONFIRMADO`) | 200 |
+
+**Bean Validation** en todo lo que se guarda: `Usuario` (`@NotBlank`, `@Email`, `@Size`), `Asistencia` y `DiaNoLaborable` (`@NotNull`, `@Size`, validadas elemento por elemento con `List<@Valid …>`) y los DTO de pedido, login, contraseña y semana de menú. Si algo no cumple → 400 con el mensaje de la anotación.
+
+---
+
+## 5. Tabla de traducción (A2 completa)
 
 | Tabla | Entidad Java | Atributos (camelCase) | Relaciones | Endpoint | Pantalla de NUESTRO frontend |
 |---|---|---|---|---|---|
@@ -86,7 +117,7 @@ pantalla (menu.js)  →  datos.js: fetch(`${API}/pedidos`)  →  PedidoControlle
 
 ---
 
-## 5. Reglas de negocio (capa de servicio)
+## 6. Reglas de negocio (capa de servicio)
 
 | Regla | Dónde | Respuesta |
 |---|---|---|
@@ -104,7 +135,7 @@ El consolidado **no se guarda**: `PedidoDiaRepository.consolidadoDeFecha` es el 
 
 ---
 
-## 6. Test JUnit (destacado)
+## 7. Test JUnit (destacado)
 
 `backend/src/test/java/ar/edu/pp1/pedidos/servicio/PedidoServiceTest.java` prueba la regla "¿se puede pedir ese día?" con Mockito (sin base) y un reloj fijo:
 
@@ -116,8 +147,19 @@ El consolidado **no se guarda**: `PedidoDiaRepository.consolidadoDeFecha` es el 
 
 ---
 
-## 7. Cómo se probó cada módulo
+## 8. Cómo se probó cada módulo
 
 Para cada módulo: el endpoint en Postman/curl con los datos del script (y sus errores 400/401/404/409), la pantalla con Live Server, **recargar y que siga ahí**, y con Spring apagado aparece el estado de error de la pantalla.
 
 Flujo completo probado: Laura publica la semana del 16/11 (el 20/11 aparece como feriado) → Lucía marca lunes y miércoles → elige platos y guarda → recarga y el pedido sigue → en Mis pedidos lo confirma → Laura genera el consolidado (26/10 da los mismos números que el cruce 2).
+
+---
+
+## 9. Declaración de uso de IA
+
+| Herramienta | Para qué |
+|---|---|
+| Claude (Claude Code, en VS Code) | Plan de trabajo por módulos a partir de la consigna; generación del backend Spring Boot (entidades, repositorios, servicios, controladores, DTO, manejo de errores, CORS) siguiendo el script del curso; migración de `datos.js` de los JSON a `fetch` contra la API; detección de divergencias entre el frontend y el modelo (`rol`, `BORRADOR`, `direccion`, `stockTotal`…); tests JUnit con Mockito; colección de Postman; plan de pruebas y este README; diagnóstico de errores del setup (collation de MariaDB, `DB_PASSWORD` vacía en Windows, orden de flush de Hibernate). |
+| Documentación de la consigna y del curso | Requisitos de la Entrega 4, modelo de datos explicado y script `tp-pedidos.sql`. |
+
+Todo el código generado se revisó, se corrió y se probó contra la base (pantalla, Postman y tests) antes de cada commit. El commit, el push, los PR y los tags los hizo el integrante. La defensa de cada módulo (pantalla → endpoint → tabla) está preparada en [plan-de-pruebas.md](plan-de-pruebas.md).

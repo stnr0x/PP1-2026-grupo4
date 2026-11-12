@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 // Tabla dia_no_laborable: guarda SOLO los dias sin servicio.
 // No tiene FK con menu_dia: "en un dia no laborable no hay menu ni pedidos"
@@ -21,9 +23,11 @@ public class DiaNoLaborable {
     @Column(name = "id_dia_no_laborable")
     private Long id;
 
+    @NotNull(message = "Falta la fecha del día no laborable.")
     @Column(nullable = false, unique = true)
     private LocalDate fecha;
 
+    @Size(max = 120, message = "El motivo puede tener hasta 120 caracteres.")
     @Column(length = 120)
     private String motivo;
 
