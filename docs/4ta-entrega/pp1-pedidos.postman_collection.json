@@ -1,0 +1,1721 @@
+{
+  "info": {
+    "name": "PP1 · TP Pedidos (Grupo 4)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Pruebas de la API del TP Pedidos, módulo por módulo.\n\nANTES DE CORRER: correr backend/sql/tp-pedidos.sql (deja la base con los datos del script) y levantar Spring (Started PedidosApplication).\nSe corre en orden (Run collection o una por una). Las de escritura usan la semana del lunes 23/11/2026.\nPara volver a correr todo: volver a correr el script primero (si no, la semana 23/11 ya tiene pedidos y el admin no la puede modificar, que es justamente una regla)."
+  },
+  "variable": [
+    {
+      "key": "base",
+      "value": "http://localhost:8080/api"
+    },
+    {
+      "key": "lunes",
+      "value": "2026-11-23"
+    }
+  ],
+  "item": [
+    {
+      "name": "0 · Setup",
+      "item": [
+        {
+          "name": "Backend vivo: GET platos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/platos",
+            "description": "Si da error de conexión, Spring no está corriendo. Si da 500, revisar la consola de Spring."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Hay 6 platos (los del script)', () => pm.expect(pm.response.json().length).to.eql(6));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "M1 · Acceso",
+      "item": [
+        {
+          "name": "Login OK (Lucía)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/login",
+            "description": "UsuarioController.login → UsuarioService.login → UsuarioRepository.findByCorreo → tabla usuario.\nFijate: la respuesta NO trae la contraseña (@JsonProperty WRITE_ONLY en Usuario).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"lucia.fernandez@empresa.com.ar\",\n  \"contrasena\": \"cambiar123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const u = pm.response.json();",
+                  "pm.test('Es Lucía, EMPLEADO', () => { pm.expect(u.id).to.eql(3); pm.expect(u.rol).to.eql('EMPLEADO'); });",
+                  "pm.test('No devuelve la contraseña', () => pm.expect(u).to.not.have.property('contrasena'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login OK (Laura, admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/login",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"laura.gimenez@empresa.com.ar\",\n  \"contrasena\": \"cambiar123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Rol ADMINISTRADOR', () => pm.expect(pm.response.json().rol).to.eql('ADMINISTRADOR'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login con clave mala → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/login",
+            "description": "AccesoDenegadoException → ManejadorErrores la traduce a 401 con { mensaje }.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"lucia.fernandez@empresa.com.ar\",\n  \"contrasena\": \"otraclave\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Mensaje: Email o contraseña incorrectos', () => pm.expect(pm.response.json().mensaje).to.include('Email o contraseña incorrectos'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login sin correo → 400 (Bean Validation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/login",
+            "description": "@NotBlank en LoginRequest + @Valid en el controller.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"\",\n  \"contrasena\": \"cambiar123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registro nuevo → 201",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios",
+            "description": "UsuarioService.registrar: el rol siempre es EMPLEADO y activo = true, aunque el JSON diga otra cosa. El id lo pone la base (AUTO_INCREMENT).\nVerificar en la base: SELECT * FROM usuario ORDER BY id_usuario DESC LIMIT 1;",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Prueba\",\n  \"apellido\": \"Postman\",\n  \"correo\": \"{{correoNuevo}}\",\n  \"contrasena\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('correoNuevo', 'prueba' + Date.now() + '@empresa.com.ar');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "const u = pm.response.json();",
+                  "pm.collectionVariables.set('idNuevo', u.id);",
+                  "pm.test('Queda EMPLEADO y activo', () => { pm.expect(u.rol).to.eql('EMPLEADO'); pm.expect(u.activo).to.eql(true); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registro con correo repetido → 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios",
+            "description": "ConflictoException → 409. Lo controla el servicio (y además la base tiene UNIQUE en correo).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Otra\",\n  \"apellido\": \"Lucía\",\n  \"correo\": \"lucia.fernandez@empresa.com.ar\",\n  \"contrasena\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Mensaje: Ya hay una cuenta con ese email', () => pm.expect(pm.response.json().mensaje).to.include('Ya hay una cuenta con ese email'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Registro con email inválido → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios",
+            "description": "@Email en la entidad Usuario (Bean Validation).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"X\",\n  \"apellido\": \"Y\",\n  \"correo\": \"no-es-un-mail\",\n  \"contrasena\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ver usuario nuevo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/usuarios/{{idNuevo}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Usuario inexistente → 404",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/usuarios/999",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi Perfil: cambiar teléfono",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/{{idNuevo}}",
+            "description": "UsuarioService.actualizar: no toca ni la contraseña ni el rol.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Prueba\",\n  \"apellido\": \"Postman\",\n  \"correo\": \"{{correoNuevo}}\",\n  \"telefono\": \"11 2222-3333\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Teléfono guardado', () => pm.expect(pm.response.json().telefono).to.eql('11 2222-3333'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mi Perfil: correo de otra cuenta → 409",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/{{idNuevo}}",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Prueba\",\n  \"apellido\": \"Postman\",\n  \"correo\": \"martin.sosa@empresa.com.ar\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 409', () => pm.response.to.have.status(409));",
+                  "pm.test('Mensaje: Ese email ya lo usa otra cuenta', () => pm.expect(pm.response.json().mensaje).to.include('Ese email ya lo usa otra cuenta'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cambiar contraseña con la actual mal → 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/{{idNuevo}}/contrasena",
+            "description": "La contraseña nunca viaja al navegador: la compara el backend.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actual\": \"equivocada\",\n  \"nueva\": \"nueva123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: La contraseña actual no es correcta', () => pm.expect(pm.response.json().mensaje).to.include('La contraseña actual no es correcta'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cambiar contraseña OK → 204",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/{{idNuevo}}/contrasena",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actual\": \"123456\",\n  \"nueva\": \"nueva123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login con la contraseña nueva",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/login",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoNuevo}}\",\n  \"contrasena\": \"nueva123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dar de baja la cuenta (activo = false)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/{{idNuevo}}",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Prueba\",\n  \"apellido\": \"Postman\",\n  \"correo\": \"{{correoNuevo}}\",\n  \"activo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Quedó inactivo', () => pm.expect(pm.response.json().activo).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login de cuenta dada de baja → 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/usuarios/login",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"correo\": \"{{correoNuevo}}\",\n  \"contrasena\": \"nueva123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Mensaje: dada de baja', () => pm.expect(pm.response.json().mensaje).to.include('dada de baja'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "M3 · Mis menús",
+      "item": [
+        {
+          "name": "Plato 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/platos/1",
+            "description": "PlatoController (sin Service: no hay reglas, solo leer). Las claves del JSON son los atributos de la entidad = las columnas del modelo en camelCase."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Milanesa con puré, clásico', () => { const p = pm.response.json(); pm.expect(p.nombre).to.eql('Milanesa con puré'); pm.expect(p.categoria).to.eql('clásico'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Plato 99 → 404",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/platos/99",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Menú del martes 27/10 (cruce 1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menus?fecha=2026-10-27",
+            "description": "menu_dia de esa fecha. Sus opciones se piden aparte en /menu-platos?idMenuDia=2."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Un menú publicado, id 2', () => { const m = pm.response.json(); pm.expect(m.length).to.eql(1); pm.expect(m[0].id).to.eql(2); pm.expect(m[0].publicado).to.eql(true); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Opciones del martes 27/10 (cruce 1)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menu-platos?idMenuDia=2",
+            "description": "Cruce 1: Pollo al horno (stock 20), Ñoquis (15), Wok (10) → idPlato 4, 5, 6."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Platos 4, 5 y 6 con stock 20, 15, 10', () => { const o = pm.response.json(); pm.expect(o.map(x => x.idPlato)).to.eql([4,5,6]); pm.expect(o.map(x => x.stockDisponible)).to.eql([20,15,10]); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Menú del 02/11: cargado pero NO publicado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menus?fecha=2026-11-02",
+            "description": "El backend lo devuelve con publicado=false; la pantalla del empleado lo filtra. El servicio no deja pedir de un menú sin publicar (ver M4)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('publicado = false', () => pm.expect(pm.response.json()[0].publicado).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Días no laborables",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/dias-no-laborables",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Están el 30/10, 20/11 y 08/12', () => pm.expect(pm.response.json().map(d => d.fecha)).to.include.members(['2026-10-30','2026-11-20','2026-12-08']));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: menú en día no laborable → 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/menus/semana",
+            "description": "MenuService.guardarSemana: en un día no laborable no puede haber menú. La base NO lo impide (no hay FK): lo impide el servicio.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lunes\": \"2026-11-16\",\n  \"publicar\": true,\n  \"idUsuarioCreador\": 1,\n  \"dias\": [\n    {\n      \"fecha\": \"2026-11-20\",\n      \"idPlatos\": [\n        1,\n        2\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: es no laborable', () => pm.expect(pm.response.json().mensaje).to.include('es no laborable'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: publicar la semana del 23/11",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/menus/semana",
+            "description": "Crea un menu_dia por día con platos y un menu_plato por plato (stock inicial 20). El sábado sin platos no crea menú.\nVerificar: SELECT * FROM menu_dia WHERE fecha >= '2026-11-23'; y SELECT * FROM menu_plato WHERE id_menu_dia IN (...);",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lunes\": \"2026-11-23\",\n  \"publicar\": true,\n  \"idUsuarioCreador\": 1,\n  \"dias\": [\n    {\n      \"fecha\": \"2026-11-23\",\n      \"idPlatos\": [\n        1,\n        2,\n        3\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-24\",\n      \"idPlatos\": [\n        4,\n        5,\n        6\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-25\",\n      \"idPlatos\": [\n        1,\n        6,\n        3\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-26\",\n      \"idPlatos\": [\n        5,\n        2,\n        4\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-27\",\n      \"idPlatos\": [\n        1,\n        4\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-28\",\n      \"idPlatos\": []\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const menus = pm.response.json();",
+                  "pm.test('5 menús publicados (lunes a viernes)', () => { pm.expect(menus.length).to.eql(5); menus.forEach(m => pm.expect(m.publicado).to.eql(true)); });",
+                  "menus.forEach(m => { if (m.fecha === '2026-11-23') pm.collectionVariables.set('menuLunes', m.id); if (m.fecha === '2026-11-24') pm.collectionVariables.set('menuMartes', m.id); if (m.fecha === '2026-11-25') pm.collectionVariables.set('menuMiercoles', m.id); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Menús de esa semana",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menus?desde=2026-11-23&hasta=2026-11-28",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('5 menús', () => pm.expect(pm.response.json().length).to.eql(5));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Opciones del lunes 23/11 (stock 20)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menu-platos?idMenuDia={{menuLunes}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('3 opciones con stock 20', () => { const o = pm.response.json(); pm.expect(o.length).to.eql(3); o.forEach(x => pm.expect(x.stockDisponible).to.eql(20)); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "M2 · Mis días",
+      "item": [
+        {
+          "name": "Asistencia de Lucía, semana 26/10",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/asistencias?idUsuario=3&desde=2026-10-26&hasta=2026-10-31",
+            "description": "Una fila por fecha (tabla asistencia). Lucía NO viene el martes 27/10: asiste = false. Por eso Asistencia es una tabla y no un campo del usuario."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('El 27/10 asiste = false', () => pm.expect(pm.response.json().find(a => a.fecha === '2026-10-27').asiste).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Guardar días de Lucía (lunes y miércoles)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/asistencias",
+            "description": "AsistenciaService.guardar: si ya hay fila para (usuario, fecha) la actualiza; si no, la crea (respeta el UNIQUE).",
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-23\",\n    \"asiste\": true\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-24\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-25\",\n    \"asiste\": true\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-26\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-27\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-28\",\n    \"asiste\": false\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('6 filas', () => pm.expect(pm.response.json().length).to.eql(6));",
+                  "pm.collectionVariables.set('idAsistenciaMartes', pm.response.json()[1].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cambiar de idea: viene el martes (upsert)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/asistencias",
+            "description": "Mismo id de fila que antes: se actualizó, no se duplicó.",
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-24\",\n    \"asiste\": true\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Misma fila (mismo id), ahora asiste', () => { const a = pm.response.json()[0]; pm.expect(a.id).to.eql(pm.collectionVariables.get('idAsistenciaMartes')); pm.expect(a.asiste).to.eql(true); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ningún día marcado → 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/asistencias",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-23\",\n    \"asiste\": false\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: Marcá al menos un día', () => pm.expect(pm.response.json().mensaje).to.include('Marcá al menos un día'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Asistencia de Lucía, semana 23/11",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/asistencias?idUsuario=3&desde=2026-11-23&hasta=2026-11-28",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Viene lunes, martes y miércoles', () => pm.expect(pm.response.json().filter(a => a.asiste).map(a => a.fecha)).to.eql(['2026-11-23','2026-11-24','2026-11-25']));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Semana 30/11 sin configurar → repite la última que guardó",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/asistencias?idUsuario=3&desde=2026-11-30&hasta=2026-12-05",
+            "description": "AsistenciaService.listar: Lucía no guardó nada para la semana del 30/11, así que se repite su última semana guardada (23/11: lunes, martes y miércoles) con las fechas nuevas. Vienen con id = null porque todavía no están en la tabla; se graban cuando ella guarda. SQL: SELECT * FROM asistencia WHERE id_usuario = 3 AND fecha >= '2026-11-30'; → 0 filas."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Repite lunes, martes y miércoles con fechas nuevas', () => pm.expect(pm.response.json().filter(a => a.asiste).map(a => a.fecha)).to.eql(['2026-11-30','2026-12-01','2026-12-02']));",
+                  "pm.test('Todavía no están grabadas (id null)', () => pm.response.json().forEach(a => pm.expect(a.id).to.eql(null)));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "M4 · Mi pedido",
+      "item": [
+        {
+          "name": "Lucía pide lunes y miércoles → 201 BORRADOR",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos",
+            "description": "PedidoController.crear → PedidoService.crear: valida cada día (validarDias), graba la cabecera en pedido y una línea por día en pedido_dia, y descuenta stock en menu_plato.\nVerificar: SELECT * FROM pedido ORDER BY id_pedido DESC LIMIT 1; SELECT * FROM pedido_dia WHERE id_pedido = <id>;",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [\n    { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 2, \"fechaEntrega\": \"2026-11-23\", \"comentario\": \"Sin sal\" },\n    { \"idMenuDia\": {{menuMiercoles}}, \"idPlato\": 6, \"fechaEntrega\": \"2026-11-25\" }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "const p = pm.response.json();",
+                  "pm.collectionVariables.set('idPedido', p.id);",
+                  "pm.test('Nace en BORRADOR', () => pm.expect(p.estado).to.eql('BORRADOR'));",
+                  "pm.test('Dos líneas (pedidoDias)', () => pm.expect(p.pedidoDias.length).to.eql(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "El stock bajó: Tarta del lunes 20 → 19",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menu-platos?idMenuDia={{menuLunes}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tarta (plato 2) en 19', () => pm.expect(pm.response.json().find(o => o.idPlato === 2).stockDisponible).to.eql(19));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Segundo pedido en la misma semana → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 1, \"fechaEntrega\": \"2026-11-23\" } ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: Ya tenés un pedido para esa semana', () => pm.expect(pm.response.json().mensaje).to.include('Ya tenés un pedido para esa semana'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Plato que no está en el menú → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos",
+            "description": "El lunes 23/11 ofrece platos 1, 2 y 3; el 5 (Ñoquis) no está → findByIdMenuDiaAndIdPlato vacío.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 5, \"fechaEntrega\": \"2026-11-23\" } ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: Ese plato no está en el menú', () => pm.expect(pm.response.json().mensaje).to.include('Ese plato no está en el menú'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Día no laborable (30/10) → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos",
+            "description": "Cruce 4: \"¿se puede pedir el 30/10?\" → NO, día no laborable. La regla está en PedidoService.validarDias, no en la base.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [\n    {\n      \"idMenuDia\": 4,\n      \"idPlato\": 5,\n      \"fechaEntrega\": \"2026-10-30\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: día no laborable', () => pm.expect(pm.response.json().mensaje).to.include('día no laborable'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Menú sin publicar (02/11) → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos",
+            "description": "Cruce 4 con 02/11: \"todavía no hay menú publicado\".",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [\n    {\n      \"idMenuDia\": 5,\n      \"idPlato\": 1,\n      \"fechaEntrega\": \"2026-11-02\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: todavía no está publicado', () => pm.expect(pm.response.json().mensaje).to.include('todavía no está publicado'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Plazo vencido (semana 26/10) → 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos",
+            "description": "El plazo de esa semana cerró el jueves 22/10 a las 12 (Plazos.plazoDe).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [\n    {\n      \"idMenuDia\": 4,\n      \"idPlato\": 5,\n      \"fechaEntrega\": \"2026-10-29\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: plazo', () => pm.expect(pm.response.json().mensaje).to.include('plazo'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pedido sin días → 400 (Bean Validation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos",
+            "description": "@NotEmpty en PedidoRequest.pedidoDias.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Modificar: lunes y martes",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos/{{idPedido}}",
+            "description": "PedidoService.modificar: devuelve el stock de las líneas viejas, las borra y graba las nuevas (sigue en BORRADOR).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [\n    { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 2, \"fechaEntrega\": \"2026-11-23\" },\n    { \"idMenuDia\": {{menuMartes}}, \"idPlato\": 4, \"fechaEntrega\": \"2026-11-24\", \"comentario\": \"Porción chica\" }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Ahora lunes y martes', () => pm.expect(pm.response.json().pedidoDias.map(d => d.fechaEntrega)).to.eql(['2026-11-23','2026-11-24']));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mis pedidos de Lucía (cruce 3)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/pedidos?idUsuario=3",
+            "description": "Cruce 3. Del más nuevo al más viejo: el de esta semana (BORRADOR) y el pedido 2 del 26/10 (CONFIRMADO, con \"Sin picante\")."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const ps = pm.response.json();",
+                  "pm.test('Dos pedidos', () => pm.expect(ps.length).to.eql(2));",
+                  "pm.test('El pedido 2 tiene el comentario Sin picante', () => pm.expect(ps.find(p => p.id === 2).pedidoDias.map(d => d.comentario)).to.include('Sin picante'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: modificar la semana con pedidos → 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/menus/semana",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lunes\": \"2026-11-23\",\n  \"publicar\": true,\n  \"idUsuarioCreador\": 1,\n  \"dias\": [\n    {\n      \"fecha\": \"2026-11-23\",\n      \"idPlatos\": [\n        1\n      ]\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: ya tiene pedidos', () => pm.expect(pm.response.json().mensaje).to.include('ya tiene pedidos'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: marcar no laborable un día con pedidos → 400",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/dias-no-laborables",
+            "description": "DiaNoLaborableService.reemplazar. Al fallar, la transacción se deshace entera (@Transactional): no se borra ni se agrega nada.",
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"fecha\": \"2026-10-30\"\n  },\n  {\n    \"fecha\": \"2026-11-20\"\n  },\n  {\n    \"fecha\": \"2026-12-08\"\n  },\n  {\n    \"fecha\": \"2026-11-23\"\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: ya hay pedidos', () => pm.expect(pm.response.json().mensaje).to.include('ya hay pedidos'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar el pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos/{{idPedido}}/estado",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"CONFIRMADO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('CONFIRMADO', () => pm.expect(pm.response.json().estado).to.eql('CONFIRMADO'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cancelar un pedido ya confirmado → 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos/{{idPedido}}/estado",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"CANCELADO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensaje: ya está confirmado', () => pm.expect(pm.response.json().mensaje).to.include('ya está confirmado'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Martín pide el lunes (para cancelarlo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 1, \"fechaEntrega\": \"2026-11-23\" } ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('idPedidoMartin', pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Milanesa del lunes bajó a 19",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menu-platos?idMenuDia={{menuLunes}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Milanesa (plato 1) en 19', () => pm.expect(pm.response.json().find(o => o.idPlato === 1).stockDisponible).to.eql(19));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Martín cancela",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base}}/pedidos/{{idPedidoMartin}}/estado",
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"CANCELADO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('CANCELADO', () => pm.expect(pm.response.json().estado).to.eql('CANCELADO'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "El stock volvió a 20",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menu-platos?idMenuDia={{menuLunes}}",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Milanesa (plato 1) de nuevo en 20', () => pm.expect(pm.response.json().find(o => o.idPlato === 1).stockDisponible).to.eql(20));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pedido inexistente → 404",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/pedidos/999",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "M5 · Consolidado",
+      "item": [
+        {
+          "name": "Consolidado 28/10 (cruce 2)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/consolidado?fecha=2026-10-28",
+            "description": "PedidoDiaRepository.consolidadoDeFecha: COUNT(*) ... GROUP BY sobre pedido_dia, solo CONFIRMADO. No hay tabla consolidado."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Milanesa 2, Wok 1', () => pm.expect(pm.response.json()).to.eql([{ plato: 'Milanesa con puré', porciones: 2 }, { plato: 'Wok de vegetales', porciones: 1 }]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consolidado 26/10",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/consolidado?fecha=2026-10-26",
+            "description": "El modelo explicado dice Milanesa 1 y Tarta 1, porque el pedido de Diego estaba en BORRADOR. Pero su plazo ya venció: la app lo confirma sola (PedidoService.confirmarVencidos), así que ahora cuenta y Milanesa da 2. Es la regla \"después se confirma automáticamente\"."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Milanesa 2 (incluye a Diego, ya confirmado)', () => pm.expect(pm.response.json().find(c => c.plato === 'Milanesa con puré').porciones).to.eql(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consolidado del lunes 23/11",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/consolidado?fecha=2026-11-23",
+            "description": "Cuenta el pedido de Lucía (confirmado). El de Martín no: está CANCELADO."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tarta de verdura 1', () => pm.expect(pm.response.json()).to.eql([{ plato: 'Tarta de verdura', porciones: 1 }]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Todos los pedidos (admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/pedidos",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Están los 4 del script y los 2 nuevos', () => pm.expect(pm.response.json().length).to.eql(6));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Usuarios (para el nombre del empleado)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/usuarios",
+            "description": ""
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Ninguno trae contraseña', () => pm.response.json().forEach(u => pm.expect(u).to.not.have.property('contrasena')));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

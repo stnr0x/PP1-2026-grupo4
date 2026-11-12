@@ -27,10 +27,13 @@ El flujo principal funciona **desde el frontend, contra el backend Spring Boot y
 1. **Base**: prender MySQL en el panel de XAMPP y correr el script entero:  
    `C:\xampp\mysql\bin\mysql.exe -u root < backend/sql/tp-pedidos.sql`  
    (o phpMyAdmin → Importar). Se puede correr las veces que haga falta: siempre deja los mismos datos.
-2. **Backend**: desde `backend/`, con la variable `DB_PASSWORD` cargada (en XAMPP root no tiene clave, queda vacía):  
-   `./mvnw spring-boot:run` → la consola termina en `Started PedidosApplication`.
+2. **Backend**: desde `backend/`, pasándole la clave de la base en `DB_PASSWORD` (variable de entorno o propiedad de Java). En XAMPP root no tiene clave, y como Windows no guarda variables de entorno vacías, se pasa como propiedad:  
+   - IntelliJ: *Run → Edit Configurations → Modify options → Add VM options* → `-DDB_PASSWORD=`  
+   - Terminal: `.\mvnw.cmd spring-boot:run "-Dspring-boot.run.jvmArguments=-DDB_PASSWORD="`  
+   La consola termina en `Started PedidosApplication`.
 3. **Frontend**: abrir `frontend/login.html` con Live Server (puerto 5500).
 4. **Tests**: `./mvnw test` desde `backend/` (no necesitan la base).
+5. **Postman**: importar `docs/4ta-entrega/pp1-pedidos.postman_collection.json` (57 requests con chequeos automáticos, módulo por módulo). El plan completo está en [plan-de-pruebas.md](plan-de-pruebas.md).
 
 Cuentas del script (contraseña `cambiar123`): `laura.gimenez@empresa.com.ar` (administradora), `martin.sosa@…`, `lucia.fernandez@…`, `diego.romero@…`, `carolina.benitez@…` (empleados, todos `@empresa.com.ar`).
 
@@ -95,6 +98,7 @@ pantalla (menu.js)  →  datos.js: fetch(`${API}/pedidos`)  →  PedidoControlle
 | Pedir descuenta stock; cancelar o modificar lo devuelve | `PedidoService.guardarLineas/liberarStock` | — |
 | No hay menú en un día no laborable; no se marca no laborable un día con pedidos | `MenuService`, `DiaNoLaborableService` | 400 |
 | Correo único | `UsuarioService` | 409 |
+| La asistencia queda guardada hasta que el empleado la cambie: una semana sin configurar repite la última que guardó | `AsistenciaService.listar` | — |
 
 El consolidado **no se guarda**: `PedidoDiaRepository.consolidadoDeFecha` es el cruce 2 (`COUNT(*) … GROUP BY` sobre `pedido_dia`, solo `CONFIRMADO`).
 
@@ -107,6 +111,8 @@ El consolidado **no se guarda**: `PedidoDiaRepository.consolidadoDeFecha` es el 
 - pedido válido → queda `BORRADOR` y descuenta stock
 - día no laborable, menú sin publicar, plato fuera del menú, sin stock → `ReglaNegocioException`
 - jueves 11:00 todavía se puede; jueves 12:00 el plazo está cerrado
+
+`AsistenciaServiceTest` (3 tests) prueba que la asistencia queda guardada: una semana sin configurar repite la última, una semana configurada se respeta tal cual, y sin nada guardado devuelve vacío.
 
 ---
 
