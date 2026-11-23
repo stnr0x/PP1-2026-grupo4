@@ -310,6 +310,147 @@ footer {
     margin: 10px 0 0;
 }
 
+/* ---------- catalogo de platos ---------- */
+.seccion-platos {
+    margin-top: 40px;
+}
+
+.platos-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.platos-cabecera .btn-duplicar {
+    margin: 0;
+}
+
+.form-plato {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+    background-color: #FBF8F3;
+    border: 2px solid #DCCDB5;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+}
+
+.form-plato label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 600;
+    color: #6B4423;
+    font-size: 14px;
+}
+
+.form-plato input[type="text"],
+.form-plato select,
+.form-plato textarea {
+    padding: 10px 12px;
+    border: 2px solid #DCCDB5;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    background-color: #FFFFFF;
+}
+
+.form-plato input:focus,
+.form-plato select:focus,
+.form-plato textarea:focus {
+    outline: none;
+    border-color: #B8862B;
+}
+
+.form-plato .campo-ancho {
+    grid-column: 1 / -1;
+}
+
+.vista-previa {
+    grid-column: 1 / -1;
+    width: 220px;
+    height: 140px;
+    object-fit: cover; /* igual que la tarjeta del menu del empleado */
+    border-radius: 8px;
+}
+
+.lista-platos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.plato-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #FBF8F3;
+    border: 1px solid #DCCDB5;
+    border-radius: 10px;
+    padding: 8px 12px 8px 8px;
+}
+
+.plato-item img {
+    width: 64px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.plato-datos {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.plato-datos strong {
+    overflow-wrap: anywhere;
+}
+
+.plato-categoria {
+    font-size: 12px;
+    color: #7A6A5A;
+    text-transform: uppercase;
+}
+
+.plato-usado {
+    font-size: 12px;
+    color: #7A6A5A;
+    flex-shrink: 0;
+}
+
+.btn-borrar-plato {
+    background: none;
+    border: 1px solid #A71732;
+    color: #A71732;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.btn-borrar-plato:hover {
+    background-color: #FBEAEA;
+}
+
+.nota-catalogo {
+    color: #7A6A5A;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .form-plato {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* estados: cargando, vacio y error */
 .mensaje {
     text-align: center;

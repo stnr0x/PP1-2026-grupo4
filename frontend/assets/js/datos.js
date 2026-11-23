@@ -11,7 +11,9 @@ const API = 'http://localhost:8080/api';
 // asi la pantalla puede mostrar el motivo (ej: "El plazo para pedir esa semana ya cerró").
 async function pedirApi(ruta, metodo = 'GET', cuerpo = undefined) {
     const opciones = { method: metodo, headers: {} };
-    if (cuerpo !== undefined) {
+    if (cuerpo instanceof FormData) {
+        opciones.body = cuerpo; // formulario con archivo: el navegador pone el Content-Type (multipart)
+    } else if (cuerpo !== undefined) {
         opciones.headers['Content-Type'] = 'application/json';
         opciones.body = JSON.stringify(cuerpo); // convierte los objetos en texto
     }
@@ -164,6 +166,17 @@ function textoPlazo(plazo) {
 // GET /api/platos -> tabla plato
 async function obtenerPlatos() {
     return pedirApi('/platos');
+}
+
+// POST /api/platos (multipart) -> el admin da de alta un plato con su imagen.
+// formulario = FormData con nombre, descripcion, categoria e imagen (archivo, opcional)
+async function crearPlato(formulario) {
+    return pedirApi('/platos', 'POST', formulario);
+}
+
+// DELETE /api/platos/{id} -> solo si el plato nunca se uso (si no, Error con el motivo)
+async function borrarPlato(idPlato) {
+    return pedirApi(`/platos/${idPlato}`, 'DELETE');
 }
 
 // GET /api/menus -> tabla menu_dia completa, con borradores (pantallas del ADMIN)
