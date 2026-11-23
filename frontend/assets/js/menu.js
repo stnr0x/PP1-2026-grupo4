@@ -4,6 +4,8 @@ let menusDia = [];
 let menuPlatos = [];
 
 let seleccion = {}; // plato elegido en cada menu: { idMenuDia: idPlato }
+let notas = {}; // nota opcional de cada dia: { idMenuDia: 'Sin sal' } (columna comentario de pedido_dia)
+const MAX_NOTA = 200; // el mismo limite que @Size(max = 200) del backend y VARCHAR(200) de la tabla
 let asistencia = []; // dias de asistencia guardados, ej: ['lunes', 'miercoles']
 let pedidoEditando = null; // pedido que se esta modificando (viene de Mis pedidos)
 let plazo = null; // jueves a las 12 hs anterior a la semana del menu
@@ -113,6 +115,9 @@ function empezarEdicion(pedido) {
     for (const pd of pedido.pedidoDias) {
         if (menusDia.some(menu => menu.id === pd.idMenuDia)) {
             seleccion[pd.idMenuDia] = pd.idPlato;
+            if (pd.comentario) {
+                notas[pd.idMenuDia] = pd.comentario; // la nota que ya tenia
+            }
         }
     }
     document.querySelector('#leyenda-plazo').textContent = `Estás modificando tu pedido. Podés cambiarlo hasta el ${textoPlazo(plazo)}.`;
@@ -124,7 +129,8 @@ function mostrarPedidoHecho(pedido) {
     let detalle = '';
     for (const pd of pedido.pedidoDias) {
         const plato = platos.find(p => p.id === pd.idPlato);
-        detalle = detalle + `<li><strong>${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}:</strong> ${plato.nombre}</li>`;
+        const nota = pd.comentario ? ` <em>(${escaparHtml(pd.comentario)})</em>` : '';
+        detalle = detalle + `<li><strong>${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}:</strong> ${escaparHtml(plato.nombre)}${nota}</li>`;
     }
 
     let aviso = 'Tu pedido está confirmado y ya no se puede modificar.';
@@ -164,12 +170,25 @@ function crearOpcion(menu, plato) {
         clase = clase + ' bloqueado'; // ya hay otro elegido en este dia
     }
 
+    // escaparHtml: los platos nuevos los escribe el admin (datos.js)
     return `<article class="${clase}" data-menu="${menu.id}" data-plato="${plato.id}">
-        <img src="${plato.imagen}" alt="${plato.nombre}" onerror="this.onerror=null; this.src='assets/img/sin-imagen.svg'">
-        <span class="categoria-plato">${plato.categoria}</span>
-        <h4>${plato.nombre}</h4>
-        <p>${plato.descripcion}</p>
+        <img src="${escaparHtml(plato.imagen)}" alt="${escaparHtml(plato.nombre)}" onerror="this.onerror=null; this.src='assets/img/sin-imagen.svg'">
+        <span class="categoria-plato">${escaparHtml(plato.categoria)}</span>
+        <h4>${escaparHtml(plato.nombre)}</h4>
+        <p>${escaparHtml(plato.descripcion)}</p>
     </article>`;
+}
+
+// campo para la nota del dia. Solo aparece cuando ya eligio el plato de ese dia.
+function crearNota(menu) {
+    if (seleccion[menu.id] === undefined) {
+        return '';
+    }
+    return `<label class="nota-dia">
+        Nota para la cocina (opcional)
+        <input type="text" class="input-nota" data-menu="${menu.id}" maxlength="${MAX_NOTA}"
+            placeholder="Ej: sin sal, sin cebolla, aderezo aparte" value="${escaparHtml(notas[menu.id])}">
+    </label>`;
 }
 
 // funcion que arma el bloque de un dia con sus platos
@@ -183,6 +202,7 @@ function crearBloqueDia(menu) {
     return `<div class="dia-bloque">
         <h3>${menu.descripcion} · ${formatearFecha(menu.fecha)}</h3>
         <div class="opciones">${html}</div>
+        ${crearNota(menu)}
     </div>`;
 }
 
@@ -217,6 +237,7 @@ contenedorPlatos.addEventListener('click', function (evento) {
 
     if (seleccion[idMenu] === idPlato) {
         delete seleccion[idMenu]; // se toco el elegido: se deselecciona
+        delete notas[idMenu]; // y su nota
     } else if (seleccion[idMenu] === undefined) {
         seleccion[idMenu] = idPlato; // el dia estaba libre: se elige
     } else {
@@ -224,6 +245,16 @@ contenedorPlatos.addEventListener('click', function (evento) {
     }
 
     renderMenuSemana();
+    renderResumen();
+});
+
+// escucha lo que se escribe en las notas: se guarda en notas{} y se actualiza el resumen
+// (no se redibujan los platos, asi el campo no pierde el foco mientras escribe)
+contenedorPlatos.addEventListener('input', function (evento) {
+    if (!evento.target.classList.contains('input-nota')) {
+        return;
+    }
+    notas[Number(evento.target.dataset.menu)] = evento.target.value;
     renderResumen();
 });
 
@@ -236,7 +267,11 @@ function renderResumen() {
         const idPlato = seleccion[menu.id];
         if (idPlato !== undefined) {
             const plato = platos.find(p => p.id === idPlato);
-            html = html + `<li><strong>${menu.descripcion} (${formatearFecha(menu.fecha)}):</strong> ${plato.nombre}</li>`;
+            let nota = '';
+            if (notas[menu.id] && notas[menu.id].trim() !== '') {
+                nota = ` <em>(${escaparHtml(notas[menu.id].trim())})</em>`;
+            }
+            html = html + `<li><strong>${menu.descripcion} (${formatearFecha(menu.fecha)}):</strong> ${escaparHtml(plato.nombre)}${nota}</li>`;
         }
     }
 
@@ -291,10 +326,12 @@ form.addEventListener('submit', async function (evento) {
     // arma un PedidoDia por cada dia elegido (tabla pedido_dia)
     const pedidoDias = [];
     for (const menu of menusElegidos) {
+        const nota = (notas[menu.id] || '').trim();
         pedidoDias.push({
             fechaEntrega: menu.fecha,
             idMenuDia: menu.id,
-            idPlato: seleccion[menu.id]
+            idPlato: seleccion[menu.id],
+            comentario: nota === '' ? null : nota // columna comentario de pedido_dia (opcional)
         });
     }
 
@@ -372,6 +409,7 @@ document.querySelector('#btn-guardar-asistencia').addEventListener('click', asyn
     for (const idMenu of Object.keys(seleccion)) {
         if (!menusDia.some(menu => menu.id === Number(idMenu))) {
             delete seleccion[idMenu];
+            delete notas[idMenu];
         }
     }
 

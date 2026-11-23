@@ -110,7 +110,7 @@ async function renderTotalesPorDia(fecha) {
             if (cantidad === 0) {
                 clase = 'sin-pedidos'; // en gris si nadie lo pidio
             }
-            filas = filas + `<li class="${clase}"><span>${plato.nombre}</span> <strong>× ${cantidad}</strong></li>`;
+            filas = filas + `<li class="${clase}"><span>${escaparHtml(plato.nombre)}</span> <strong>× ${cantidad}</strong></li>`;
         }
 
         html = html + `<div class="tarjeta-dia">
@@ -128,10 +128,11 @@ function crearFila(pedido) {
     let detalle = '';
     for (const pd of pedido.pedidoDias) {
         const plato = platos.find(p => p.id === pd.idPlato);
-        detalle = detalle + `${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}: ${plato.nombre}<br>`;
+        const nota = pd.comentario ? ` <em>(${escaparHtml(pd.comentario)})</em>` : ''; // nota para la cocina
+        detalle = detalle + `${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}: ${escaparHtml(plato.nombre)}${nota}<br>`;
     }
     return `<tr>
-              <td>${usuario.nombre} ${usuario.apellido}</td>
+              <td>${escaparHtml(usuario.nombre)} ${escaparHtml(usuario.apellido)}</td>
               <td>${detalle}</td>
             </tr>`;
 }
@@ -154,7 +155,7 @@ function renderTotalesSemana(confirmados) {
     for (const plato of platos) {
         const cantidad = diasPedidos.filter(pd => pd.idPlato === plato.id).length; // filtrar y contar
         if (cantidad > 0) {
-            html = html + `<li><span>${plato.nombre}</span> <strong>× ${cantidad}</strong></li>`;
+            html = html + `<li><span>${escaparHtml(plato.nombre)}</span> <strong>× ${cantidad}</strong></li>`;
         }
     }
 

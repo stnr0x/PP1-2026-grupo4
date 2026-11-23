@@ -162,7 +162,7 @@ function renderEditor() {
             const tildado = borrador[fecha].includes(plato.id);
             opciones = opciones + `<label class="opcion-check">
                 <input type="checkbox" data-fecha="${fecha}" value="${plato.id}" ${tildado ? 'checked' : ''} ${bloqueada ? 'disabled' : ''}>
-                ${plato.nombre}
+                ${escaparHtml(plato.nombre)}
             </label>`;
         }
         if (borrador[fecha].length === 0) {

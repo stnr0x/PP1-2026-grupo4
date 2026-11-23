@@ -70,6 +70,20 @@ const textosEstado = {
     BORRADOR: 'Pendiente', CONFIRMADO: 'Confirmado', CANCELADO: 'Cancelado'
 };
 
+// texto escrito por un usuario (nota del pedido, plato nuevo) -> seguro para meter en el html.
+// Sin esto, un nombre como "<img onerror=...>" se ejecutaria en la pantalla de otro.
+function escaparHtml(texto) {
+    if (texto === null || texto === undefined) {
+        return '';
+    }
+    return String(texto)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+}
+
 // fecha y hora actual
 function ahora() {
     return new Date();

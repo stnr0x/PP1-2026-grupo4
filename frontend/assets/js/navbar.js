@@ -38,10 +38,10 @@ function dibujarNavbar(usuario) {
 
     // el admin tiene la etiqueta "Admin" y se muestra solo su nombre
     let etiqueta = '';
-    let nombre = `${usuario.nombre} ${usuario.apellido}`;
+    let nombre = `${escaparHtml(usuario.nombre)} ${escaparHtml(usuario.apellido)}`; // escaparHtml en datos.js
     if (esAdmin) {
         etiqueta = '<span class="navbar-admin"><span class="admin-label">Admin</span></span>';
-        nombre = usuario.nombre;
+        nombre = escaparHtml(usuario.nombre);
     }
 
     header.innerHTML = `
