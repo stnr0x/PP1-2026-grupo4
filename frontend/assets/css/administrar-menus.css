@@ -42,12 +42,13 @@ input[type="checkbox"] {
 .semana-list{
     margin: 20px 0;
 }
+/* tres columnas fijas (semana | estado | boton): asi el estado y el boton
+   quedan alineados en todas las filas, sin importar el largo de la fecha */
 .semana-item{
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 110px 90px;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 16px;
     background-color: #FBF8F3;
     border: 1px solid #DCCDB5;
     border-radius: 10px;
@@ -63,6 +64,8 @@ input[type="checkbox"] {
     font-weight: 700;
     padding: 4px 10px;
     border-radius: 5px;
+    text-align: center; /* Publicado y Borrador del mismo ancho */
+    box-sizing: border-box;
 }
 .estado-publicado{
     background-color: #6B4423;
@@ -75,6 +78,7 @@ input[type="checkbox"] {
     border: 1px dashed #B8862B;
 }
 .btn-editar{
+    width: 100%; /* Ver y Editar del mismo ancho */
     background-color: transparent;
     border: 1px solid #6B4423;
     color: #6B4423;
@@ -448,6 +452,16 @@ footer {
 @media (max-width: 600px) {
     .form-plato {
         grid-template-columns: 1fr;
+    }
+
+    /* en el celular: semana y estado arriba, el boton abajo a lo ancho */
+    .semana-item {
+        grid-template-columns: 1fr 100px;
+        gap: 10px;
+    }
+
+    .semana-item .btn-editar {
+        grid-column: 1 / -1;
     }
 }
 
