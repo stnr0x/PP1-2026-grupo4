@@ -52,7 +52,7 @@ La idea es probar que **el repo solo alcanza** para levantar todo, como lo harí
   ```
   Eso ya prueba que **las 8 entidades coinciden con las tablas** (`ddl-auto=validate`).
 - [ ] **0.8 Prueba rápida**: en el navegador `http://localhost:8080/api/platos` → JSON con 12 platos.
-- [ ] **0.9 Tests**: en IntelliJ, clic derecho en `src/test/java` → *Run 'All Tests'* (o `.\mvnw.cmd test`). Esperado: **16 tests en verde** (7 de `PedidoServiceTest`, 3 de `AsistenciaServiceTest`, 3 de `MenuServiceTest` y 3 de `UsuarioServiceTest`).
+- [ ] **0.9 Tests**: en IntelliJ, clic derecho en `src/test/java` → *Run 'All Tests'* (o `.\mvnw.cmd test`). Esperado: **23 tests en verde** (7 de `PedidoServiceTest`, 3 de `AsistenciaServiceTest`, 3 de `MenuServiceTest`, 3 de `UsuarioServiceTest` y 7 de `PlatoServiceTest`).
 - [ ] **0.10 Frontend**: abrir `PP-prueba` en VS Code → clic derecho en `frontend/login.html` → **Open with Live Server** (puerto 5500).
 
 ### Errores típicos del setup
@@ -121,7 +121,7 @@ Antes del código: entender que **lo que se ve en pantalla sale de cruzar tablas
   - La pestaña **Test Results**: chequeos automáticos en verde.
   - La **descripción** de la request (ícono de documento a la derecha): dice qué Controller → Service → tabla toca y qué SQL correr para verificar.
   - La **consola de IntelliJ**: con `show-sql=true` aparece el SQL que ejecutó Hibernate (`Hibernate: insert into pedido …`). **Esto es trazabilidad en vivo.**
-- [ ] **2.5 Correrla entera**: clic derecho en la colección → *Run collection* → *Run*. Esperado: **59 requests, todas verdes**. (Para correrla otra vez: script primero.)
+- [ ] **2.5 Correrla entera**: clic derecho en la colección → *Run collection* → *Run*. Esperado: **64 requests, todas verdes**. (Para correrla otra vez: script primero.)
 - [ ] **2.6 Verificar en la base** después de M4:
   ```sql
   SELECT * FROM pedido ORDER BY id_pedido DESC LIMIT 3;
@@ -134,7 +134,7 @@ Qué cubre cada carpeta:
 | Carpeta | Casos OK | Casos de error |
 |---|---|---|
 | M1 | login Lucía/Laura, registro, ver, editar perfil, cambiar clave, dar de baja | clave mala 401, correo repetido 409, email inválido 400, usuario 999 404, baja → 401 |
-| M3 | plato, menú del 27/10 + opciones (cruce 1), menús del empleado filtrados (`?idUsuario=`), feriados, publicar semana 21/12 | plato 99 404, menú en día no laborable 400 |
+| M3 | plato, alta de plato nuevo y su baja, menú del 27/10 + opciones (cruce 1), menús del empleado filtrados (`?idUsuario=`), feriados, publicar semana 21/12 | plato 99 404, plato con nombre repetido 409, categoría inventada 400, borrar plato usado 400, menú en día no laborable 400 |
 | M2 | asistencia de Lucía (27/10 = false), guardar semana, *upsert* (misma fila), semana sin configurar repite la última | ningún día marcado 400 |
 | M4 | pedir (BORRADOR), stock baja, modificar, mis pedidos (cruce 3), confirmar, cancelar devuelve stock | 2º pedido de la semana, plato fuera del menú, día no laborable, menú sin publicar, plazo vencido, sin días, admin edita semana con pedidos, feriado con pedidos, cancelar confirmado |
 | M5 | consolidado 28/10 (cruce 2), 26/10, 21/12 (no cuenta el cancelado), todos los pedidos, usuarios sin contraseña | — |
@@ -201,6 +201,21 @@ Para cada módulo: hacé la acción, mirá la request en Network, el SQL en la c
 - [ ] En Postman, *Semana 28/12 sin configurar*: devuelve el último patrón que guardaste con las fechas del 28/12. Ese es el "queda guardado hasta que lo cambies"
 - [ ] Desmarcar todo → "Marcá al menos un día de asistencia."
 
+### M3 · Platos (admin da de alta y borra)
+
+| Acción | Pantalla / función | Request | Backend | Tabla |
+|---|---|---|---|---|
+| Nuevo plato | `administrar-menus.js` → `crearPlato(FormData)` | `POST /api/platos` (multipart) | `PlatoController.crear` → `PlatoService.crear` → `AlmacenImagenes.guardar` → `save` | `plato` (INSERT) + archivo en `backend/imagenes/` |
+| Borrar plato | `borrarPlato(id)` | `DELETE /api/platos/{id}` | `PlatoService.borrar` (controla `menu_plato` y `pedido_dia`) | `plato` (DELETE) |
+
+- [ ] Laura → Administrar menús → *+ Nuevo plato* → nombre, categoría, descripción y una imagen JPG → se ve la vista previa → *Guardar plato*
+- [ ] Network: `POST /api/platos` → **201**; en *Payload* se ve el formulario con el archivo
+- [ ] El plato aparece en la lista con su miniatura y en las casillas de la semana que se está armando, sin recargar
+- [ ] phpMyAdmin: `SELECT * FROM plato ORDER BY id_plato DESC LIMIT 1;` → la columna `imagen` tiene `http://localhost:8080/imagenes/<uuid>.jpg`. El archivo está en `backend/imagenes/`
+- [ ] Mismo nombre otra vez → "Ya hay un plato que se llama…" (409). Un `.txt` renombrado a `.jpg` → "La imagen tiene que ser un archivo JPG o PNG." (400)
+- [ ] El plato nuevo tiene **Borrar**; los del script dicen **En uso**. Borrarlo → desaparece de la lista y su archivo de `backend/imagenes/`
+- [ ] Crear otro, tildarlo en una semana y guardar → ahora dice **En uso**; borrarlo por Postman → 400
+
 ### M3 · El menú que ve el empleado (filtro en el backend)
 
 | Acción | Pantalla / función | Request | Backend | Tablas |
@@ -229,6 +244,8 @@ Para cada módulo: hacé la acción, mirá la request en Network, el SQL en la c
 - [ ] Mis pedidos → *Cancelar* → "¿Seguro?" → *Sí* → "Cancelado" → el stock volvió al valor anterior
 - [ ] Volver al menú → hacer otro pedido → Mis pedidos → *Confirmar* → "Confirmado" → F5 → sigue
 - [ ] El pedido del 26/10 muestra "(Sin picante)" (columna `comentario`)
+- [ ] **Nota del pedido**: al elegir un plato aparece "Nota para la cocina" debajo de ese día → escribir "Sin sal" → se ve en el resumen → guardar → Network: el body del POST tiene `comentario: "Sin sal"` → `SELECT comentario FROM pedido_dia ORDER BY id_pedido_dia DESC LIMIT 3;`
+- [ ] Mis pedidos y el listado por empleado del Consolidado muestran la nota. Al *Modificar*, la nota vuelve a aparecer en el campo
 
 ### M5 · Consolidado
 
@@ -281,8 +298,10 @@ Objetivo: **menos de 5 minutos**, sin buscar nada.
 7. **¿Por qué la contraseña no está en el repo?** `${DB_PASSWORD:cambiar}`: se lee de una variable/propiedad de tu máquina.
 8. **¿Cómo se guardan las contraseñas de los usuarios?** Hasheadas con BCrypt (`PasswordConfig`). Al registrar se guarda `encode(contrasena)`; en el login, `matches(lo que escribió, el hash)`. El hash no se puede volver atrás, y dos hashes de la misma contraseña salen distintos por la sal. Usamos `spring-security-crypto` y no el starter de Spring Security, que cerraría todos los endpoints con 401.
 9. **¿Por qué los menús se filtran en el backend y no en `menu.js`?** Porque lo que llega al navegador lo puede ver cualquiera en la consola. Si el backend manda los borradores, el filtro del frontend no protege nada. `MenuService.listarParaEmpleado` solo devuelve lo publicado, hábil y de los días que el empleado viene.
-8. **¿Por qué hay un Service y no todo en el Controller?** El controller atiende la URL; las reglas (plazo, stock, no laborable) están en el service, y por eso se pueden testear con JUnit sin base.
-9. **¿Qué es un DTO y por qué `PedidoResponse`?** En la base son dos tablas (`pedido` + `pedido_dia`); el frontend quiere el pedido con sus días adentro. El DTO arma esa forma.
-10. **¿Cómo testeás el plazo del jueves si hoy es otro día?** El servicio usa un `Clock` inyectado; en el test se usa un reloj fijo (`Clock.fixed`).
-11. **¿Por qué la respuesta no trae la contraseña?** `@JsonProperty(access = WRITE_ONLY)` en `Usuario`: se puede recibir, nunca se devuelve.
-12. **¿Qué pasa si dos piden el último plato?** Hoy el stock se controla en el servicio dentro de una transacción; para concurrencia real habría que bloquear la fila (lo podés mencionar como mejora).
+10. **¿Por qué no se puede borrar cualquier plato?** Porque `menu_plato` y `pedido_dia` lo referencian: borrarlo rompería las claves foráneas, el historial de Mis pedidos y el consolidado. La regla ("solo si nunca se usó") está en `PlatoService.borrar`, como la del feriado: la base sola no la resuelve.
+11. **¿Dónde se guarda la imagen de un plato nuevo?** En disco (`backend/imagenes/`), no en la base. En la columna `imagen` queda la URL con la que Spring la publica. El nombre lo genera el backend y se lee el archivo para verificar que sea JPG o PNG: no se confía en lo que manda el navegador.
+12. **¿Por qué hay un Service y no todo en el Controller?** El controller atiende la URL; las reglas (plazo, stock, no laborable) están en el service, y por eso se pueden testear con JUnit sin base.
+13. **¿Qué es un DTO y por qué `PedidoResponse`?** En la base son dos tablas (`pedido` + `pedido_dia`); el frontend quiere el pedido con sus días adentro. El DTO arma esa forma.
+14. **¿Cómo testeás el plazo del jueves si hoy es otro día?** El servicio usa un `Clock` inyectado; en el test se usa un reloj fijo (`Clock.fixed`).
+15. **¿Por qué la respuesta no trae la contraseña?** `@JsonProperty(access = WRITE_ONLY)` en `Usuario`: se puede recibir, nunca se devuelve.
+16. **¿Qué pasa si dos piden el último plato?** Hoy el stock se controla en el servicio dentro de una transacción; para concurrencia real habría que bloquear la fila (lo podés mencionar como mejora).

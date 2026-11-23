@@ -15,10 +15,10 @@ El flujo principal funciona **desde el frontend, contra el backend Spring Boot y
 |---|---|---|---|
 | M1 · Acceso | Login · Registro · Mi Perfil | `POST /api/auth/login` · `POST /api/auth/registro` · `GET/PUT /api/usuarios/{id}` · `PUT /api/usuarios/{id}/contrasena` | `m1-ok` |
 | M2 · Mis días | Menú (panel "¿Qué días venís?") | `GET /api/asistencias?idUsuario=&desde=&hasta=` · `PUT /api/asistencias` | `m2-ok` |
-| M3 · Mis menús | Menú · Administrar menús · Feriados | `GET /api/platos` · `GET /api/menus?idUsuario=` (empleado) · `GET /api/menus` (admin) · `GET /api/menu-platos` · `PUT /api/menus/semana` · `GET/PUT /api/dias-no-laborables` | `m3-ok` |
-| M4 · Mi pedido | Menú (registrar/modificar) · Mis pedidos | `POST /api/pedidos` · `PUT /api/pedidos/{id}` · `PATCH /api/pedidos/{id}/estado` · `GET /api/pedidos?idUsuario=` | `m4-ok` |
+| M3 · Mis menús | Menú · Administrar menús (menús y platos) · Feriados | `GET/POST /api/platos` · `DELETE /api/platos/{id}` · `GET /api/menus?idUsuario=` (empleado) · `GET /api/menus` (admin) · `GET /api/menu-platos` · `PUT /api/menus/semana` · `GET/PUT /api/dias-no-laborables` | `m3-ok` |
+| M4 · Mi pedido | Menú (registrar/modificar, con nota por día) · Mis pedidos | `POST /api/pedidos` · `PUT /api/pedidos/{id}` · `PATCH /api/pedidos/{id}/estado` · `GET /api/pedidos?idUsuario=` | `m4-ok` |
 | M5 · Admin: consolidado | Consolidado | `GET /api/consolidado?fecha=` · `GET /api/pedidos` · `GET /api/usuarios` | `m5-ok` |
-| Destacado · Regla de negocio con JUnit | — | `PedidoServiceTest` (7) · `AsistenciaServiceTest` (3) · `MenuServiceTest` (3) · `UsuarioServiceTest` (3) | `regla-ok` |
+| Destacado · Regla de negocio con JUnit | — | `PedidoServiceTest` (7) · `AsistenciaServiceTest` (3) · `MenuServiceTest` (3) · `UsuarioServiceTest` (3) · `PlatoServiceTest` (7) | `regla-ok` |
 
 **Nivel alcanzado: DESTACADO** — M1 + M2 + M3 + M4 + M5 + una regla de negocio con test JUnit (M6 Seguridad completa no se hizo). Tag final: `v4-entrega`. Correcciones de la devolución: `v4-correcciones`.
 
@@ -35,7 +35,7 @@ El flujo principal funciona **desde el frontend, contra el backend Spring Boot y
    La consola termina en `Started PedidosApplication`.
 3. **Frontend**: abrir `frontend/login.html` con Live Server (puerto 5500).
 4. **Tests**: `./mvnw test` desde `backend/` (no necesitan la base).
-5. **Postman**: importar `docs/4ta-entrega/pp1-pedidos.postman_collection.json` (59 requests con chequeos automáticos, módulo por módulo). El plan completo está en [plan-de-pruebas.md](plan-de-pruebas.md).
+5. **Postman**: importar `docs/4ta-entrega/pp1-pedidos.postman_collection.json` (64 requests con chequeos automáticos, módulo por módulo). El plan completo está en [plan-de-pruebas.md](plan-de-pruebas.md).
 
 Cuentas del script (contraseña `cambiar123`, guardada en la base como hash BCrypt): `laura.gimenez@empresa.com.ar` (administradora) y 12 empleados `nombre.apellido@empresa.com.ar`: `martin.sosa`, `lucia.fernandez`, `diego.romero`, `carolina.benitez`, `sofia.paz`, `javier.molina`, `valentina.rios`, `tomas.acosta`, `camila.herrera`, `nicolas.dominguez`, `agustina.castro`, `federico.luna`.
 
@@ -56,7 +56,8 @@ pantalla (menu.js)  →  datos.js: fetch(`${API}/pedidos`)  →  PedidoControlle
 ```
 
 - **`frontend/assets/js/datos.js`** es la única puerta a los datos. Antes leía los JSON; ahora cada función hace `fetch` al backend con el mismo nombre (`obtenerPlatos`, `guardarPedido`…), por eso el render de las pantallas casi no cambió.
-- **Paquetes del backend** (`ar.edu.pp1.pedidos`): `entidad/` (una clase por tabla), `repositorio/`, `servicio/` (reglas de negocio), `controlador/` (URLs), `dto/` (lo que entra y sale cuando no es una tabla tal cual), `excepcion/` (errores → 400/401/404/409 con `{ "mensaje": … }`), `config/` (CORS, reloj y `PasswordConfig` con BCrypt).
+- **Paquetes del backend** (`ar.edu.pp1.pedidos`): `entidad/` (una clase por tabla), `repositorio/`, `servicio/` (reglas de negocio), `controlador/` (URLs), `dto/` (lo que entra y sale cuando no es una tabla tal cual), `excepcion/` (errores → 400/401/404/409 con `{ "mensaje": … }`), `config/` (CORS, reloj, `PasswordConfig` con BCrypt e `ImagenesConfig`, que publica las imágenes subidas).
+- **Imágenes de platos nuevos**: el admin las sube desde Administrar menús. `AlmacenImagenes` las guarda en `backend/imagenes/` (fuera del repo, configurable con `IMAGENES_DIR`) con un nombre generado (UUID) y solo si el contenido es de verdad JPG o PNG (hasta 2 MB). Spring las publica en `http://localhost:8080/imagenes/…` y esa URL es la que queda en `plato.imagen`. Las imágenes de los platos del script siguen en `frontend/assets/img/`.
 - `ddl-auto=validate`: el script manda; Spring solo controla que las 8 entidades coincidan con las tablas.
 - La contraseña de la base se lee de `DB_PASSWORD`. La de los usuarios se guarda **hasheada con BCrypt** (`spring-security-crypto`, sin el starter de Spring Security) y nunca sale en el JSON (`@JsonProperty(access = WRITE_ONLY)`).
 
@@ -76,6 +77,8 @@ Base: `http://localhost:8080/api`. Los errores vuelven como `{ "mensaje": "…" 
 | M2 | GET | `/asistencias?idUsuario=&desde=&hasta=` | Días que viene en esa semana (si no la configuró, repite la última) | 200 |
 | M2 | PUT | `/asistencias` | Guarda `[{ idUsuario, fecha, asiste }]` (crea o actualiza) | 200 · 400 |
 | M3 | GET | `/platos` · `/platos/{id}` | Platos | 200 · 404 |
+| M3 | POST | `/platos` (multipart: `nombre`, `descripcion`, `categoria`, `imagen`) | Admin: alta de un plato con su imagen (opcional) | 201 · 400 · 409 nombre repetido |
+| M3 | DELETE | `/platos/{id}` | Admin: borra un plato que nunca se usó (y su imagen) | 204 · 400 si ya se usó · 404 |
 | M3 | GET | `/menus?idUsuario=` | **Empleado**: solo lo que puede pedir (semana que se pide, publicados, sin feriados, días que asiste). Lo filtra `MenuService` | 200 |
 | M3 | GET | `/menus` · `/menus?fecha=` · `/menus?desde=&hasta=` | **Admin**: todos, también los borradores | 200 |
 | M3 | GET | `/menu-platos?idMenuDia=` | Opciones de un menú con su stock | 200 |
@@ -100,10 +103,10 @@ Base: `http://localhost:8080/api`. Los errores vuelven como `{ "mensaje": "…" 
 | `asistencia` | `Asistencia` | `id`, `idUsuario`, `fecha`, `asiste` | muchas → un `Usuario` | `/api/asistencias` | Menú (panel de días) |
 | `dia_no_laborable` | `DiaNoLaborable` | `id`, `fecha`, `motivo` | — | `/api/dias-no-laborables` | Feriados · Menú (no ofrece el día) · Administrar menús (día sin servicio) |
 | `menu_dia` | `MenuDia` | `id`, `fecha`, `descripcion`, `publicado`, `idUsuarioCreador` | muchos → un `Usuario` · uno → muchos `MenuPlato` | `/api/menus` | Menú · Administrar menús · Consolidado |
-| `plato` | `Plato` | `id`, `nombre`, `descripcion`, `imagen`, `categoria` | la referencian `menu_plato`, `pedido_dia` | `/api/platos` | Menú · Mis pedidos · Administrar menús · Consolidado |
+| `plato` | `Plato` | `id`, `nombre`, `descripcion`, `imagen`, `categoria` | la referencian `menu_plato`, `pedido_dia` | `/api/platos` | Menú · Mis pedidos · Administrar menús (alta y baja de platos) · Consolidado |
 | `menu_plato` | `MenuPlato` | `id`, `idMenuDia`, `idPlato`, `stockDisponible` | muchos → un `MenuDia` · muchos → un `Plato` | `/api/menu-platos` (escritura en `/api/menus/semana`) | Menú · Administrar menús · Consolidado |
 | `pedido` | `Pedido` | `id`, `idUsuario`, `fechaPedido`, `estado` | muchos → un `Usuario` · uno → muchos `PedidoDia` | `/api/pedidos` | Menú (registrar/modificar) · Mis pedidos · Consolidado · Feriados · Administrar menús |
-| `pedido_dia` | `PedidoDia` | `id`, `idPedido`, `idMenuDia`, `idPlato`, `fechaEntrega`, `comentario` | muchos → un `Pedido`, un `MenuDia`, un `Plato` | dentro de `/api/pedidos` (`pedidoDias`) | Menú · Mis pedidos (con su comentario) · Consolidado |
+| `pedido_dia` | `PedidoDia` | `id`, `idPedido`, `idMenuDia`, `idPlato`, `fechaEntrega`, `comentario` | muchos → un `Pedido`, un `MenuDia`, un `Plato` | dentro de `/api/pedidos` (`pedidoDias`) | Menú (nota por día → `comentario`) · Mis pedidos (con su comentario) · Consolidado (listado por empleado, con la nota) |
 | `notificacion` | — (no se mapea) | — | — | — (fuera de alcance) | sin pantalla |
 | *(consulta)* | `ConsolidadoItem` (DTO) | `plato`, `porciones` | cruce 2 | `/api/consolidado?fecha=…` | Consolidado (totales por día) |
 
@@ -151,6 +154,10 @@ El login y el registro ya están en `/api/auth/login` y `/api/auth/registro`, co
 | Pedir descuenta stock; cancelar o modificar lo devuelve | `PedidoService.guardarLineas/liberarStock` | — |
 | No hay menú en un día no laborable; no se marca no laborable un día con pedidos | `MenuService`, `DiaNoLaborableService` | 400 |
 | Correo único | `UsuarioService` | 409 |
+| Nombre de plato único y categoría de la lista (clásico, vegetariano, liviano, pastas) | `PlatoService.crear` | 409 · 400 |
+| La imagen del plato tiene que ser de verdad JPG o PNG (se lee el archivo, no se confía en la extensión) y pesar hasta 2 MB | `AlmacenImagenes` | 400 |
+| Solo se borra un plato que nunca se usó en un menú ni en un pedido (si no, se rompen el historial y el consolidado) | `PlatoService.borrar` | 400 |
+| La nota de cada día del pedido tiene como máximo 200 caracteres | `PedidoDiaRequest` (`@Size`) | 400 |
 | La asistencia queda guardada hasta que el empleado la cambie: una semana sin configurar repite la última que guardó | `AsistenciaService.listar` | — |
 | El empleado solo ve menús publicados, de días hábiles y de los días que viene | `MenuService.listarParaEmpleado` | — |
 | La contraseña se guarda hasheada y se compara con `matches` | `UsuarioService` + `PasswordConfig` | 401 |
@@ -172,6 +179,8 @@ El consolidado **no se guarda**: `PedidoDiaRepository.consolidadoDeFecha` es el 
 `MenuServiceTest` (3 tests): al empleado solo le llegan los menús publicados, no feriados y de los días que viene; sin asistencia no ve ninguno; y el jueves a las 12 hs pasa a la semana siguiente.
 
 `UsuarioServiceTest` (3 tests): el registro guarda el hash y no el texto; el login entra con la contraseña correcta y da 401 con una incorrecta.
+
+`PlatoServiceTest` (7 tests): alta con imagen (queda en disco con un nombre generado), alta sin imagen, nombre repetido → 409, categoría inventada → 400, un archivo que dice `.jpg` pero no es una imagen → 400, no se borra un plato que está en un menú, y se borra uno sin usar junto con su imagen.
 
 ---
 
@@ -218,3 +227,6 @@ Todo el código generado se revisó, se corrió y se probó contra la base (pant
 | 4. Lo que dice que hace y no hace | Se sacaron "Enviar al proveedor" (Consolidado), "¿Olvidaste tu contraseña?" y "Recordarme" (Login) |
 | Datos precargados | Seed de 4 semanas (23/11 a 14/12) con 12 empleados, menús de 4 opciones y pedidos confirmados (ver sección 2) |
 | Imágenes | Cada uno de los 12 platos apunta a su propia imagen en `frontend/assets/img/` (ya no comparten la genérica) |
+| Extra: nota del pedido | La columna `pedido_dia.comentario` ya existía y el backend la guardaba, pero la pantalla no tenía dónde escribirla. Ahora, al elegir el plato de un día, aparece "Nota para la cocina" (máx. 200). Se ve en Mis pedidos y en el Consolidado |
+| Extra: alta y baja de platos | Sección "Platos" en Administrar menús: nombre, categoría, descripción e imagen (`POST /api/platos`). Solo se pueden borrar los que nunca se usaron (`DELETE /api/platos/{id}`) |
+| Extra: texto seguro en pantalla | `escaparHtml()` en `datos.js`: los nombres de platos y usuarios y las notas se muestran escapados (lo escriben los usuarios) |

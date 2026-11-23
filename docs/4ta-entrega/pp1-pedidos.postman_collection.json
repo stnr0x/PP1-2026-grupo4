@@ -630,6 +630,167 @@
           ]
         },
         {
+          "name": "Admin: nuevo plato → 201",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base}}/platos",
+            "description": "PlatoService.crear (multipart/form-data). La imagen es opcional: para probarla, agregar en Body una clave \"imagen\" de tipo File con un JPG o PNG. Sin imagen, la pantalla muestra sin-imagen.svg.\nVerificar: SELECT * FROM plato ORDER BY id_plato DESC LIMIT 1;",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nombre",
+                  "value": "{{platoNuevo}}",
+                  "type": "text"
+                },
+                {
+                  "key": "descripcion",
+                  "value": "Con salsa blanca",
+                  "type": "text"
+                },
+                {
+                  "key": "categoria",
+                  "value": "pastas",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('platoNuevo', 'Lasagna ' + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('idPlatoNuevo', pm.response.json().id);",
+                  "pm.test('Queda con su categoría', () => pm.expect(pm.response.json().categoria).to.eql('pastas'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: plato con nombre repetido → 409",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base}}/platos",
+            "description": "PlatoService.crear: el nombre es único sin importar mayúsculas (existsByNombreIgnoreCase).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nombre",
+                  "value": "milanesa CON puré",
+                  "type": "text"
+                },
+                {
+                  "key": "categoria",
+                  "value": "clásico",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: categoría inventada → 400",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{base}}/platos",
+            "description": "Las categorías válidas son: clásico, vegetariano, liviano, pastas (PlatoService.CATEGORIAS).",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "nombre",
+                  "value": "Flan casero",
+                  "type": "text"
+                },
+                {
+                  "key": "categoria",
+                  "value": "postres",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: borrar un plato que está en un menú → 400",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base}}/platos/1",
+            "description": "Regla de PlatoService.borrar: solo se borra un plato que NUNCA se usó en menu_plato ni en pedido_dia (si no, se romperían el historial y el consolidado)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: borrar el plato nuevo (sin usar) → 204",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base}}/platos/{{idPlatoNuevo}}",
+            "description": "El plato recién creado no está en ningún menú ni pedido: se borra (y su imagen, si tenía)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Menú del martes 27/10 (cruce 1)",
           "request": {
             "method": "GET",
@@ -1078,7 +1239,7 @@
             "description": "PedidoController.crear → PedidoService.crear: valida cada día (validarDias), graba la cabecera en pedido y una línea por día en pedido_dia, y descuenta stock en menu_plato.\nVerificar: SELECT * FROM pedido ORDER BY id_pedido DESC LIMIT 1; SELECT * FROM pedido_dia WHERE id_pedido = <id>;",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [\n    { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 2, \"fechaEntrega\": \"2026-12-21\", \"comentario\": \"Sin sal\" },\n    { \"idMenuDia\": {{menuMiercoles}}, \"idPlato\": 6, \"fechaEntrega\": \"2026-12-23\" }\n  ]\n}",
+              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [\n    {\n      \"idMenuDia\": {{menuLunes}},\n      \"idPlato\": 2,\n      \"fechaEntrega\": \"2026-12-21\",\n      \"comentario\": \"Sin sal\"\n    },\n    {\n      \"idMenuDia\": {{menuMiercoles}},\n      \"idPlato\": 6,\n      \"fechaEntrega\": \"2026-12-23\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1096,7 +1257,8 @@
                   "const p = pm.response.json();",
                   "pm.collectionVariables.set('idPedido', p.id);",
                   "pm.test('Nace en BORRADOR', () => pm.expect(p.estado).to.eql('BORRADOR'));",
-                  "pm.test('Dos líneas (pedidoDias)', () => pm.expect(p.pedidoDias.length).to.eql(2));"
+                  "pm.test('Dos líneas (pedidoDias)', () => pm.expect(p.pedidoDias.length).to.eql(2));",
+                  "pm.test('Guarda la nota del día (pedido_dia.comentario)', () => pm.expect(pm.response.json().pedidoDias.map(d => d.comentario)).to.include('Sin sal'));"
                 ]
               }
             }
