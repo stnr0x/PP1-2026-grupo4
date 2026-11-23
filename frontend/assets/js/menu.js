@@ -7,6 +7,8 @@ let seleccion = {}; // plato elegido en cada menu: { idMenuDia: idPlato }
 let asistencia = []; // dias de asistencia guardados, ej: ['lunes', 'miercoles']
 let pedidoEditando = null; // pedido que se esta modificando (viene de Mis pedidos)
 let plazo = null; // jueves a las 12 hs anterior a la semana del menu
+let lunesPedido = null; // lunes de la semana para la que se pide
+let eligiendo = false; // true si la pantalla esta mostrando los platos para elegir
 
 let idUsuario = null; // id del usuario que inicio sesion
 
@@ -40,34 +42,21 @@ async function cargarDatos() {
         }
         idUsuario = usuario.id;
 
+        lunesPedido = lunesSemanaQueViene(); // semana para la que se pide (datos.js)
+        plazo = calcularPlazo(lunesPedido);
+
         platos = await obtenerPlatos(); // las funciones obtener... estan en datos.js
-        menusDia = await obtenerMenusDia();
-        menuPlatos = await obtenerMenuPlatos();
         asistencia = await obtenerAsistencia(idUsuario);
         const pedidos = await obtenerPedidos(idUsuario); // solo los mios: /api/pedidos?idUsuario=
-        const feriados = await obtenerFeriados();
-
-        // solo los menus publicados de la semana que viene, sin los dias feriados
-        const semana = textoSemana(lunesSemanaQueViene());
-        menusDia = menusDia.filter(menu =>
-            menu.publicado &&
-            textoSemana(menu.fecha) === semana &&
-            !feriados.includes(menu.fecha)
-        );
-
-        if (menusDia.length === 0) {
-            mostrarMensaje('Todavía no hay menú publicado para la semana que viene.', 'vacio'); // estado vacio
-            return;
-        }
+        await cargarMenus(); // ya vienen filtrados por el backend
 
         mostrarSemana();
         if (asistencia.length > 0) {
             mostrarResumenAsistencia(); // si ya estaba guardada, muestra la leyenda
         }
 
-        plazo = calcularPlazo(menusDia[0].fecha);
         const plazoAbierto = ahora() < plazo;
-        const pedidoSemana = buscarPedidoDeLaSemana(pedidos, menusDia, idUsuario);
+        const pedidoSemana = buscarPedidoDeLaSemana(pedidos, lunesPedido, idUsuario);
         const idEditar = Number(new URLSearchParams(location.search).get('editar')); // menu.html?editar=1
 
         if (pedidoSemana !== undefined && pedidoSemana.id === idEditar && pedidoSemana.estado === 'BORRADOR' && plazoAbierto) {
@@ -82,6 +71,7 @@ async function cargarDatos() {
             document.querySelector('#leyenda-plazo').textContent = `Podés hacer tu pedido hasta el ${textoPlazo(plazo)}.`;
         }
 
+        eligiendo = true;
         renderMenuSemana();
         renderResumen();
     } catch (error) {
@@ -90,11 +80,17 @@ async function cargarDatos() {
     }
 }
 
-// escribe la semana del pedido con la primera y la ultima fecha del menu
+// GET /api/menus?idUsuario= : el backend (MenuService) devuelve solo los menus
+// publicados, sin feriados y de los dias que el empleado asiste.
+// Despues trae solo las opciones (menu_plato) de esos menus.
+async function cargarMenus() {
+    menusDia = await obtenerMenusEmpleado(idUsuario);
+    menuPlatos = await obtenerOpcionesDe(menusDia);
+}
+
+// escribe la semana del pedido, ej: '07/12 al 12/12'
 function mostrarSemana() {
-    const primera = menusDia[0].fecha;
-    const ultima = menusDia[menusDia.length - 1].fecha;
-    document.querySelector('#semana-pedido').textContent = `${formatearFecha(primera)} al ${formatearFecha(ultima)}`;
+    document.querySelector('#semana-pedido').textContent = textoSemana(lunesPedido);
 }
 
 // devuelve un array con los dias tildados, ej: ['lunes', 'miercoles']
@@ -112,13 +108,11 @@ function diasMarcados() {
 // carga los platos del pedido para modificarlos
 function empezarEdicion(pedido) {
     pedidoEditando = pedido;
+    // marca los platos que ya tenia. Si la asistencia cambio, los dias que ya
+    // no viene no estan en menusDia (el backend no los manda) y se saltean.
     for (const pd of pedido.pedidoDias) {
-        seleccion[pd.idMenuDia] = pd.idPlato; // marca los platos que ya tenia
-    }
-    // si la asistencia cambio, saca los dias que ya no estan
-    for (const menu of menusDia) {
-        if (!asistencia.includes(nombreDia(menu.fecha))) {
-            delete seleccion[menu.id];
+        if (menusDia.some(menu => menu.id === pd.idMenuDia)) {
+            seleccion[pd.idMenuDia] = pd.idPlato;
         }
     }
     document.querySelector('#leyenda-plazo').textContent = `Estás modificando tu pedido. Podés cambiarlo hasta el ${textoPlazo(plazo)}.`;
@@ -192,24 +186,21 @@ function crearBloqueDia(menu) {
     </div>`;
 }
 
-// funcion que dibuja los dias marcados con sus platos
+// funcion que dibuja los menus de la semana con sus platos.
+// menusDia ya viene filtrado por el backend: solo los dias que viene el empleado.
 function renderMenuSemana() {
-    if (menusDia.length === 0) {
-        return; // si no cargo el menu, deja el mensaje de vacio o error
+    if (asistencia.length === 0) {
+        mostrarMensaje('Configurá tu asistencia para ver el menú.', 'vacio'); // ej: usuario recien registrado
+        return;
     }
-
-    const dias = asistencia; // usa los dias guardados, no los tildes
-
-    if (dias.length === 0) {
-        mostrarMensaje('Configurá tu asistencia para ver el menú.', 'vacio');
+    if (menusDia.length === 0) {
+        mostrarMensaje('Todavía no hay menú publicado para los días que venís.', 'vacio'); // estado vacio
         return;
     }
 
     let html = '';
     for (const menu of menusDia) {
-        if (dias.includes(nombreDia(menu.fecha))) { // solo los dias tildados
-            html = html + crearBloqueDia(menu);
-        }
+        html = html + crearBloqueDia(menu);
     }
     contenedorPlatos.innerHTML = html;
 }
@@ -278,13 +269,16 @@ form.addEventListener('submit', async function (evento) {
         return;
     }
 
-    const dias = asistencia; // dias guardados
-    if (dias.length === 0) {
+    if (asistencia.length === 0) {
         mostrarError('Configurá tu asistencia antes de guardar el pedido.');
         return;
     }
+    if (menusDia.length === 0) {
+        mostrarError('No hay menú publicado para los días que venís.');
+        return;
+    }
 
-    const menusElegidos = menusDia.filter(menu => dias.includes(nombreDia(menu.fecha))); // menus de los dias tildados
+    const menusElegidos = menusDia; // ya son solo los dias que viene (filtro del backend)
     for (const menu of menusElegidos) {
         if (seleccion[menu.id] === undefined) {
             mostrarError('Elegí un plato para cada día que marcaste.');
@@ -360,15 +354,27 @@ document.querySelector('#btn-guardar-asistencia').addEventListener('click', asyn
         return;
     }
     asistencia = dias;
+    mostrarResumenAsistencia();
+
+    if (!eligiendo) {
+        return; // ya pidio o cerro el plazo: no se vuelven a dibujar los platos
+    }
+
+    // cambiaron los dias: se le vuelven a pedir los menus al backend
+    try {
+        await cargarMenus();
+    } catch (error) {
+        mostrarMensaje('No pudimos cargar el menú. Probá recargar la página.', 'error');
+        return;
+    }
 
     // si se quito un dia, se borra el plato que estaba elegido ese dia
-    for (const menu of menusDia) {
-        if (!dias.includes(nombreDia(menu.fecha))) {
-            delete seleccion[menu.id];
+    for (const idMenu of Object.keys(seleccion)) {
+        if (!menusDia.some(menu => menu.id === Number(idMenu))) {
+            delete seleccion[idMenu];
         }
     }
 
-    mostrarResumenAsistencia();
     renderMenuSemana();
     renderResumen();
 });
