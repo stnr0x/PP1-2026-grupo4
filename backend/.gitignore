@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Imagenes de platos que sube el administrador (se guardan en disco, no van al repo)
+imagenes/

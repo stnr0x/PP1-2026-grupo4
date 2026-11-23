@@ -153,6 +153,31 @@ label {
     margin: 0 0 12px;
 }
 
+/* nota para la cocina del dia (columna comentario de pedido_dia) */
+.nota-dia {
+    display: block;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: #7A6A5A;
+}
+
+.nota-dia .input-nota {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 6px;
+    padding: 10px 12px;
+    border: 2px solid #DCCDB5;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+.nota-dia .input-nota:focus {
+    outline: none;
+    border-color: #B8862B;
+}
+
 /* las 3 tarjetas una al lado de la otra */
 .opciones {
     display: grid;

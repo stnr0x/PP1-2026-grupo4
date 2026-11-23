@@ -45,6 +45,7 @@ async function cargarDatos() {
 
         cajaEstado.innerHTML = '';
         renderSemanas();
+        renderPlatos();
     } catch (error) {
         console.error('No se pudieron cargar los menús:', error); // para el programador
         mostrarMensaje('No pudimos cargar los menús. Probá recargar la página.', 'error'); // estado error
@@ -162,7 +163,7 @@ function renderEditor() {
             const tildado = borrador[fecha].includes(plato.id);
             opciones = opciones + `<label class="opcion-check">
                 <input type="checkbox" data-fecha="${fecha}" value="${plato.id}" ${tildado ? 'checked' : ''} ${bloqueada ? 'disabled' : ''}>
-                ${plato.nombre}
+                ${escaparHtml(plato.nombre)}
             </label>`;
         }
         if (borrador[fecha].length === 0) {
@@ -225,6 +226,7 @@ async function guardarSemana(publicar) {
         });
         menusDia = await obtenerMenusDia(); // vuelve a leer de la base lo que quedo guardado
         menuPlatos = await obtenerMenuPlatos();
+        renderPlatos(); // los platos que se acaban de usar ya no se pueden borrar
     } catch (error) {
         mostrarError(error.message); // ej: 'Esta semana ya tiene pedidos: no se puede modificar.'
         return;
@@ -302,6 +304,164 @@ document.querySelector('#btn-guardar').addEventListener('click', function () {
 
 document.querySelector('#btn-publicar').addEventListener('click', function () {
     guardarSemana(true); // publica (CU013)
+});
+
+// ---------- catalogo de platos (tabla plato) ----------
+
+const formPlato = document.querySelector('#form-plato');
+const listaPlatos = document.querySelector('#lista-platos');
+const errorPlato = document.querySelector('#error-plato');
+const exitoPlato = document.querySelector('#exito-plato');
+const inputImagen = document.querySelector('#plato-imagen');
+const vistaPrevia = document.querySelector('#plato-vista-previa');
+const MAX_IMAGEN = 2 * 1024 * 1024; // 2 MB, igual que spring.servlet.multipart.max-file-size
+
+// ¿el plato ya se uso en algun menu o pedido? (el backend lo vuelve a controlar al borrar)
+function platoUsado(idPlato) {
+    return menuPlatos.some(mp => mp.idPlato === idPlato) ||
+        pedidos.some(pedido => pedido.pedidoDias.some(pd => pd.idPlato === idPlato));
+}
+
+// dibuja la lista de platos; los que no se usaron tienen el boton Borrar
+function renderPlatos() {
+    let html = '';
+    for (const plato of platos) {
+        let boton = '<span class="plato-usado">En uso</span>';
+        if (!platoUsado(plato.id)) {
+            boton = `<button type="button" class="btn-borrar-plato" data-plato="${plato.id}">Borrar</button>`;
+        }
+        html = html + `<article class="plato-item">
+            <img src="${escaparHtml(plato.imagen)}" alt="" onerror="this.onerror=null; this.src='assets/img/sin-imagen.svg'">
+            <div class="plato-datos">
+                <strong>${escaparHtml(plato.nombre)}</strong>
+                <span class="plato-categoria">${escaparHtml(plato.categoria)}</span>
+            </div>
+            ${boton}
+        </article>`;
+    }
+    listaPlatos.innerHTML = html;
+}
+
+// si el editor de una semana esta abierto, lo redibuja (para que aparezca o se vaya el plato)
+function refrescarEditor() {
+    if (!editor.classList.contains('oculto')) {
+        renderEditor();
+    }
+}
+
+function mostrarErrorPlato(mensaje) {
+    errorPlato.textContent = mensaje;
+    errorPlato.classList.add('visible');
+}
+
+function limpiarMensajesPlato() {
+    errorPlato.textContent = '';
+    errorPlato.classList.remove('visible');
+    exitoPlato.textContent = '';
+    exitoPlato.classList.remove('visible');
+}
+
+function cerrarFormPlato() {
+    formPlato.reset();
+    vistaPrevia.classList.add('oculto');
+    vistaPrevia.removeAttribute('src');
+    formPlato.classList.add('oculto');
+}
+
+document.querySelector('#btn-nuevo-plato').addEventListener('click', function () {
+    limpiarMensajesPlato();
+    formPlato.classList.remove('oculto');
+    document.querySelector('#plato-nombre').focus();
+});
+
+document.querySelector('#btn-cancelar-plato').addEventListener('click', function () {
+    limpiarMensajesPlato();
+    cerrarFormPlato();
+});
+
+// vista previa de la imagen elegida (todavia no se subio nada)
+inputImagen.addEventListener('change', function () {
+    const archivo = inputImagen.files[0];
+    if (!archivo) {
+        vistaPrevia.classList.add('oculto');
+        return;
+    }
+    vistaPrevia.src = URL.createObjectURL(archivo);
+    vistaPrevia.classList.remove('oculto');
+});
+
+// guardar el plato: POST /api/platos con un FormData (texto + archivo)
+formPlato.addEventListener('submit', async function (evento) {
+    evento.preventDefault();
+    limpiarMensajesPlato();
+
+    const nombre = document.querySelector('#plato-nombre').value.trim();
+    const categoria = document.querySelector('#plato-categoria').value;
+    const archivo = inputImagen.files[0];
+
+    // controles rapidos para avisar antes; el que decide es el backend
+    if (nombre === '') {
+        mostrarErrorPlato('El nombre del plato es obligatorio.');
+        return;
+    }
+    if (categoria === '') {
+        mostrarErrorPlato('Elegí una categoría.');
+        return;
+    }
+    if (archivo && !['image/jpeg', 'image/png'].includes(archivo.type)) {
+        mostrarErrorPlato('La imagen tiene que ser un archivo JPG o PNG.');
+        return;
+    }
+    if (archivo && archivo.size > MAX_IMAGEN) {
+        mostrarErrorPlato('La imagen no puede pesar más de 2 MB.');
+        return;
+    }
+
+    const formulario = new FormData(formPlato); // nombre, categoria, descripcion e imagen
+    if (!archivo) {
+        formulario.delete('imagen'); // sin imagen: el plato usa sin-imagen.svg
+    }
+
+    try {
+        const nuevo = await crearPlato(formulario); // datos.js
+        platos.push(nuevo);
+        renderPlatos();
+        refrescarEditor(); // ya se puede tildar en la semana que se esta armando
+        cerrarFormPlato();
+        exitoPlato.textContent = `Se agregó "${nuevo.nombre}". Ya lo podés elegir en los menús.`;
+        exitoPlato.classList.add('visible');
+    } catch (error) {
+        mostrarErrorPlato(error.message); // nombre repetido, imagen invalida...
+    }
+});
+
+// borrar un plato que nunca se uso
+listaPlatos.addEventListener('click', async function (evento) {
+    const boton = evento.target.closest('.btn-borrar-plato');
+    if (!boton) {
+        return;
+    }
+    const idPlato = Number(boton.dataset.plato);
+    const plato = platos.find(p => p.id === idPlato);
+    if (!confirm(`¿Borrar "${plato.nombre}"? No se puede deshacer.`)) {
+        return;
+    }
+
+    limpiarMensajesPlato();
+    try {
+        await borrarPlato(idPlato); // DELETE /api/platos/{id}
+        platos = platos.filter(p => p.id !== idPlato);
+        // si estaba tildado en la semana que se esta armando (sin guardar), se destilda
+        for (const fecha of Object.keys(borrador)) {
+            borrador[fecha] = borrador[fecha].filter(id => id !== idPlato);
+        }
+        renderPlatos();
+        refrescarEditor();
+        exitoPlato.textContent = `Se borró "${plato.nombre}".`;
+        exitoPlato.classList.add('visible');
+    } catch (error) {
+        mostrarErrorPlato(error.message); // ej: ya se uso en un menu
+    }
 });
 
 // ---------- mensajes ----------

@@ -48,9 +48,9 @@ function crearTarjetaPedido(pedido) {
         const plato = platos.find(p => p.id === pd.idPlato);
         let comentario = '';
         if (pd.comentario) {
-            comentario = ` <em>(${pd.comentario})</em>`; // columna comentario de pedido_dia
+            comentario = ` <em>(${escaparHtml(pd.comentario)})</em>`; // columna comentario de pedido_dia
         }
-        detalle = detalle + `<li><strong>${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}:</strong> ${plato.nombre}${comentario}</li>`;
+        detalle = detalle + `<li><strong>${nombresLindos[nombreDia(pd.fechaEntrega)]} ${formatearFecha(pd.fechaEntrega)}:</strong> ${escaparHtml(plato.nombre)}${comentario}</li>`;
     }
 
     // botones segun el estado

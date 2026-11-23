@@ -18,6 +18,9 @@ public interface PedidoDiaRepository extends JpaRepository<PedidoDia, Long> {
     // ¿hay lineas de pedido que usan este menu? (si hay, el admin no puede sacarle platos)
     boolean existsByIdMenuDia(Long idMenuDia);
 
+    // ¿alguien pidio alguna vez este plato? (si es asi, no se puede borrar)
+    boolean existsByIdPlato(Long idPlato);
+
     // ¿algun pedido no cancelado tiene una linea para esa fecha?
     @Query("""
             SELECT COUNT(pd) > 0 FROM PedidoDia pd, Pedido pe

@@ -39,6 +39,45 @@
         <p id="exito-admin" class="exito-admin"></p>
     </div>
 
+    <!-- catalogo de platos (tabla plato): alta con imagen y baja de los que no se usaron -->
+    <section id="seccion-platos" class="seccion-platos">
+        <div class="platos-cabecera">
+            <h2 class="semana-titulo">Platos</h2>
+            <button type="button" id="btn-nuevo-plato" class="btn-duplicar">+ Nuevo plato</button>
+        </div>
+
+        <form id="form-plato" class="form-plato oculto" novalidate>
+            <label>Nombre *
+                <input type="text" id="plato-nombre" name="nombre" maxlength="120" required>
+            </label>
+            <label>Categoría *
+                <select id="plato-categoria" name="categoria" required>
+                    <option value="">Elegí una categoría</option>
+                    <option value="clásico">Clásico</option>
+                    <option value="vegetariano">Vegetariano</option>
+                    <option value="liviano">Liviano</option>
+                    <option value="pastas">Pastas</option>
+                </select>
+            </label>
+            <label class="campo-ancho">Descripción
+                <textarea id="plato-descripcion" name="descripcion" maxlength="300" rows="2"></textarea>
+            </label>
+            <label class="campo-ancho">Imagen (JPG o PNG, hasta 2 MB)
+                <input type="file" id="plato-imagen" name="imagen" accept="image/jpeg,image/png">
+            </label>
+            <img id="plato-vista-previa" class="vista-previa oculto" alt="Vista previa de la imagen">
+            <div class="acciones campo-ancho">
+                <button type="button" id="btn-cancelar-plato" class="btn-guardar">Cancelar</button>
+                <button type="submit" class="btn-publicar">Guardar plato</button>
+            </div>
+        </form>
+        <p id="error-plato" class="error-admin"></p>
+        <p id="exito-plato" class="exito-admin"></p>
+
+        <div id="lista-platos" class="lista-platos"></div>
+        <p class="nota-catalogo">Solo se puede borrar un plato que todavía no se usó en ningún menú ni pedido.</p>
+    </section>
+
     <p class="aviso">El menú en Borrador no es visible para los empleados hasta que lo publiques. Una semana que ya tiene pedidos no se puede modificar. Los días marcados en Feriados no tienen servicio.</p>
 
     <footer>
