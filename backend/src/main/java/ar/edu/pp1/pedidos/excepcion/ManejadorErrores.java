@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 // Traduce las excepciones a respuestas HTTP con un JSON { "mensaje": "..." }.
 // Asi el frontend puede mostrar el motivo exacto del error.
@@ -46,6 +47,12 @@ public class ManejadorErrores {
     public ResponseEntity<Map<String, String>> validacionLista(HandlerMethodValidationException e) {
         String mensaje = e.getAllErrors().get(0).getDefaultMessage();
         return respuesta(HttpStatus.BAD_REQUEST, mensaje);
+    }
+
+    // la imagen del plato supera spring.servlet.multipart.max-file-size
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String, String>> archivoGrande(MaxUploadSizeExceededException e) {
+        return respuesta(HttpStatus.BAD_REQUEST, "La imagen no puede pesar más de 2 MB.");
     }
 
     private ResponseEntity<Map<String, String>> respuesta(HttpStatus estado, String mensaje) {

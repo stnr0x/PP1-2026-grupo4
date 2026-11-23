@@ -15,4 +15,7 @@ public interface MenuPlatoRepository extends JpaRepository<MenuPlato, Long> {
     Optional<MenuPlato> findByIdMenuDiaAndIdPlato(Long idMenuDia, Long idPlato);
 
     void deleteByIdMenuDia(Long idMenuDia);
+
+    // ¿el plato esta en algun menu? (si esta, no se puede borrar)
+    boolean existsByIdPlato(Long idPlato);
 }
