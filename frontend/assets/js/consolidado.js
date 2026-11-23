@@ -221,16 +221,6 @@ document.querySelector('#btn-pdf').addEventListener('click', function () {
     window.print();
 });
 
-// enviar al proveedor: por ahora solo avisa (el envio real lo hara el backend)
-document.querySelector('#btn-enviar').addEventListener('click', function () {
-    if (semanaGenerada === '') {
-        mostrarError('Primero generá el consolidado.');
-        return;
-    }
-    limpiarError();
-    mostrarExito(`Consolidado de la semana del ${semanaGenerada} enviado a cocina.`);
-});
-
 //funcion para mostrar el mensaje de error
 function mostrarError(mensaje) {
     cajaError.textContent = mensaje;//pone el texto de error
