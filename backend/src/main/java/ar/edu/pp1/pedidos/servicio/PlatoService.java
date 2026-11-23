@@ -37,7 +37,7 @@ public class PlatoService {
     }
 
     public List<Plato> listar() {
-        return platoRepository.findAll();
+        return platoRepository.findAllByOrderByNombreAsc(); // alfabetico
     }
 
     public Plato buscar(Long id) {

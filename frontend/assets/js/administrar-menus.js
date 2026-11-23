@@ -425,6 +425,7 @@ formPlato.addEventListener('submit', async function (evento) {
     try {
         const nuevo = await crearPlato(formulario); // datos.js
         platos.push(nuevo);
+        platos.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')); // mantiene el orden alfabetico
         renderPlatos();
         refrescarEditor(); // ya se puede tildar en la semana que se esta armando
         cerrarFormPlato();
