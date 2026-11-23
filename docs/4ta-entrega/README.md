@@ -3,7 +3,7 @@
 **Grupo**: Grupo 4  
 **Proyecto**: Sistema de pedidos de almuerzo (TP Pedidos)  
 **Integrante**: Giancarlo Nuñez  
-**Fecha de entrega**: 12/11/2026  
+**Fecha de entrega**: 12/11/2026 · **Correcciones de la devolución**: 23/11/2026 (ver [sección 11](#11-correcciones-de-la-devolución-e4))  
 
 El flujo principal funciona **desde el frontend, contra el backend Spring Boot y la base MySQL** `pp1_pedidos`. Ninguna pantalla lee ya los `data/*.json`: todos los datos salen de la base y siguen ahí después de recargar.
 
@@ -13,14 +13,14 @@ El flujo principal funciona **desde el frontend, contra el backend Spring Boot y
 
 | Módulo | Pantallas | Endpoints | Tag |
 |---|---|---|---|
-| M1 · Acceso | Login · Registro · Mi Perfil | `POST /api/usuarios/login` · `POST /api/usuarios` · `GET/PUT /api/usuarios/{id}` · `PUT /api/usuarios/{id}/contrasena` | `m1-ok` |
+| M1 · Acceso | Login · Registro · Mi Perfil | `POST /api/auth/login` · `POST /api/auth/registro` · `GET/PUT /api/usuarios/{id}` · `PUT /api/usuarios/{id}/contrasena` | `m1-ok` |
 | M2 · Mis días | Menú (panel "¿Qué días venís?") | `GET /api/asistencias?idUsuario=&desde=&hasta=` · `PUT /api/asistencias` | `m2-ok` |
-| M3 · Mis menús | Menú · Administrar menús · Feriados | `GET /api/platos` · `GET /api/menus` · `GET /api/menu-platos` · `PUT /api/menus/semana` · `GET/PUT /api/dias-no-laborables` | `m3-ok` |
+| M3 · Mis menús | Menú · Administrar menús · Feriados | `GET /api/platos` · `GET /api/menus?idUsuario=` (empleado) · `GET /api/menus` (admin) · `GET /api/menu-platos` · `PUT /api/menus/semana` · `GET/PUT /api/dias-no-laborables` | `m3-ok` |
 | M4 · Mi pedido | Menú (registrar/modificar) · Mis pedidos | `POST /api/pedidos` · `PUT /api/pedidos/{id}` · `PATCH /api/pedidos/{id}/estado` · `GET /api/pedidos?idUsuario=` | `m4-ok` |
 | M5 · Admin: consolidado | Consolidado | `GET /api/consolidado?fecha=` · `GET /api/pedidos` · `GET /api/usuarios` | `m5-ok` |
-| Destacado · Regla de negocio con JUnit | — | `PedidoServiceTest` (7 tests) + `AsistenciaServiceTest` (3 tests) | `regla-ok` |
+| Destacado · Regla de negocio con JUnit | — | `PedidoServiceTest` (7) · `AsistenciaServiceTest` (3) · `MenuServiceTest` (3) · `UsuarioServiceTest` (3) | `regla-ok` |
 
-**Nivel alcanzado: DESTACADO** — M1 + M2 + M3 + M4 + M5 + una regla de negocio con test JUnit (M6 Seguridad completa no se hizo). Tag final: `v4-entrega`.
+**Nivel alcanzado: DESTACADO** — M1 + M2 + M3 + M4 + M5 + una regla de negocio con test JUnit (M6 Seguridad completa no se hizo). Tag final: `v4-entrega`. Correcciones de la devolución: `v4-correcciones`.
 
 ---
 
@@ -35,11 +35,16 @@ El flujo principal funciona **desde el frontend, contra el backend Spring Boot y
    La consola termina en `Started PedidosApplication`.
 3. **Frontend**: abrir `frontend/login.html` con Live Server (puerto 5500).
 4. **Tests**: `./mvnw test` desde `backend/` (no necesitan la base).
-5. **Postman**: importar `docs/4ta-entrega/pp1-pedidos.postman_collection.json` (58 requests con chequeos automáticos, módulo por módulo). El plan completo está en [plan-de-pruebas.md](plan-de-pruebas.md).
+5. **Postman**: importar `docs/4ta-entrega/pp1-pedidos.postman_collection.json` (59 requests con chequeos automáticos, módulo por módulo). El plan completo está en [plan-de-pruebas.md](plan-de-pruebas.md).
 
-Cuentas del script (contraseña `cambiar123`): `laura.gimenez@empresa.com.ar` (administradora), `martin.sosa@…`, `lucia.fernandez@…`, `diego.romero@…`, `carolina.benitez@…` (empleados, todos `@empresa.com.ar`).
+Cuentas del script (contraseña `cambiar123`, guardada en la base como hash BCrypt): `laura.gimenez@empresa.com.ar` (administradora) y 12 empleados `nombre.apellido@empresa.com.ar`: `martin.sosa`, `lucia.fernandez`, `diego.romero`, `carolina.benitez`, `sofia.paz`, `javier.molina`, `valentina.rios`, `tomas.acosta`, `camila.herrera`, `nicolas.dominguez`, `agustina.castro`, `federico.luna`.
 
-**Único cambio al script del docente**: `COLLATE utf8mb4_0900_ai_ci` → `utf8mb4_unicode_ci`, porque XAMPP trae MariaDB 10.11 y esa collation es solo de MySQL 8. Tablas, columnas y datos no cambian.
+**Cambios al script del docente** (tablas y columnas no cambian):
+1. `COLLATE utf8mb4_0900_ai_ci` → `utf8mb4_unicode_ci`, porque XAMPP trae MariaDB 10.11 y esa collation es solo de MySQL 8.
+2. Contraseñas hasheadas con BCrypt.
+3. Datos para la Exposición Final, **agregados** después de la historia de octubre (que queda igual, así los cruces 1-4 del material siguen dando lo mismo): 12 platos, 13 usuarios, menús publicados de lunes a viernes de las semanas del 23/11, 30/11, 07/12 y 14/12 (el 08/12 es feriado y no tiene menú), asistencia de los 12 empleados y pedidos confirmados, en borrador y cancelados.
+
+**Imágenes**: los platos usan `assets/img/<nombre>.jpg`. Si falta el archivo, la pantalla muestra `sin-imagen.svg`.
 
 ---
 
@@ -51,9 +56,9 @@ pantalla (menu.js)  →  datos.js: fetch(`${API}/pedidos`)  →  PedidoControlle
 ```
 
 - **`frontend/assets/js/datos.js`** es la única puerta a los datos. Antes leía los JSON; ahora cada función hace `fetch` al backend con el mismo nombre (`obtenerPlatos`, `guardarPedido`…), por eso el render de las pantallas casi no cambió.
-- **Paquetes del backend** (`ar.edu.pp1.pedidos`): `entidad/` (una clase por tabla), `repositorio/`, `servicio/` (reglas de negocio), `controlador/` (URLs), `dto/` (lo que entra y sale cuando no es una tabla tal cual), `excepcion/` (errores → 400/401/404/409 con `{ "mensaje": … }`), `config/` (CORS y reloj).
+- **Paquetes del backend** (`ar.edu.pp1.pedidos`): `entidad/` (una clase por tabla), `repositorio/`, `servicio/` (reglas de negocio), `controlador/` (URLs), `dto/` (lo que entra y sale cuando no es una tabla tal cual), `excepcion/` (errores → 400/401/404/409 con `{ "mensaje": … }`), `config/` (CORS, reloj y `PasswordConfig` con BCrypt).
 - `ddl-auto=validate`: el script manda; Spring solo controla que las 8 entidades coincidan con las tablas.
-- La contraseña de la base se lee de `DB_PASSWORD`; la de los usuarios nunca sale en el JSON (`@JsonProperty(access = WRITE_ONLY)`).
+- La contraseña de la base se lee de `DB_PASSWORD`. La de los usuarios se guarda **hasheada con BCrypt** (`spring-security-crypto`, sin el starter de Spring Security) y nunca sale en el JSON (`@JsonProperty(access = WRITE_ONLY)`).
 
 ---
 
@@ -63,15 +68,16 @@ Base: `http://localhost:8080/api`. Los errores vuelven como `{ "mensaje": "…" 
 
 | Módulo | Método | URL | Qué hace | Respuestas |
 |---|---|---|---|---|
-| M1 | POST | `/usuarios/login` | Login con `{ correo, contrasena }` | 200 usuario · 401 |
-| M1 | POST | `/usuarios` | Registro (nace `EMPLEADO`, activo) | 201 · 400 · 409 correo repetido |
+| M1 | POST | `/auth/login` | Login con `{ correo, contrasena }` (compara con BCrypt `matches`) | 200 usuario · 401 |
+| M1 | POST | `/auth/registro` | Registro (nace `EMPLEADO`, activo, contraseña hasheada) | 201 · 400 · 409 correo repetido |
 | M1 | GET | `/usuarios` · `/usuarios/{id}` | Lista de usuarios / un usuario (sin contraseña) | 200 · 404 |
 | M1 | PUT | `/usuarios/{id}` | Mi Perfil: nombre, apellido, correo, teléfono, `activo` (baja) | 200 · 400 · 409 |
 | M1 | PUT | `/usuarios/{id}/contrasena` | Cambiar contraseña con `{ actual, nueva }` | 204 · 400 |
 | M2 | GET | `/asistencias?idUsuario=&desde=&hasta=` | Días que viene en esa semana (si no la configuró, repite la última) | 200 |
 | M2 | PUT | `/asistencias` | Guarda `[{ idUsuario, fecha, asiste }]` (crea o actualiza) | 200 · 400 |
 | M3 | GET | `/platos` · `/platos/{id}` | Platos | 200 · 404 |
-| M3 | GET | `/menus?fecha=` · `/menus?desde=&hasta=` | Menús del día / de la semana | 200 |
+| M3 | GET | `/menus?idUsuario=` | **Empleado**: solo lo que puede pedir (semana que se pide, publicados, sin feriados, días que asiste). Lo filtra `MenuService` | 200 |
+| M3 | GET | `/menus` · `/menus?fecha=` · `/menus?desde=&hasta=` | **Admin**: todos, también los borradores | 200 |
 | M3 | GET | `/menu-platos?idMenuDia=` | Opciones de un menú con su stock | 200 |
 | M3 | PUT | `/menus/semana` | Admin: arma y publica la semana | 200 · 400 |
 | M3 | GET | `/dias-no-laborables` | Feriados | 200 |
@@ -101,6 +107,21 @@ Base: `http://localhost:8080/api`. Los errores vuelven como `{ "mensaje": "…" 
 | `notificacion` | — (no se mapea) | — | — | — (fuera de alcance) | sin pantalla |
 | *(consulta)* | `ConsolidadoItem` (DTO) | `plato`, `porciones` | cruce 2 | `/api/consolidado?fecha=…` | Consolidado (totales por día) |
 
+### Divergencias con la consigna
+
+Lo que quedó distinto de los endpoints del modelo (documento "El modelo de datos explicado") y por qué:
+
+| Consigna / modelo | Nuestro backend | Por qué |
+|---|---|---|
+| `/api/pedidos/{id}/dias` para `pedido_dia` | Las líneas van **dentro** del pedido (`pedidoDias`) en `POST/PUT /api/pedidos` | Un pedido se registra entero o no se registra: cabecera y días se validan y se guardan en una sola transacción (`PedidoService`). Con un endpoint aparte podría quedar un pedido sin días |
+| Escritura de `menu_plato` en `/api/menu-platos` | `PUT /api/menus/semana` (`/api/menu-platos` es solo lectura) | La pantalla Administrar menús arma y publica la semana completa. El servicio controla que no se toque una semana con pedidos ni se cargue menú en un feriado |
+| — | `PATCH /api/pedidos/{id}/estado` | Confirmar y cancelar son cambios de estado con reglas propias (solo desde `BORRADOR` y antes del plazo), no una edición del pedido |
+| — | `PUT /api/usuarios/{id}/contrasena` | El cambio de contraseña verifica la actual con BCrypt y no se mezcla con los datos del perfil |
+| — | `GET /api/menus?idUsuario=` | Pedido de la devolución: el filtro de menús del empleado se hace en el backend |
+| — | `PUT /api/dias-no-laborables` reemplaza la lista | La pantalla Feriados guarda el calendario entero de una vez |
+
+El login y el registro ya están en `/api/auth/login` y `/api/auth/registro`, como pide la consigna (antes estaban en `/api/usuarios/login` y `POST /api/usuarios`).
+
 ### Divergencias que había en el frontend y cómo se corrigieron
 
 | Divergencia (JSON de E3) | Modelo | Corrección |
@@ -113,7 +134,8 @@ Base: `http://localhost:8080/api`. Los errores vuelven como `{ "mensaje": "…" 
 | `plato` sin `categoria` | `categoria NOT NULL` | la pantalla Menú muestra la categoría |
 | `feriados.json` = lista de strings | `{ id, fecha, motivo }` | `obtenerFeriados()` hace `.map(d => d.fecha)` |
 | asistencia como nombres de día (`['lunes', …]`) en sessionStorage | una fila por **fecha** con `asiste` | `datos.js` traduce: lee/escribe las 6 fechas de la semana que se pide |
-| la contraseña se comparaba en el navegador | — | la compara el backend (login y cambio de contraseña) |
+| la contraseña se comparaba en el navegador | — | la compara el backend con BCrypt (login y cambio de contraseña) |
+| `menu.js` filtraba los menús publicados | — | los filtra `MenuService.listarParaEmpleado` (`GET /api/menus?idUsuario=`) |
 
 ---
 
@@ -130,6 +152,8 @@ Base: `http://localhost:8080/api`. Los errores vuelven como `{ "mensaje": "…" 
 | No hay menú en un día no laborable; no se marca no laborable un día con pedidos | `MenuService`, `DiaNoLaborableService` | 400 |
 | Correo único | `UsuarioService` | 409 |
 | La asistencia queda guardada hasta que el empleado la cambie: una semana sin configurar repite la última que guardó | `AsistenciaService.listar` | — |
+| El empleado solo ve menús publicados, de días hábiles y de los días que viene | `MenuService.listarParaEmpleado` | — |
+| La contraseña se guarda hasheada y se compara con `matches` | `UsuarioService` + `PasswordConfig` | 401 |
 
 El consolidado **no se guarda**: `PedidoDiaRepository.consolidadoDeFecha` es el cruce 2 (`COUNT(*) … GROUP BY` sobre `pedido_dia`, solo `CONFIRMADO`).
 
@@ -145,6 +169,10 @@ El consolidado **no se guarda**: `PedidoDiaRepository.consolidadoDeFecha` es el 
 
 `AsistenciaServiceTest` (3 tests) prueba que la asistencia queda guardada: una semana sin configurar repite la última, una semana configurada se respeta tal cual, y sin nada guardado devuelve vacío.
 
+`MenuServiceTest` (3 tests): al empleado solo le llegan los menús publicados, no feriados y de los días que viene; sin asistencia no ve ninguno; y el jueves a las 12 hs pasa a la semana siguiente.
+
+`UsuarioServiceTest` (3 tests): el registro guarda el hash y no el texto; el login entra con la contraseña correcta y da 401 con una incorrecta.
+
 ---
 
 ## 8. Cómo se probó cada módulo
@@ -155,11 +183,38 @@ Flujo completo probado: Laura publica la semana del 16/11 (el 20/11 aparece como
 
 ---
 
-## 9. Declaración de uso de IA
+## 9. Guion de la demo (Exposición Final, martes 01/12)
+
+Ese día la pantalla del empleado muestra la **semana del 07/12** (el plazo cierra el jueves 03/12 a las 12 hs). El 08/12 es feriado y no aparece.
+
+1. Correr el script y levantar el backend (con `DB_PASSWORD`).
+2. **Registro en vivo** de un empleado nuevo → entra solo → la pantalla Menú le pide la asistencia (todavía no ve menús).
+3. Marca sus días → aparecen solo los menús de esos días (filtro del backend: `GET /api/menus?idUsuario=`).
+4. Elige un plato por día → guarda (`BORRADOR`) → Mis pedidos → **confirma**.
+5. Entra Laura (admin) → Consolidado de la semana del 07/12 → el pedido nuevo suma a los confirmados (los borradores y cancelados no cuentan). La semana del 30/11 muestra la semana en curso completa.
+6. phpMyAdmin → `SELECT correo, contrasena FROM usuario` → la contraseña del usuario nuevo está hasheada (`$2a$10$…`).
+7. Si se ensaya después del jueves 03/12 a las 12 hs, la pantalla pasa a la semana del 14/12, que también está publicada en el script.
+
+---
+
+## 10. Declaración de uso de IA
 
 | Herramienta | Para qué |
 |---|---|
-| Claude (Claude Code, en VS Code) | Plan de trabajo por módulos a partir de la consigna; generación del backend Spring Boot (entidades, repositorios, servicios, controladores, DTO, manejo de errores, CORS) siguiendo el script del curso; migración de `datos.js` de los JSON a `fetch` contra la API; detección de divergencias entre el frontend y el modelo (`rol`, `BORRADOR`, `direccion`, `stockTotal`…); tests JUnit con Mockito; colección de Postman; plan de pruebas y este README; diagnóstico de errores del setup (collation de MariaDB, `DB_PASSWORD` vacía en Windows, orden de flush de Hibernate). |
+| Claude (Claude Code, en VS Code) | Correcciones de la devolución E4 (BCrypt, filtro de menús en el servicio, `/api/auth`, pantallas que prometían de más, datos para la exposición generados con un script y revisados en la base). Plan de trabajo por módulos a partir de la consigna; generación del backend Spring Boot (entidades, repositorios, servicios, controladores, DTO, manejo de errores, CORS) siguiendo el script del curso; migración de `datos.js` de los JSON a `fetch` contra la API; detección de divergencias entre el frontend y el modelo (`rol`, `BORRADOR`, `direccion`, `stockTotal`…); tests JUnit con Mockito; colección de Postman; plan de pruebas y este README; diagnóstico de errores del setup (collation de MariaDB, `DB_PASSWORD` vacía en Windows, orden de flush de Hibernate). |
 | Documentación de la consigna y del curso | Requisitos de la Entrega 4, modelo de datos explicado y script `tp-pedidos.sql`. |
 
 Todo el código generado se revisó, se corrió y se probó contra la base (pantalla, Postman y tests) antes de cada commit. El commit, el push, los PR y los tags los hizo el integrante. La defensa de cada módulo (pantalla → endpoint → tabla) está preparada en [plan-de-pruebas.md](plan-de-pruebas.md).
+
+---
+
+## 11. Correcciones de la devolución E4
+
+| Devolución | Qué se hizo |
+|---|---|
+| 1. Contraseñas con BCrypt | `spring-security-crypto` (no el starter) + `config/PasswordConfig` (`BCryptPasswordEncoder`). `UsuarioService`: `encode()` al registrar y al cambiar la contraseña, `matches()` en el login. En el script, `cambiar123` va como su hash. `UsuarioServiceTest` |
+| 2. Menús filtrados en el backend | `GET /api/menus?idUsuario=` → `MenuService.listarParaEmpleado`: semana que se pide (`Plazos.lunesSemanaQueViene`), publicado, no feriado y días que asiste (reusa `AsistenciaService.listar`). `menu.js` ya no filtra y pide solo las opciones de esos menús. `MenuServiceTest` |
+| 3. Endpoints distintos de la consigna | Login y registro en `/api/auth/login` y `/api/auth/registro` (`AuthController`). El resto está en "Divergencias con la consigna" (sección 5) |
+| 4. Lo que dice que hace y no hace | Se sacaron "Enviar al proveedor" (Consolidado), "¿Olvidaste tu contraseña?" y "Recordarme" (Login) |
+| Datos precargados | Seed de 4 semanas (23/11 a 14/12) con 12 empleados, menús de 4 opciones y pedidos confirmados (ver sección 2) |
+| Imágenes | Cada uno de los 12 platos apunta a su propia imagen en `frontend/assets/img/` (ya no comparten la genérica) |

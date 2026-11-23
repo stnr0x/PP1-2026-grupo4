@@ -36,7 +36,7 @@ La idea es probar que **el repo solo alcanza** para levantar todo, como lo harí
   SELECT 'pedido_dia', COUNT(*) FROM pedido_dia UNION ALL
   SELECT 'notificacion', COUNT(*) FROM notificacion;
   ```
-  Esperado: 5 · 16 · 3 · 5 · 6 · 14 · 4 · 12 · 1.
+  Esperado: 13 · 256 · 3 · 24 · 12 · 90 · 35 · 128 · 1.
 - [ ] **0.5 Abrir el backend en IntelliJ**: *File → Open* → carpeta `PP-prueba\backend` → *Trust project*. Esperar a que Maven termine de bajar dependencias (barra de abajo).
   - Si pide SDK: *File → Project Structure → SDK* → elegir **ms-17**.
 - [ ] **0.6 La contraseña de la base, sin escribirla en el repo**: *Run → Edit Configurations… → PedidosApplication → Modify options → Add VM options* → escribir:
@@ -51,8 +51,8 @@ La idea es probar que **el repo solo alcanza** para levantar todo, como lo harí
   Started PedidosApplication in X seconds
   ```
   Eso ya prueba que **las 8 entidades coinciden con las tablas** (`ddl-auto=validate`).
-- [ ] **0.8 Prueba rápida**: en el navegador `http://localhost:8080/api/platos` → JSON con 6 platos.
-- [ ] **0.9 Tests**: en IntelliJ, clic derecho en `src/test/java` → *Run 'All Tests'* (o `.\mvnw.cmd test`). Esperado: **10 tests en verde** (7 de `PedidoServiceTest` + 3 de `AsistenciaServiceTest`).
+- [ ] **0.8 Prueba rápida**: en el navegador `http://localhost:8080/api/platos` → JSON con 12 platos.
+- [ ] **0.9 Tests**: en IntelliJ, clic derecho en `src/test/java` → *Run 'All Tests'* (o `.\mvnw.cmd test`). Esperado: **16 tests en verde** (7 de `PedidoServiceTest`, 3 de `AsistenciaServiceTest`, 3 de `MenuServiceTest` y 3 de `UsuarioServiceTest`).
 - [ ] **0.10 Frontend**: abrir `PP-prueba` en VS Code → clic derecho en `frontend/login.html` → **Open with Live Server** (puerto 5500).
 
 ### Errores típicos del setup
@@ -101,7 +101,7 @@ Antes del código: entender que **lo que se ve en pantalla sale de cruzar tablas
   JOIN plato p       ON p.id_plato     = pd.id_plato
   WHERE pe.id_usuario = 3 ORDER BY md.fecha;
   ```
-  Esperado: pedido 2 CONFIRMADO · 26/10 Tarta · 28/10 Wok "Sin picante" · 29/10 Tarta.
+  Esperado: arranca con el pedido 2 CONFIRMADO · 26/10 Tarta · 28/10 Wok "Sin picante" · 29/10 Tarta (lo del modelo), y después siguen los pedidos de Lucía de las semanas del 23/11, 30/11 y 07/12 que agrega el script para la exposición.
 - [ ] **Cruce 4 · ¿se puede pedir el 30/10?** (copiar del modelo explicado) → `NO: día no laborable`. Con 29/10 → `SÍ`; con 02/11 → `NO: todavía no hay menú publicado`.
 - [ ] **La trampa de Asistencia**: `SELECT * FROM asistencia WHERE id_usuario = 3;` → el 27/10 tiene `asiste = 0`. Esa fila es la prueba de por qué es una tabla y no un campo del usuario.
 
@@ -121,12 +121,12 @@ Antes del código: entender que **lo que se ve en pantalla sale de cruzar tablas
   - La pestaña **Test Results**: chequeos automáticos en verde.
   - La **descripción** de la request (ícono de documento a la derecha): dice qué Controller → Service → tabla toca y qué SQL correr para verificar.
   - La **consola de IntelliJ**: con `show-sql=true` aparece el SQL que ejecutó Hibernate (`Hibernate: insert into pedido …`). **Esto es trazabilidad en vivo.**
-- [ ] **2.5 Correrla entera**: clic derecho en la colección → *Run collection* → *Run*. Esperado: **58 requests, todas verdes**. (Para correrla otra vez: script primero.)
+- [ ] **2.5 Correrla entera**: clic derecho en la colección → *Run collection* → *Run*. Esperado: **59 requests, todas verdes**. (Para correrla otra vez: script primero.)
 - [ ] **2.6 Verificar en la base** después de M4:
   ```sql
   SELECT * FROM pedido ORDER BY id_pedido DESC LIMIT 3;
   SELECT * FROM pedido_dia ORDER BY id_pedido_dia DESC LIMIT 4;
-  SELECT * FROM menu_plato WHERE id_menu_dia >= 6;  -- stock de la semana 23/11
+  SELECT * FROM menu_plato WHERE id_menu_dia > 24;  -- stock de la semana 21/12 (la que publica Postman)
   ```
 
 Qué cubre cada carpeta:
@@ -134,10 +134,10 @@ Qué cubre cada carpeta:
 | Carpeta | Casos OK | Casos de error |
 |---|---|---|
 | M1 | login Lucía/Laura, registro, ver, editar perfil, cambiar clave, dar de baja | clave mala 401, correo repetido 409, email inválido 400, usuario 999 404, baja → 401 |
-| M3 | plato, menú del 27/10 + opciones (cruce 1), feriados, publicar semana 23/11 | plato 99 404, menú en día no laborable 400 |
+| M3 | plato, menú del 27/10 + opciones (cruce 1), menús del empleado filtrados (`?idUsuario=`), feriados, publicar semana 21/12 | plato 99 404, menú en día no laborable 400 |
 | M2 | asistencia de Lucía (27/10 = false), guardar semana, *upsert* (misma fila), semana sin configurar repite la última | ningún día marcado 400 |
 | M4 | pedir (BORRADOR), stock baja, modificar, mis pedidos (cruce 3), confirmar, cancelar devuelve stock | 2º pedido de la semana, plato fuera del menú, día no laborable, menú sin publicar, plazo vencido, sin días, admin edita semana con pedidos, feriado con pedidos, cancelar confirmado |
-| M5 | consolidado 28/10 (cruce 2), 26/10, 23/11 (no cuenta el cancelado), todos los pedidos, usuarios sin contraseña | — |
+| M5 | consolidado 28/10 (cruce 2), 26/10, 21/12 (no cuenta el cancelado), todos los pedidos, usuarios sin contraseña | — |
 
 ---
 
@@ -151,8 +151,8 @@ Para cada módulo: hacé la acción, mirá la request en Network, el SQL en la c
 
 | Acción | Pantalla / función | Request | Backend | Tabla |
 |---|---|---|---|---|
-| Iniciar sesión | `login.js` → `login()` | `POST /api/usuarios/login` | `UsuarioController.login` → `UsuarioService.login` → `findByCorreo` | `usuario` (SELECT) |
-| Registrarse | `registro.js` → `crearUsuario()` | `POST /api/usuarios` | `UsuarioService.registrar` → `save` | `usuario` (INSERT) |
+| Iniciar sesión | `login.js` → `login()` | `POST /api/auth/login` | `AuthController.login` → `UsuarioService.login` → `findByCorreo` + `passwordEncoder.matches` | `usuario` (SELECT) |
+| Registrarse | `registro.js` → `crearUsuario()` | `POST /api/auth/registro` | `AuthController.registrar` → `UsuarioService.registrar` → `passwordEncoder.encode` → `save` | `usuario` (INSERT) |
 | Abrir cualquier pantalla | `exigirSesion()` → `obtenerUsuarioActual()` | `GET /api/usuarios/{id}` | `UsuarioService.buscar` | `usuario` |
 | Editar perfil / baja | `perfil.js` → `actualizarUsuario()` | `PUT /api/usuarios/{id}` | `UsuarioService.actualizar` | `usuario` (UPDATE) |
 | Cambiar contraseña | `perfil.js` → `cambiarContrasena()` | `PUT /api/usuarios/{id}/contrasena` | `UsuarioService.cambiarContrasena` | `usuario` |
@@ -160,7 +160,7 @@ Para cada módulo: hacé la acción, mirá la request en Network, el SQL en la c
 - [ ] Login con clave mala → "Email o contraseña incorrectos." (Network: 401)
 - [ ] Login Lucía → va a `menu.html`. Login Laura → va a `administrar-menus.html` (por `rol`)
 - [ ] En Network, la respuesta del login **no tiene `contrasena`**
-- [ ] Registro con correo nuevo → entra; en phpMyAdmin aparece con `rol = EMPLEADO`
+- [ ] Registro con correo nuevo → entra; en phpMyAdmin aparece con `rol = EMPLEADO` y la `contrasena` empieza con `$2a$10$` (hash BCrypt, no el texto)
 - [ ] Registro con `lucia.fernandez@empresa.com.ar` → "Ya hay una cuenta con ese email." (409)
 - [ ] Perfil: cambiar teléfono → F5 → sigue cambiado → `SELECT telefono FROM usuario WHERE id_usuario = 3;`
 - [ ] Cambiar contraseña con la actual mal → error; bien → OK
@@ -174,10 +174,11 @@ Para cada módulo: hacé la acción, mirá la request en Network, el SQL en la c
 | Publicar | `guardarSemana(true)` → `guardarSemanaMenus()` | `PUT /api/menus/semana` | `MenuService.guardarSemana` | `menu_dia` + `menu_plato` (INSERT/DELETE) |
 | Feriados | `feriados.js` → `guardarFeriados()` | `PUT /api/dias-no-laborables` | `DiaNoLaborableService.reemplazar` | `dia_no_laborable` |
 
-- [ ] Laura → *Crear menú de una semana nueva* → semana del **16/11** (o 23/11 si ya pasó el jueves 12 hs) → el **viernes 20/11 sale como feriado**
+- [ ] Las semanas del 23/11, 30/11, 07/12 y 14/12 ya vienen publicadas en el script. En la del 07/12 el **martes 08/12 sale como feriado**
+- [ ] Laura → *Crear menú de una semana nueva* → semana del **21/12**
 - [ ] Tildar platos → **Publicar** → F5 → la semana dice "Publicado"
 - [ ] phpMyAdmin: `SELECT * FROM menu_dia ORDER BY fecha DESC;` y `SELECT * FROM menu_plato ORDER BY id_menu_plato DESC;` → stock 20
-- [ ] La semana del 26/10 dice **"Ver"** (tiene pedidos: no se puede editar)
+- [ ] Las semanas del 26/10, 23/11, 30/11 y 07/12 dicen **"Ver"** (tienen pedidos: no se pueden editar)
 - [ ] Feriados: tildar el 28/10 → *Guardar* → error "ya hay pedidos para ese día"
 - [ ] Feriados: tildar un día sin pedidos (ej. 10/12) → guardar → F5 → sigue → `SELECT * FROM dia_no_laborable;` (motivo "Feriado"). Destildarlo y guardar para dejarlo como estaba.
 
@@ -190,15 +191,25 @@ Para cada módulo: hacé la acción, mirá la request en Network, el SQL en la c
 
 **Regla: la asistencia queda guardada hasta que la cambies.** Si una semana no tiene filas, `listar` busca la última fila del empleado (`findFirstByIdUsuarioAndFechaBeforeOrderByFechaDesc`), toma esa semana como su horario habitual y la copia a las fechas pedidas, día por día. Esas filas vuelven con `id: null` porque todavía no están en la tabla: se graban recién cuando el empleado guarda. La tabla no cambia y no hace falta ninguna columna nueva.
 
-- [ ] Lucía → menú → **ya aparece "Venís: lunes, miércoles, jueves"** sin que configure nada: es su semana del 26/10 del script (el martes 27/10 tiene `asiste = 0`), repetida
-- [ ] En Network, mirá la respuesta del GET: fechas de la semana nueva y **`id: null`**. `SELECT * FROM asistencia WHERE id_usuario = 3 AND fecha > '2026-11-01';` → 0 filas: todavía no se grabó nada
+- [ ] Lucía → menú → **ya aparece "Venís: lunes, miércoles, jueves, viernes"**: su asistencia está en el script (`SELECT * FROM asistencia WHERE id_usuario = 3 ORDER BY fecha;`)
+- [ ] Un usuario **recién registrado** → menú → no tiene asistencia: la pantalla le pide que la configure y **no ve ningún menú** (el backend no le manda menús de días que no viene)
 - [ ] *Modificar* → dejar **lunes y miércoles** → *Guardar*
 - [ ] En Network, mirá el body del PUT: **6 objetos** `{ idUsuario, fecha, asiste }`. La pantalla piensa en "lunes, miércoles"; la base, en fechas. `datos.js` traduce.
 - [ ] F5 → siguen lunes y miércoles
 - [ ] `SELECT * FROM asistencia WHERE id_usuario = 3 ORDER BY fecha;` → 6 filas nuevas
 - [ ] *Modificar* → agregar martes → guardar → **mismos ids** en la tabla (actualizó, no duplicó)
-- [ ] En Postman, *Semana 30/11 sin configurar*: devuelve el último patrón que guardaste con las fechas del 30/11. Ese es el "queda guardado hasta que lo cambies"
+- [ ] En Postman, *Semana 28/12 sin configurar*: devuelve el último patrón que guardaste con las fechas del 28/12. Ese es el "queda guardado hasta que lo cambies"
 - [ ] Desmarcar todo → "Marcá al menos un día de asistencia."
+
+### M3 · El menú que ve el empleado (filtro en el backend)
+
+| Acción | Pantalla / función | Request | Backend | Tablas |
+|---|---|---|---|---|
+| Ver mi menú | `menu.js` → `cargarMenus()` → `obtenerMenusEmpleado()`, `obtenerOpcionesDe()` | `GET /api/menus?idUsuario=`, `GET /api/menu-platos?idMenuDia=` | `MenuService.listarParaEmpleado` (usa `Plazos.lunesSemanaQueViene` y `AsistenciaService.listar`) | `menu_dia`, `dia_no_laborable`, `asistencia`, `menu_plato` |
+
+- [ ] Network: la respuesta de `/api/menus?idUsuario=` trae **solo** menús `publicado: true` de los días que viene ese empleado, y nunca el 08/12
+- [ ] Comparar con `GET /api/menus` (sin `idUsuario`, el del admin): ahí sí están los borradores, como el del 02/11
+- [ ] *Modificar asistencia* → agregar un día → se vuelve a pedir `/api/menus?idUsuario=` y aparece ese día
 
 ### M4 · Mi pedido
 
@@ -209,13 +220,13 @@ Para cada módulo: hacé la acción, mirá la request en Network, el SQL en la c
 | Mis pedidos | `mis-pedidos.js` → `obtenerPedidos(idUsuario)` | `GET /api/pedidos?idUsuario=` | `PedidoService.listar` (cruce 3) | `pedido`, `pedido_dia` |
 | Confirmar / cancelar | `cambiarEstadoPedido()` | `PATCH /api/pedidos/{id}/estado` | `PedidoService.cambiarEstado` | `pedido` (UPDATE), `menu_plato` (stock +1 al cancelar) |
 
-- [ ] Lucía elige un plato por día → *Guardar pedido* → tarjeta "Pedido registrado · Pendiente"
+- [ ] Entrar con un empleado **sin pedido** en la semana que se pide (por ej. Diego `diego.romero@…`, o un usuario recién registrado; Lucía ya tiene un BORRADOR para la semana del 07/12 en el script) → elegir un plato por día → *Guardar pedido* → tarjeta "Pedido registrado · Pendiente"
 - [ ] Network: `POST /api/pedidos` → **201** → respuesta con `estado: "BORRADOR"` y `pedidoDias`
 - [ ] Consola IntelliJ: `insert into pedido`, `insert into pedido_dia` ×2, `update menu_plato`
-- [ ] phpMyAdmin: el pedido, sus líneas y el `stock_disponible` bajó a 19
+- [ ] phpMyAdmin: el pedido, sus líneas y el `stock_disponible` bajó en 1
 - [ ] F5 → sigue la tarjeta del pedido
 - [ ] Mis pedidos → *Modificar* → cambiar un plato → guardar → en la base cambió la línea
-- [ ] Mis pedidos → *Cancelar* → "¿Seguro?" → *Sí* → "Cancelado" → el stock volvió a 20
+- [ ] Mis pedidos → *Cancelar* → "¿Seguro?" → *Sí* → "Cancelado" → el stock volvió al valor anterior
 - [ ] Volver al menú → hacer otro pedido → Mis pedidos → *Confirmar* → "Confirmado" → F5 → sigue
 - [ ] El pedido del 26/10 muestra "(Sin picante)" (columna `comentario`)
 
@@ -245,12 +256,15 @@ Para cada módulo: hacé la acción, mirá la request en Network, el SQL en la c
 
 ## Fase 5 · Flujo completo de la demo (ensayo con reloj)
 
-1. Script (base limpia) → Spring → Live Server.
-2. Laura publica la semana (si es después del jueves 12 hs, la app ofrece la del 23/11).
-3. Lucía marca sus días → elige platos → guarda → F5 (sigue).
+El guion completo está en el [README, sección 9](README.md#9-guion-de-la-demo-exposición-final-martes-0112).
+
+1. Script (base limpia) → Spring → Live Server. Las semanas del 23/11 al 14/12 ya están publicadas.
+2. **Registro en vivo** de un empleado nuevo → configura su asistencia → ve solo los menús de sus días.
+3. Elige platos → guarda → F5 (sigue).
 4. Mis pedidos → Confirmar.
-5. Laura → Consolidado de esa semana → aparece Lucía.
-6. Mostrar en phpMyAdmin las filas nuevas.
+5. Laura → Consolidado de esa semana → el pedido nuevo suma a los confirmados del script.
+6. phpMyAdmin: las filas nuevas y la contraseña hasheada del usuario nuevo.
+7. Una pasada con el reloj después del jueves 12 hs: la pantalla pasa a la semana siguiente.
 
 Objetivo: **menos de 5 minutos**, sin buscar nada.
 
@@ -265,6 +279,8 @@ Objetivo: **menos de 5 minutos**, sin buscar nada.
 5. **¿Qué hace `ddl-auto=validate`?** Spring no crea ni cambia tablas: compara entidades contra el script y, si no coinciden, no arranca.
 6. **¿Por qué la URL completa en el fetch y qué es CORS?** Live Server (5500) y Spring (8080) son orígenes distintos; el navegador bloquea leer respuestas de otro origen salvo que el backend lo autorice (`CorsConfig`).
 7. **¿Por qué la contraseña no está en el repo?** `${DB_PASSWORD:cambiar}`: se lee de una variable/propiedad de tu máquina.
+8. **¿Cómo se guardan las contraseñas de los usuarios?** Hasheadas con BCrypt (`PasswordConfig`). Al registrar se guarda `encode(contrasena)`; en el login, `matches(lo que escribió, el hash)`. El hash no se puede volver atrás, y dos hashes de la misma contraseña salen distintos por la sal. Usamos `spring-security-crypto` y no el starter de Spring Security, que cerraría todos los endpoints con 401.
+9. **¿Por qué los menús se filtran en el backend y no en `menu.js`?** Porque lo que llega al navegador lo puede ver cualquiera en la consola. Si el backend manda los borradores, el filtro del frontend no protege nada. `MenuService.listarParaEmpleado` solo devuelve lo publicado, hábil y de los días que el empleado viene.
 8. **¿Por qué hay un Service y no todo en el Controller?** El controller atiende la URL; las reglas (plazo, stock, no laborable) están en el service, y por eso se pueden testear con JUnit sin base.
 9. **¿Qué es un DTO y por qué `PedidoResponse`?** En la base son dos tablas (`pedido` + `pedido_dia`); el frontend quiere el pedido con sus días adentro. El DTO arma esa forma.
 10. **¿Cómo testeás el plazo del jueves si hoy es otro día?** El servicio usa un `Clock` inyectado; en el test se usa un reloj fijo (`Clock.fixed`).

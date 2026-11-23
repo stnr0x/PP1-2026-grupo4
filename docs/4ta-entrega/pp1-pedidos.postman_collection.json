@@ -2,7 +2,7 @@
   "info": {
     "name": "PP1 · TP Pedidos (Grupo 4)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Pruebas de la API del TP Pedidos, módulo por módulo.\n\nANTES DE CORRER: correr backend/sql/tp-pedidos.sql (deja la base con los datos del script) y levantar Spring (Started PedidosApplication).\nSe corre en orden (Run collection o una por una). Las de escritura usan la semana del lunes 23/11/2026.\nPara volver a correr todo: volver a correr el script primero (si no, la semana 23/11 ya tiene pedidos y el admin no la puede modificar, que es justamente una regla)."
+    "description": "Pruebas de la API del TP Pedidos, módulo por módulo.\n\nANTES DE CORRER: correr backend/sql/tp-pedidos.sql (deja la base con los datos del script) y levantar Spring (Started PedidosApplication).\nSe corre en orden (Run collection o una por una). Las de escritura usan la semana del lunes 21/12/2026.\nPara volver a correr todo: volver a correr el script primero (si no, la semana 21/12 ya tiene pedidos y el admin no la puede modificar, que es justamente una regla)."
   },
   "variable": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "key": "lunes",
-      "value": "2026-11-23"
+      "value": "2026-12-21"
     }
   ],
   "item": [
@@ -677,7 +677,7 @@
             "method": "GET",
             "header": [],
             "url": "{{base}}/menus?fecha=2026-11-02",
-            "description": "El backend lo devuelve con publicado=false; la pantalla del empleado lo filtra. El servicio no deja pedir de un menú sin publicar (ver M4)."
+            "description": "Sin idUsuario es la consulta del ADMINISTRADOR: devuelve también los borradores (publicado=false). Al empleado nunca le llega: ver el request siguiente. El servicio tampoco deja pedir de un menú sin publicar (ver M4)."
           },
           "event": [
             {
@@ -687,6 +687,28 @@
                 "exec": [
                   "pm.test('Responde 200', () => pm.response.to.have.status(200));",
                   "pm.test('publicado = false', () => pm.expect(pm.response.json()[0].publicado).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Menús del empleado (Lucía): filtrados en el backend",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base}}/menus?idUsuario=3",
+            "description": "MenuService.listarParaEmpleado: solo la semana que se pide (la que viene, o la siguiente si ya pasó el jueves 12 hs), solo menús publicados, sin días no laborables y solo los días que Lucía asiste. Los borradores no salen del backend. El resultado depende de la fecha en que se corra."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Todos publicados', () => pm.response.json().forEach(m => pm.expect(m.publicado).to.eql(true)));",
+                  "pm.test('Ninguno en día no laborable', () => pm.response.json().forEach(m => pm.expect(['2026-10-30','2026-11-20','2026-12-08']).to.not.include(m.fecha)));"
                 ]
               }
             }
@@ -749,7 +771,7 @@
           ]
         },
         {
-          "name": "Admin: publicar la semana del 23/11",
+          "name": "Admin: publicar la semana del 21/12",
           "request": {
             "method": "PUT",
             "header": [
@@ -759,10 +781,10 @@
               }
             ],
             "url": "{{base}}/menus/semana",
-            "description": "Crea un menu_dia por día con platos y un menu_plato por plato (stock inicial 20). El sábado sin platos no crea menú.\nVerificar: SELECT * FROM menu_dia WHERE fecha >= '2026-11-23'; y SELECT * FROM menu_plato WHERE id_menu_dia IN (...);",
+            "description": "Crea un menu_dia por día con platos y un menu_plato por plato (stock inicial 20). El sábado sin platos no crea menú.\nVerificar: SELECT * FROM menu_dia WHERE fecha >= '2026-12-21'; y SELECT * FROM menu_plato WHERE id_menu_dia IN (...);",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"lunes\": \"2026-11-23\",\n  \"publicar\": true,\n  \"idUsuarioCreador\": 1,\n  \"dias\": [\n    {\n      \"fecha\": \"2026-11-23\",\n      \"idPlatos\": [\n        1,\n        2,\n        3\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-24\",\n      \"idPlatos\": [\n        4,\n        5,\n        6\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-25\",\n      \"idPlatos\": [\n        1,\n        6,\n        3\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-26\",\n      \"idPlatos\": [\n        5,\n        2,\n        4\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-27\",\n      \"idPlatos\": [\n        1,\n        4\n      ]\n    },\n    {\n      \"fecha\": \"2026-11-28\",\n      \"idPlatos\": []\n    }\n  ]\n}",
+              "raw": "{\n  \"lunes\": \"2026-12-21\",\n  \"publicar\": true,\n  \"idUsuarioCreador\": 1,\n  \"dias\": [\n    {\n      \"fecha\": \"2026-12-21\",\n      \"idPlatos\": [\n        1,\n        2,\n        3\n      ]\n    },\n    {\n      \"fecha\": \"2026-12-22\",\n      \"idPlatos\": [\n        4,\n        5,\n        6\n      ]\n    },\n    {\n      \"fecha\": \"2026-12-23\",\n      \"idPlatos\": [\n        1,\n        6,\n        3\n      ]\n    },\n    {\n      \"fecha\": \"2026-12-24\",\n      \"idPlatos\": [\n        5,\n        2,\n        4\n      ]\n    },\n    {\n      \"fecha\": \"2026-12-25\",\n      \"idPlatos\": [\n        1,\n        4\n      ]\n    },\n    {\n      \"fecha\": \"2026-12-26\",\n      \"idPlatos\": []\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -779,7 +801,7 @@
                   "pm.test('Responde 200', () => pm.response.to.have.status(200));",
                   "const menus = pm.response.json();",
                   "pm.test('5 menús publicados (lunes a viernes)', () => { pm.expect(menus.length).to.eql(5); menus.forEach(m => pm.expect(m.publicado).to.eql(true)); });",
-                  "menus.forEach(m => { if (m.fecha === '2026-11-23') pm.collectionVariables.set('menuLunes', m.id); if (m.fecha === '2026-11-24') pm.collectionVariables.set('menuMartes', m.id); if (m.fecha === '2026-11-25') pm.collectionVariables.set('menuMiercoles', m.id); });"
+                  "menus.forEach(m => { if (m.fecha === '2026-12-21') pm.collectionVariables.set('menuLunes', m.id); if (m.fecha === '2026-12-22') pm.collectionVariables.set('menuMartes', m.id); if (m.fecha === '2026-12-23') pm.collectionVariables.set('menuMiercoles', m.id); });"
                 ]
               }
             }
@@ -790,7 +812,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base}}/menus?desde=2026-11-23&hasta=2026-11-28",
+            "url": "{{base}}/menus?desde=2026-12-21&hasta=2026-12-26",
             "description": ""
           },
           "event": [
@@ -807,7 +829,7 @@
           ]
         },
         {
-          "name": "Opciones del lunes 23/11 (stock 20)",
+          "name": "Opciones del lunes 21/12 (stock 20)",
           "request": {
             "method": "GET",
             "header": [],
@@ -867,7 +889,7 @@
             "description": "AsistenciaService.guardar: si ya hay fila para (usuario, fecha) la actualiza; si no, la crea (respeta el UNIQUE).",
             "body": {
               "mode": "raw",
-              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-23\",\n    \"asiste\": true\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-24\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-25\",\n    \"asiste\": true\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-26\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-27\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-28\",\n    \"asiste\": false\n  }\n]",
+              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-21\",\n    \"asiste\": true\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-22\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-23\",\n    \"asiste\": true\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-24\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-25\",\n    \"asiste\": false\n  },\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-26\",\n    \"asiste\": false\n  }\n]",
               "options": {
                 "raw": {
                   "language": "json"
@@ -903,7 +925,7 @@
             "description": "Mismo id de fila que antes: se actualizó, no se duplicó.",
             "body": {
               "mode": "raw",
-              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-24\",\n    \"asiste\": true\n  }\n]",
+              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-22\",\n    \"asiste\": true\n  }\n]",
               "options": {
                 "raw": {
                   "language": "json"
@@ -938,7 +960,7 @@
             "description": "",
             "body": {
               "mode": "raw",
-              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-23\",\n    \"asiste\": false\n  }\n]",
+              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-21\",\n    \"asiste\": false\n  }\n]",
               "options": {
                 "raw": {
                   "language": "json"
@@ -973,7 +995,7 @@
             "description": "AsistenciaController recibe List<@Valid Asistencia>: el @NotNull de Asistencia.asiste rechaza el elemento antes de llegar al Service. ManejadorErrores lo devuelve como 400 { mensaje }. No se graba nada.",
             "body": {
               "mode": "raw",
-              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-11-23\"\n  }\n]",
+              "raw": "[\n  {\n    \"idUsuario\": 3,\n    \"fecha\": \"2026-12-21\"\n  }\n]",
               "options": {
                 "raw": {
                   "language": "json"
@@ -995,11 +1017,11 @@
           ]
         },
         {
-          "name": "Asistencia de Lucía, semana 23/11",
+          "name": "Asistencia de Lucía, semana 21/12",
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base}}/asistencias?idUsuario=3&desde=2026-11-23&hasta=2026-11-28",
+            "url": "{{base}}/asistencias?idUsuario=3&desde=2026-12-21&hasta=2026-12-26",
             "description": ""
           },
           "event": [
@@ -1009,19 +1031,19 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Responde 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Viene lunes, martes y miércoles', () => pm.expect(pm.response.json().filter(a => a.asiste).map(a => a.fecha)).to.eql(['2026-11-23','2026-11-24','2026-11-25']));"
+                  "pm.test('Viene lunes, martes y miércoles', () => pm.expect(pm.response.json().filter(a => a.asiste).map(a => a.fecha)).to.eql(['2026-12-21','2026-12-22','2026-12-23']));"
                 ]
               }
             }
           ]
         },
         {
-          "name": "Semana 30/11 sin configurar → repite la última que guardó",
+          "name": "Semana 28/12 sin configurar → repite la última que guardó",
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base}}/asistencias?idUsuario=3&desde=2026-11-30&hasta=2026-12-05",
-            "description": "AsistenciaService.listar: Lucía no guardó nada para la semana del 30/11, así que se repite su última semana guardada (23/11: lunes, martes y miércoles) con las fechas nuevas. Vienen con id = null porque todavía no están en la tabla; se graban cuando ella guarda. SQL: SELECT * FROM asistencia WHERE id_usuario = 3 AND fecha >= '2026-11-30'; → 0 filas."
+            "url": "{{base}}/asistencias?idUsuario=3&desde=2026-12-28&hasta=2027-01-02",
+            "description": "AsistenciaService.listar: Lucía no guardó nada para la semana del 28/12, así que se repite su última semana guardada (21/12: lunes, martes y miércoles) con las fechas nuevas. Vienen con id = null porque todavía no están en la tabla; se graban cuando ella guarda. SQL: SELECT * FROM asistencia WHERE id_usuario = 3 AND fecha >= '2026-12-28'; → 0 filas."
           },
           "event": [
             {
@@ -1030,7 +1052,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Responde 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Repite lunes, martes y miércoles con fechas nuevas', () => pm.expect(pm.response.json().filter(a => a.asiste).map(a => a.fecha)).to.eql(['2026-11-30','2026-12-01','2026-12-02']));",
+                  "pm.test('Repite lunes, martes y miércoles con fechas nuevas', () => pm.expect(pm.response.json().filter(a => a.asiste).map(a => a.fecha)).to.eql(['2026-12-28','2026-12-29','2026-12-30']));",
                   "pm.test('Todavía no están grabadas (id null)', () => pm.response.json().forEach(a => pm.expect(a.id).to.eql(null)));"
                 ]
               }
@@ -1056,7 +1078,7 @@
             "description": "PedidoController.crear → PedidoService.crear: valida cada día (validarDias), graba la cabecera en pedido y una línea por día en pedido_dia, y descuenta stock en menu_plato.\nVerificar: SELECT * FROM pedido ORDER BY id_pedido DESC LIMIT 1; SELECT * FROM pedido_dia WHERE id_pedido = <id>;",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [\n    { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 2, \"fechaEntrega\": \"2026-11-23\", \"comentario\": \"Sin sal\" },\n    { \"idMenuDia\": {{menuMiercoles}}, \"idPlato\": 6, \"fechaEntrega\": \"2026-11-25\" }\n  ]\n}",
+              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [\n    { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 2, \"fechaEntrega\": \"2026-12-21\", \"comentario\": \"Sin sal\" },\n    { \"idMenuDia\": {{menuMiercoles}}, \"idPlato\": 6, \"fechaEntrega\": \"2026-12-23\" }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1115,7 +1137,7 @@
             "description": "",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 1, \"fechaEntrega\": \"2026-11-23\" } ]\n}",
+              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 1, \"fechaEntrega\": \"2026-12-21\" } ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1147,10 +1169,10 @@
               }
             ],
             "url": "{{base}}/pedidos",
-            "description": "El lunes 23/11 ofrece platos 1, 2 y 3; el 5 (Ñoquis) no está → findByIdMenuDiaAndIdPlato vacío.",
+            "description": "El lunes 21/12 ofrece platos 1, 2 y 3; el 5 (Ñoquis) no está → findByIdMenuDiaAndIdPlato vacío.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 5, \"fechaEntrega\": \"2026-11-23\" } ]\n}",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 5, \"fechaEntrega\": \"2026-12-21\" } ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1324,7 +1346,7 @@
             "description": "PedidoService.modificar: devuelve el stock de las líneas viejas, las borra y graba las nuevas (sigue en BORRADOR).",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [\n    { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 2, \"fechaEntrega\": \"2026-11-23\" },\n    { \"idMenuDia\": {{menuMartes}}, \"idPlato\": 4, \"fechaEntrega\": \"2026-11-24\", \"comentario\": \"Porción chica\" }\n  ]\n}",
+              "raw": "{\n  \"idUsuario\": 3,\n  \"pedidoDias\": [\n    { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 2, \"fechaEntrega\": \"2026-12-21\" },\n    { \"idMenuDia\": {{menuMartes}}, \"idPlato\": 4, \"fechaEntrega\": \"2026-12-22\", \"comentario\": \"Porción chica\" }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1339,7 +1361,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Responde 200', () => pm.response.to.have.status(200));",
-                  "pm.test('Ahora lunes y martes', () => pm.expect(pm.response.json().pedidoDias.map(d => d.fechaEntrega)).to.eql(['2026-11-23','2026-11-24']));"
+                  "pm.test('Ahora lunes y martes', () => pm.expect(pm.response.json().pedidoDias.map(d => d.fechaEntrega)).to.eql(['2026-12-21','2026-12-22']));"
                 ]
               }
             }
@@ -1382,7 +1404,7 @@
             "description": "",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"lunes\": \"2026-11-23\",\n  \"publicar\": true,\n  \"idUsuarioCreador\": 1,\n  \"dias\": [\n    {\n      \"fecha\": \"2026-11-23\",\n      \"idPlatos\": [\n        1\n      ]\n    }\n  ]\n}",
+              "raw": "{\n  \"lunes\": \"2026-12-21\",\n  \"publicar\": true,\n  \"idUsuarioCreador\": 1,\n  \"dias\": [\n    {\n      \"fecha\": \"2026-12-21\",\n      \"idPlatos\": [\n        1\n      ]\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1417,7 +1439,7 @@
             "description": "DiaNoLaborableService.reemplazar. Al fallar, la transacción se deshace entera (@Transactional): no se borra ni se agrega nada.",
             "body": {
               "mode": "raw",
-              "raw": "[\n  {\n    \"fecha\": \"2026-10-30\"\n  },\n  {\n    \"fecha\": \"2026-11-20\"\n  },\n  {\n    \"fecha\": \"2026-12-08\"\n  },\n  {\n    \"fecha\": \"2026-11-23\"\n  }\n]",
+              "raw": "[\n  {\n    \"fecha\": \"2026-10-30\"\n  },\n  {\n    \"fecha\": \"2026-11-20\"\n  },\n  {\n    \"fecha\": \"2026-12-08\"\n  },\n  {\n    \"fecha\": \"2026-12-21\"\n  }\n]",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1522,7 +1544,7 @@
             "description": "",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 1, \"fechaEntrega\": \"2026-11-23\" } ]\n}",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"pedidoDias\": [ { \"idMenuDia\": {{menuLunes}}, \"idPlato\": 1, \"fechaEntrega\": \"2026-12-21\" } ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1688,11 +1710,11 @@
           ]
         },
         {
-          "name": "Consolidado del lunes 23/11",
+          "name": "Consolidado del lunes 21/12",
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{base}}/consolidado?fecha=2026-11-23",
+            "url": "{{base}}/consolidado?fecha=2026-12-21",
             "description": "Cuenta el pedido de Lucía (confirmado). El de Martín no: está CANCELADO."
           },
           "event": [
