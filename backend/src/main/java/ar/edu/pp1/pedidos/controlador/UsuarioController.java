@@ -2,23 +2,21 @@ package ar.edu.pp1.pedidos.controlador;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.pp1.pedidos.dto.CambioContrasenaRequest;
-import ar.edu.pp1.pedidos.dto.LoginRequest;
 import ar.edu.pp1.pedidos.entidad.Usuario;
 import ar.edu.pp1.pedidos.servicio.UsuarioService;
 import jakarta.validation.Valid;
 
-// M1 Acceso. La contrasena nunca sale en el JSON (WRITE_ONLY en la entidad).
+// M1 Mi Perfil y listado de usuarios. El login y el registro estan en AuthController (/api/auth).
+// La contrasena nunca sale en el JSON (WRITE_ONLY en la entidad).
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -27,18 +25,6 @@ public class UsuarioController {
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-    }
-
-    // POST /api/usuarios/login  -> 200 con el usuario, o 401 con el motivo
-    @PostMapping("/login")
-    public Usuario login(@Valid @RequestBody LoginRequest datos) {
-        return usuarioService.login(datos);
-    }
-
-    // POST /api/usuarios  (registro) -> 201, o 409 si el correo ya existe
-    @PostMapping
-    public ResponseEntity<Usuario> registrar(@Valid @RequestBody Usuario usuario) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.registrar(usuario));
     }
 
     @GetMapping

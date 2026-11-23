@@ -54,7 +54,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios/login",
+            "url": "{{base}}/auth/login",
             "description": "UsuarioController.login → UsuarioService.login → UsuarioRepository.findByCorreo → tabla usuario.\nFijate: la respuesta NO trae la contraseña (@JsonProperty WRITE_ONLY en Usuario).",
             "body": {
               "mode": "raw",
@@ -91,7 +91,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios/login",
+            "url": "{{base}}/auth/login",
             "description": "",
             "body": {
               "mode": "raw",
@@ -126,7 +126,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios/login",
+            "url": "{{base}}/auth/login",
             "description": "AccesoDenegadoException → ManejadorErrores la traduce a 401 con { mensaje }.",
             "body": {
               "mode": "raw",
@@ -161,7 +161,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios/login",
+            "url": "{{base}}/auth/login",
             "description": "@NotBlank en LoginRequest + @Valid en el controller.",
             "body": {
               "mode": "raw",
@@ -195,7 +195,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios",
+            "url": "{{base}}/auth/registro",
             "description": "UsuarioService.registrar: el rol siempre es EMPLEADO y activo = true, aunque el JSON diga otra cosa. El id lo pone la base (AUTO_INCREMENT).\nVerificar en la base: SELECT * FROM usuario ORDER BY id_usuario DESC LIMIT 1;",
             "body": {
               "mode": "raw",
@@ -241,7 +241,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios",
+            "url": "{{base}}/auth/registro",
             "description": "ConflictoException → 409. Lo controla el servicio (y además la base tiene UNIQUE en correo).",
             "body": {
               "mode": "raw",
@@ -276,7 +276,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios",
+            "url": "{{base}}/auth/registro",
             "description": "@Email en la entidad Usuario (Bean Validation).",
             "body": {
               "mode": "raw",
@@ -489,7 +489,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios/login",
+            "url": "{{base}}/auth/login",
             "description": "",
             "body": {
               "mode": "raw",
@@ -558,7 +558,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base}}/usuarios/login",
+            "url": "{{base}}/auth/login",
             "description": "",
             "body": {
               "mode": "raw",

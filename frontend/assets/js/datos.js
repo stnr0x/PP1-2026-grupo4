@@ -202,14 +202,14 @@ async function obtenerUsuarios() {
     return pedirApi('/usuarios');
 }
 
-// POST /api/usuarios/login -> el usuario, o Error 'Email o contraseña incorrectos.'
+// POST /api/auth/login -> el usuario, o Error 'Email o contraseña incorrectos.'
 async function login(correo, contrasena) {
-    return pedirApi('/usuarios/login', 'POST', { correo: correo, contrasena: contrasena });
+    return pedirApi('/auth/login', 'POST', { correo: correo, contrasena: contrasena });
 }
 
-// POST /api/usuarios -> da de alta un empleado (el id lo pone la base)
+// POST /api/auth/registro -> da de alta un empleado (el id lo pone la base)
 async function crearUsuario(usuario) {
-    return pedirApi('/usuarios', 'POST', usuario);
+    return pedirApi('/auth/registro', 'POST', usuario);
 }
 
 // PUT /api/usuarios/{id} -> datos personales o dar de baja
