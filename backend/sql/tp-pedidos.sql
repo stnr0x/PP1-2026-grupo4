@@ -28,8 +28,10 @@
 --   · DECIMAL → BigDecimal · DATE → LocalDate · DATETIME → LocalDateTime
 --     · BOOLEAN → Boolean · INT → Integer.
 --
--- Contraseñas: van en texto plano ('cambiar123') A PROPÓSITO. En esta
--- etapa no hay login real ni hashing; no uses estas cuentas en nada real.
+-- CAMBIO DEL GRUPO 4 (devolución E4): las contraseñas van HASHEADAS con
+--   BCrypt, nunca en texto plano. Todos los usuarios de prueba tienen la
+--   contraseña 'cambiar123'; en la columna se guarda su hash ($2a$10$...).
+--   El backend la compara con BCryptPasswordEncoder.matches() en el login.
 -- =====================================================================
 
 SET NAMES utf8mb4;
@@ -170,11 +172,11 @@ CREATE TABLE notificacion (
 -- ---------------------------------------------------------------------
 
 INSERT INTO usuario (id_usuario, nombre, apellido, correo, contrasena, telefono, rol, activo) VALUES
-  (1, 'Laura',    'Giménez',   'laura.gimenez@empresa.com.ar',    'cambiar123', '11 4567-8901', 'ADMINISTRADOR', TRUE),
-  (2, 'Martín',   'Sosa',      'martin.sosa@empresa.com.ar',      'cambiar123', '11 5123-4455', 'EMPLEADO',      TRUE),
-  (3, 'Lucía',    'Fernández', 'lucia.fernandez@empresa.com.ar',  'cambiar123', NULL,           'EMPLEADO',      TRUE),
-  (4, 'Diego',    'Romero',    'diego.romero@empresa.com.ar',     'cambiar123', '11 6234-7788', 'EMPLEADO',      TRUE),
-  (5, 'Carolina', 'Benítez',   'carolina.benitez@empresa.com.ar', 'cambiar123', '11 3345-9012', 'EMPLEADO',      TRUE);
+  (1, 'Laura',    'Giménez',   'laura.gimenez@empresa.com.ar',    '$2a$10$nO3nd9Xef7QCysLp7v6qtOhAS.1ZVIwxheX2kQ2u66u5awVXvqt9u', '11 4567-8901', 'ADMINISTRADOR', TRUE),
+  (2, 'Martín',   'Sosa',      'martin.sosa@empresa.com.ar',      '$2a$10$nO3nd9Xef7QCysLp7v6qtOhAS.1ZVIwxheX2kQ2u66u5awVXvqt9u', '11 5123-4455', 'EMPLEADO',      TRUE),
+  (3, 'Lucía',    'Fernández', 'lucia.fernandez@empresa.com.ar',  '$2a$10$nO3nd9Xef7QCysLp7v6qtOhAS.1ZVIwxheX2kQ2u66u5awVXvqt9u', NULL,           'EMPLEADO',      TRUE),
+  (4, 'Diego',    'Romero',    'diego.romero@empresa.com.ar',     '$2a$10$nO3nd9Xef7QCysLp7v6qtOhAS.1ZVIwxheX2kQ2u66u5awVXvqt9u', '11 6234-7788', 'EMPLEADO',      TRUE),
+  (5, 'Carolina', 'Benítez',   'carolina.benitez@empresa.com.ar', '$2a$10$nO3nd9Xef7QCysLp7v6qtOhAS.1ZVIwxheX2kQ2u66u5awVXvqt9u', '11 3345-9012', 'EMPLEADO',      TRUE);
 
 INSERT INTO plato (id_plato, nombre, descripcion, imagen, categoria) VALUES
   (1, 'Milanesa con puré',        'Clásica, con guarnición',           'assets/img/milanesa.jpg', 'clásico'),

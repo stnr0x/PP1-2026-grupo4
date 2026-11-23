@@ -2,6 +2,7 @@ package ar.edu.pp1.pedidos.servicio;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +19,11 @@ import ar.edu.pp1.pedidos.repositorio.UsuarioRepository;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder; // BCrypt (config/PasswordConfig)
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Usuario> listar() {
@@ -32,11 +35,12 @@ public class UsuarioService {
                 .orElseThrow(() -> new NoEncontradoException("No existe el usuario " + id));
     }
 
-    // CU002: entra si el correo existe, la contrasena coincide y la cuenta esta activa
+    // CU002: entra si el correo existe, la contrasena coincide y la cuenta esta activa.
+    // En la base esta el hash: matches() hashea lo que escribio el usuario y lo compara.
     public Usuario login(LoginRequest datos) {
         Usuario usuario = usuarioRepository.findByCorreo(datos.correo().trim())
                 .orElseThrow(() -> new AccesoDenegadoException("Email o contraseña incorrectos."));
-        if (!usuario.getContrasena().equals(datos.contrasena())) {
+        if (!passwordEncoder.matches(datos.contrasena(), usuario.getContrasena())) {
             throw new AccesoDenegadoException("Email o contraseña incorrectos.");
         }
         if (!usuario.getActivo()) {
@@ -55,6 +59,7 @@ public class UsuarioService {
         nuevo.setCorreo(nuevo.getCorreo().trim());
         nuevo.setRol(Usuario.EMPLEADO);
         nuevo.setActivo(true);
+        nuevo.setContrasena(passwordEncoder.encode(nuevo.getContrasena())); // se guarda el hash, no el texto
         return usuarioRepository.save(nuevo);
     }
 
@@ -91,10 +96,10 @@ public class UsuarioService {
     @Transactional
     public void cambiarContrasena(Long id, String actual, String nueva) {
         Usuario usuario = buscar(id);
-        if (!usuario.getContrasena().equals(actual)) {
+        if (!passwordEncoder.matches(actual, usuario.getContrasena())) {
             throw new ReglaNegocioException("La contraseña actual no es correcta.");
         }
-        usuario.setContrasena(nueva);
+        usuario.setContrasena(passwordEncoder.encode(nueva));
         usuarioRepository.save(usuario);
     }
 }
