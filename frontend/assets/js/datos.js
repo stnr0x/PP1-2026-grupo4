@@ -152,14 +152,27 @@ async function obtenerPlatos() {
     return pedirApi('/platos');
 }
 
-// GET /api/menus -> tabla menu_dia
+// GET /api/menus -> tabla menu_dia completa, con borradores (pantallas del ADMIN)
 async function obtenerMenusDia() {
     return pedirApi('/menus');
+}
+
+// GET /api/menus?idUsuario=3 -> solo los menus que el EMPLEADO puede pedir.
+// El filtro lo hace MenuService en el backend: semana que viene, publicado,
+// no feriado y dia que el empleado asiste. Los borradores nunca llegan aca.
+async function obtenerMenusEmpleado(idUsuario) {
+    return pedirApi(`/menus?idUsuario=${idUsuario}`);
 }
 
 // GET /api/menu-platos -> tabla menu_plato (que platos tiene cada menu y su stock)
 async function obtenerMenuPlatos() {
     return pedirApi('/menu-platos');
+}
+
+// GET /api/menu-platos?idMenuDia= por cada menu -> solo las opciones de esos menus
+async function obtenerOpcionesDe(menus) {
+    const listas = await Promise.all(menus.map(menu => pedirApi(`/menu-platos?idMenuDia=${menu.id}`)));
+    return listas.flat();
 }
 
 // el admin guarda o publica los menus de una semana (menu_dia + menu_plato)
@@ -318,12 +331,14 @@ async function cambiarEstadoPedido(idPedido, estado) {
     return pedirApi(`/pedidos/${idPedido}/estado`, 'PATCH', { estado: estado });
 }
 
-// pedido (no cancelado) del usuario para la semana de esos menus, o undefined si no hay
-function buscarPedidoDeLaSemana(pedidos, menusDia, idUsuario) {
+// pedido (no cancelado) del usuario para la semana del lunes dado, o undefined si no hay.
+// Compara por semana (no por los menus), asi lo encuentra aunque despues haya cambiado su asistencia.
+function buscarPedidoDeLaSemana(pedidos, lunes, idUsuario) {
+    const semana = textoSemana(lunes);
     return pedidos.find(pedido =>
         pedido.idUsuario === idUsuario &&
         pedido.estado !== 'CANCELADO' &&
-        menusDia.find(menu => menu.fecha === pedido.pedidoDias[0].fechaEntrega) !== undefined
+        textoSemana(pedido.pedidoDias[0].fechaEntrega) === semana
     );
 }
 

@@ -26,13 +26,19 @@ public class MenuController {
         this.menuService = menuService;
     }
 
-    // GET /api/menus                              -> todos
+    // GET /api/menus?idUsuario=3                   -> EMPLEADO: solo los que puede pedir
+    //     (semana que viene, publicados, sin feriados y solo los dias que asiste)
+    // GET /api/menus                              -> ADMIN: todos, tambien los borradores
     // GET /api/menus?fecha=2026-10-27             -> el de ese dia
     // GET /api/menus?desde=2026-10-26&hasta=2026-10-31
     @GetMapping
-    public List<MenuDia> listar(@RequestParam(required = false) LocalDate fecha,
+    public List<MenuDia> listar(@RequestParam(required = false) Long idUsuario,
+            @RequestParam(required = false) LocalDate fecha,
             @RequestParam(required = false) LocalDate desde,
             @RequestParam(required = false) LocalDate hasta) {
+        if (idUsuario != null) {
+            return menuService.listarParaEmpleado(idUsuario);
+        }
         if (fecha != null) {
             return menuService.listar(fecha, fecha);
         }

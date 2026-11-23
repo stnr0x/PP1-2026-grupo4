@@ -1,12 +1,18 @@
 package ar.edu.pp1.pedidos.servicio;
 
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ar.edu.pp1.pedidos.dto.SemanaMenuRequest;
+import ar.edu.pp1.pedidos.entidad.Asistencia;
 import ar.edu.pp1.pedidos.entidad.MenuDia;
 import ar.edu.pp1.pedidos.entidad.MenuPlato;
 import ar.edu.pp1.pedidos.excepcion.ReglaNegocioException;
@@ -28,22 +34,55 @@ public class MenuService {
     private final PlatoRepository platoRepository;
     private final DiaNoLaborableRepository diaNoLaborableRepository;
     private final PedidoDiaRepository pedidoDiaRepository;
+    private final AsistenciaService asistenciaService;
+    private final Clock reloj;
 
     public MenuService(MenuDiaRepository menuDiaRepository, MenuPlatoRepository menuPlatoRepository,
             PlatoRepository platoRepository, DiaNoLaborableRepository diaNoLaborableRepository,
-            PedidoDiaRepository pedidoDiaRepository) {
+            PedidoDiaRepository pedidoDiaRepository, AsistenciaService asistenciaService, Clock reloj) {
         this.menuDiaRepository = menuDiaRepository;
         this.menuPlatoRepository = menuPlatoRepository;
         this.platoRepository = platoRepository;
         this.diaNoLaborableRepository = diaNoLaborableRepository;
         this.pedidoDiaRepository = pedidoDiaRepository;
+        this.asistenciaService = asistenciaService;
+        this.reloj = reloj;
     }
 
+    // Para el administrador (Administrar menus, Consolidado): todos, tambien los borradores.
     public List<MenuDia> listar(LocalDate desde, LocalDate hasta) {
         if (desde != null && hasta != null) {
             return menuDiaRepository.findByFechaBetweenOrderByFecha(desde, hasta);
         }
         return menuDiaRepository.findAllByOrderByFecha();
+    }
+
+    // Para el empleado (pantalla Menu): solo lo que puede pedir. El filtro lo hace
+    // el backend, asi los menus sin publicar nunca llegan al navegador.
+    //   1. la semana para la que se pide (la que viene, o la siguiente si ya cerro el plazo)
+    //   2. menu publicado
+    //   3. que no sea dia no laborable
+    //   4. que el empleado asista ese dia (si no configuro su asistencia, no ve ninguno)
+    public List<MenuDia> listarParaEmpleado(Long idUsuario) {
+        LocalDate lunes = Plazos.lunesSemanaQueViene(LocalDateTime.now(reloj));
+        LocalDate sabado = lunes.plusDays(5);
+
+        Set<LocalDate> diasQueAsiste = new HashSet<>();
+        for (Asistencia dia : asistenciaService.listar(idUsuario, lunes, sabado)) {
+            if (Boolean.TRUE.equals(dia.getAsiste())) {
+                diasQueAsiste.add(dia.getFecha());
+            }
+        }
+
+        List<MenuDia> resultado = new ArrayList<>();
+        for (MenuDia menu : menuDiaRepository.findByFechaBetweenOrderByFecha(lunes, sabado)) {
+            if (Boolean.TRUE.equals(menu.getPublicado())
+                    && !diaNoLaborableRepository.existsByFecha(menu.getFecha())
+                    && diasQueAsiste.contains(menu.getFecha())) {
+                resultado.add(menu);
+            }
+        }
+        return resultado;
     }
 
     // Guarda (borrador) o publica los menus de una semana, de lunes a sabado.
